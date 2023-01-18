@@ -19,11 +19,11 @@ import com.jun0rr.jbon.codec.IntegerCodec;
 import com.jun0rr.jbon.codec.LocalDateCodec;
 import com.jun0rr.jbon.codec.LocalDateTimeCodec;
 import com.jun0rr.jbon.codec.LongCodec;
+import com.jun0rr.jbon.codec.MapCodec;
 import com.jun0rr.jbon.codec.ShortCodec;
 import com.jun0rr.jbon.codec.Utf8Codec;
 import com.jun0rr.jbon.codec.ZonedDateTimeCodec;
 import java.nio.ByteBuffer;
-import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -52,6 +52,7 @@ public class DefaultBinContext implements BinContext {
     codecs.put(DefaultBinType.SHORT, new ShortCodec());
     codecs.put(DefaultBinType.UTF8, new Utf8Codec());
     codecs.put(DefaultBinType.ZONED_DATE_TIME, new ZonedDateTimeCodec());
+    codecs.put(DefaultBinType.MAP, new MapCodec(this));
     codecs.put(DefaultBinType.LIST, new BooleanCodec());
     codecs.put(DefaultBinType.OBJECT, new BooleanCodec());
   }
@@ -126,6 +127,11 @@ public class DefaultBinContext implements BinContext {
   @Override
   public <T> void write(ByteBuffer buf, T o) throws BinTypeNotFoundException {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+  }
+  
+  @Override
+  public int calcSize(Object o) throws BinTypeNotFoundException {
+    return -1;
   }
   
 }

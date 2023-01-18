@@ -29,4 +29,6 @@ public interface BinContext {
   
   public <T> void write(ByteBuffer buf, T o) throws BinTypeNotFoundException;
   
+  public int calcSize(Object o) throws BinTypeNotFoundException;
+  
 }

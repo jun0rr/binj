@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -45,6 +46,8 @@ public class DefaultBinType<T> implements BinType<T> {
   public static final BinType<Instant> INSTANT = new DefaultBinType(Instant.class);
   
   public static final BinType<Object> OBJECT = new DefaultBinType(Object.class);
+  
+  public static final BinType<Map> MAP = new DefaultBinType(Map.class);
   
   public static final BinType<List> LIST = new DefaultBinType(List.class);
   
