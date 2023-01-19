@@ -7,8 +7,13 @@ package com.jun0rr.jbon.codec;
 import com.jun0rr.jbon.BinCodec;
 import com.jun0rr.jbon.BinContext;
 import com.jun0rr.jbon.BinType;
+import com.jun0rr.jbon.IndexedKey;
 import com.jun0rr.jbon.impl.DefaultBinType;
+import com.jun0rr.jbon.impl.DefaultIndexedKey;
 import java.nio.ByteBuffer;
+import java.util.AbstractMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -37,8 +42,13 @@ public class MapCodec implements BinCodec<Map> {
 
   @Override
   public int calcSize(Map val) {
-    //[ID:LONG,LENGTH:INT,KEYS:INT,]
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    //[ID:LONG,LENGTH:INT,KEYS:INT,[INDEXED_KEY...],[VALUES...]]
+    List<IndexedKey> lsi = new LinkedList<>();
+    int len = ((Map<Object,Object>)val).entrySet().stream()
+        .map(e->new AbstractMap.SimpleEntry<>(new DefaultIndexedKey(e.getKey()), e.getValue()))
+        .mapToInt(e->ctx.calcSize(e.getKey()) + ctx.calcSize(e.getValue()))
+        .sum();
+    return Long.BYTES + Integer.BYTES + len;
   }
 
   @Override

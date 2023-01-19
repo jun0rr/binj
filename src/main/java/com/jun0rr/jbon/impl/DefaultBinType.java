@@ -5,6 +5,7 @@
 package com.jun0rr.jbon.impl;
 
 import com.jun0rr.jbon.BinType;
+import com.jun0rr.jbon.IndexedKey;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -46,6 +47,8 @@ public class DefaultBinType<T> implements BinType<T> {
   public static final BinType<Instant> INSTANT = new DefaultBinType(Instant.class);
   
   public static final BinType<Object> OBJECT = new DefaultBinType(Object.class);
+  
+  public static final BinType<IndexedKey> IDXKEY = new DefaultBinType(IndexedKey.class);
   
   public static final BinType<Map> MAP = new DefaultBinType(Map.class);
   
