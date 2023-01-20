@@ -30,9 +30,9 @@ public class BinList<T> implements List<T> {
   
   private final int kpos;
   
-  public BinList(BinContext ctx, ByteBuffer buf) {
+  public BinList(BinContext ctx, ByteBuffer bb) {
     this.ctx = Objects.requireNonNull(ctx);
-    this.buf = Objects.requireNonNull(buf).slice();
+    this.buf = Objects.requireNonNull(bb).slice();
     long id = buf.getLong();
     if(id != DefaultBinType.COLLECTION.id()) {
       throw new UnknownBinTypeException(id);
@@ -55,7 +55,8 @@ public class BinList<T> implements List<T> {
   public boolean contains(Object o) {
     buf.position(kpos + Short.BYTES * size);
     for(int i = 0; i < size; i++) {
-      if(o.equals(ctx.read(buf))) {
+      Object r = ctx.read(buf);
+      if(o.equals(r)) {
         return true;
       }
     }
@@ -174,22 +175,64 @@ public class BinList<T> implements List<T> {
 
   @Override
   public int lastIndexOf(Object o) {
-    return indexOf(o);
+    int[] idx = new int[size];
+    buf.position(kpos);
+    for(int i = 0; i < size; i++) {
+      idx[0] = buf.getShort();
+    }
+    for(int i = idx.length -1; i >= 0; i--) {
+      buf.position(idx[i]);
+      if(o.equals(ctx.read(buf))) {
+        return i;
+      }
+    }
+    return -1;
   }
 
   @Override
   public ListIterator<T> listIterator() {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    List<T> ls = new ArrayList<>(size);
+    buf.position(kpos + Short.BYTES * size);
+    for(int i = 0; i < size; i++) {
+      ls.add(ctx.read(buf));
+    }
+    return ls.listIterator();
   }
 
   @Override
   public ListIterator<T> listIterator(int index) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    if(index < 0 || index >= size) {
+      throw new IndexOutOfBoundsException(index);
+    }
+    List<T> ls = new ArrayList<>(size - index);
+    buf.position(kpos + Short.BYTES * index);
+    for(int i = index; i < size; i++) {
+      int vpos = buf.getShort();
+      int pos = buf.position();
+      buf.position(vpos);
+      ls.add(ctx.read(buf));
+      buf.position(pos);
+    }
+    return ls.listIterator();
   }
 
   @Override
   public List<T> subList(int fromIndex, int toIndex) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    if(fromIndex < 0 || fromIndex >= size || fromIndex >= toIndex) {
+      throw new IndexOutOfBoundsException(fromIndex);
+    }if(toIndex < 0 || toIndex > size || toIndex <= fromIndex) {
+      throw new IndexOutOfBoundsException(toIndex);
+    }
+    List<T> ls = new ArrayList<>(size);
+    buf.position(kpos + Short.BYTES * fromIndex);
+    for(int i = fromIndex; i < toIndex; i++) {
+      int vpos = buf.getShort();
+      int pos = buf.position();
+      buf.position(vpos);
+      ls.add(ctx.read(buf));
+      buf.position(pos);
+    }
+    return ls;
   }
   
 }

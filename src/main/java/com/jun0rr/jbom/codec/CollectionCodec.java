@@ -56,18 +56,21 @@ public class CollectionCodec implements BinCodec<Collection> {
     buf.position(kpos + Short.BYTES * val.size());
     List<Integer> idx = new ArrayList<>(val.size());
     Iterator it = val.iterator();
+    int lpos = buf.position();
     while(it.hasNext()) {
       idx.add(buf.position());
       ctx.write(buf, it.next());
+      lpos = buf.position();
     }
     buf.position(kpos);
     idx.forEach(i->buf.putShort(i.shortValue()));
+    buf.position(lpos);
   }
 
   @Override
   public int calcSize(Collection val) {
     int size = val.stream().mapToInt(o->ctx.calcSize(o)).sum();
-    return Long.BYTES + Short.BYTES + size;
+    return Long.BYTES + Short.BYTES + Short.BYTES * val.size() + size;
   }
 
 }
