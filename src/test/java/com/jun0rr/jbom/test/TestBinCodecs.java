@@ -20,7 +20,6 @@ import com.jun0rr.jbom.codec.ShortCodec;
 import com.jun0rr.jbom.codec.Utf8Codec;
 import com.jun0rr.jbom.codec.ZonedDateTimeCodec;
 import com.jun0rr.jbom.impl.DefaultBinContext;
-import com.jun0rr.jbom.impl.DefaultBinType;
 import com.jun0rr.jbom.impl.DefaultIndexedKey;
 import com.jun0rr.jbom.type.BinMap;
 import java.nio.ByteBuffer;
@@ -30,6 +29,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -200,6 +200,30 @@ public class TestBinCodecs {
   }
   
   @Test
+  public void arrayCodec() {
+    System.out.println("--------- arrayCodec() ---------");
+    try {
+      String[] cs = new String[31];
+      char c = 0x41;
+      for(int i = 0; i < 31; i++) {
+        cs[i] = Character.toString(c++);
+      }
+      System.out.println(Arrays.toString(cs));
+      BinContext ctx = new DefaultBinContext();
+      System.out.println(ctx.calcSize(cs));
+      ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(cs));
+      ctx.write(buf, cs);
+      buf.flip();
+      String[] ds = ctx.read(buf);
+      Assertions.assertTrue(Arrays.equals(cs, ds));
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
+  @Test
   public void mapCodec() {
     System.out.println("--------- mapCodec() ---------");
     Map<Integer,String> map = new HashMap<>();
@@ -219,6 +243,7 @@ public class TestBinCodecs {
   @Test
   public void binMap() {
     System.out.println("--------- binMap() ---------");
+    try {
     Map<Integer,String> map = new HashMap<>();
     char c = 0x41;
     for(int i = 0; i < 31; i++) {
@@ -232,7 +257,6 @@ public class TestBinCodecs {
     buf.flip();
     BinMap<Integer,String> bm = new BinMap(ctx, buf);
     System.out.println("bm: " + bm);
-    try {
       System.out.println("bm.printContent(): " + bm.printContent());
     }
     catch(Exception e) {

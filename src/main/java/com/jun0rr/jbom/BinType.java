@@ -13,11 +13,15 @@ import java.security.NoSuchAlgorithmException;
  *
  * @author F6036477
  */
-public interface BinType<V> {
+public interface BinType<T> {
+  
+  public boolean isTypeOf(Class cls);
+  
+  public boolean isTypeOf(long id);
+  
+  public Class<T> type();
   
   public long id();
-  
-  public Class<V> type();
   
   
   public static long genId(Class cls) {

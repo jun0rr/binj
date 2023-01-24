@@ -10,7 +10,9 @@ import java.nio.ByteBuffer;
  *
  * @author F6036477
  */
-public interface BinCodec<V> extends Typeable<V> {
+public interface BinCodec<V> {
+  
+  public BinType<V> bintype();
   
   public V read(ByteBuffer buf);
   

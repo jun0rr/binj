@@ -4,12 +4,19 @@
  */
 package com.jun0rr.jbom;
 
+import java.io.Closeable;
+import java.nio.ByteBuffer;
+
 /**
  *
  * @author F6036477
  */
-public interface Typeable<V> {
+public interface BufferAllocator extends Closeable {
   
-  public BinType<V> bintype();
+  public int bufferSize();
+  
+  public ByteBuffer alloc();
+  
+  public ByteBuffer alloc(int size);
   
 }

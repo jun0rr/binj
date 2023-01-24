@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public interface BinContext {
   
-  public <T> BinCodec<T> getBinCodec(BinType<T> cls) throws BinTypeNotFoundException;
+  public <T> BinCodec<T> getBinCodec(BinType<T> type) throws BinTypeNotFoundException;
   
   public <T> BinCodec<T> getBinCodec(Class<T> cls);
   

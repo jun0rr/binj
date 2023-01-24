@@ -11,7 +11,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,21 +20,21 @@ import java.util.Objects;
  */
 public class DefaultBinType<T> implements BinType<T> {
   
-  public static final BinType<Byte> BYTE = new DefaultBinType(Byte.class);
+  public static final BinType<Byte> BYTE = new PrimitiveBinType(byte.class, Byte.class);
   
-  public static final BinType<Character> CHAR = new DefaultBinType(Character.class);
+  public static final BinType<Character> CHAR = new PrimitiveBinType(char.class, Character.class);
   
-  public static final BinType<Boolean> BOOLEAN = new DefaultBinType(Boolean.class);
+  public static final BinType<Boolean> BOOLEAN = new PrimitiveBinType(boolean.class, Boolean.class);
   
-  public static final BinType<Short> SHORT = new DefaultBinType(Short.class);
+  public static final BinType<Short> SHORT = new PrimitiveBinType(short.class, Short.class);
   
-  public static final BinType<Integer> INTEGER = new DefaultBinType(Integer.class);
+  public static final BinType<Integer> INTEGER = new PrimitiveBinType(int.class, Integer.class);
   
-  public static final BinType<Long> LONG = new DefaultBinType(Long.class);
+  public static final BinType<Long> LONG = new PrimitiveBinType(long.class, Long.class);
   
-  public static final BinType<Float> FLOAT = new DefaultBinType(Float.class);
+  public static final BinType<Float> FLOAT = new PrimitiveBinType(float.class, Float.class);
   
-  public static final BinType<Double> DOUBLE = new DefaultBinType(Double.class);
+  public static final BinType<Double> DOUBLE = new PrimitiveBinType(double.class, Double.class);
   
   public static final BinType<String> UTF8 = new DefaultBinType(String.class);
   
@@ -46,8 +45,6 @@ public class DefaultBinType<T> implements BinType<T> {
   public static final BinType<ZonedDateTime> ZONED_DATE_TIME = new DefaultBinType(ZonedDateTime.class);
   
   public static final BinType<Instant> INSTANT = new DefaultBinType(Instant.class);
-  
-  public static final BinType<Object> OBJECT = new DefaultBinType(Object.class);
   
   public static final BinType<IndexedKey> IDXKEY = new DefaultBinType(IndexedKey.class);
   
@@ -80,6 +77,16 @@ public class DefaultBinType<T> implements BinType<T> {
   }
 
   @Override
+  public boolean isTypeOf(Class cls) {
+    return type == cls || type.isAssignableFrom(cls);
+  }
+
+  @Override
+  public boolean isTypeOf(long id) {
+    return this.id == id;
+  }
+  
+  @Override
   public int hashCode() {
     int hash = 5;
     hash = 17 * hash + (int)this.id;
@@ -98,7 +105,7 @@ public class DefaultBinType<T> implements BinType<T> {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final DefaultBinType<?> other = (DefaultBinType<?>) obj;
+    final DefaultBinType other = (DefaultBinType) obj;
     if (this.id != other.id) {
       return false;
     }
@@ -109,5 +116,5 @@ public class DefaultBinType<T> implements BinType<T> {
   public String toString() {
     return "BinType{" + "type=" + type.getCanonicalName() + ", id=" + id + '}';
   }
-  
+
 }

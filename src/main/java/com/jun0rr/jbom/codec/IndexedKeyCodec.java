@@ -26,7 +26,7 @@ public class IndexedKeyCodec implements BinCodec<IndexedKey> {
   }
 
   @Override
-  public IndexedKey read(ByteBuffer buf) {
+  public IndexedKey<IndexedKey> read(ByteBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -48,7 +48,7 @@ public class IndexedKeyCodec implements BinCodec<IndexedKey> {
   }
 
   @Override
-  public BinType<IndexedKey> bintype() {
+  public BinType bintype() {
     return DefaultBinType.IDXKEY;
   }
   

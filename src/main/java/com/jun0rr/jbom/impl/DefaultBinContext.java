@@ -9,6 +9,7 @@ import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.BinTypeNotFoundException;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.codec.ArrayCodec;
 import com.jun0rr.jbom.codec.BooleanCodec;
 import com.jun0rr.jbom.codec.ByteCodec;
 import com.jun0rr.jbom.codec.CharCodec;
@@ -22,6 +23,7 @@ import com.jun0rr.jbom.codec.LocalDateCodec;
 import com.jun0rr.jbom.codec.LocalDateTimeCodec;
 import com.jun0rr.jbom.codec.LongCodec;
 import com.jun0rr.jbom.codec.MapCodec;
+import com.jun0rr.jbom.codec.ObjectCodec;
 import com.jun0rr.jbom.codec.ShortCodec;
 import com.jun0rr.jbom.codec.Utf8Codec;
 import com.jun0rr.jbom.codec.ZonedDateTimeCodec;
@@ -37,84 +39,83 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultBinContext implements BinContext {
   
-  private final Map<BinType,BinCodec> codecs;
+  private final Map<BinType, BinCodec> codecs;
   
   public DefaultBinContext() {
     this.codecs = new ConcurrentHashMap<>();
     codecs.put(DefaultBinType.BOOLEAN, new BooleanCodec());
     codecs.put(DefaultBinType.BYTE, new ByteCodec());
     codecs.put(DefaultBinType.CHAR, new CharCodec());
-    codecs.put(DefaultBinType.COLLECTION, new CollectionCodec(this));
-    codecs.put(DefaultBinType.DATE, new LocalDateCodec());
-    codecs.put(DefaultBinType.DATE_TIME, new LocalDateTimeCodec());
-    codecs.put(DefaultBinType.DOUBLE, new DoubleCodec());
-    codecs.put(DefaultBinType.FLOAT, new FloatCodec());
-    codecs.put(DefaultBinType.IDXKEY, new IndexedKeyCodec(this));
-    codecs.put(DefaultBinType.INSTANT, new InstantCodec());
+    codecs.put(DefaultBinType.SHORT, new ShortCodec());
     codecs.put(DefaultBinType.INTEGER, new IntegerCodec());
     codecs.put(DefaultBinType.LONG, new LongCodec());
-    codecs.put(DefaultBinType.SHORT, new ShortCodec());
+    codecs.put(DefaultBinType.FLOAT, new FloatCodec());
+    codecs.put(DefaultBinType.DOUBLE, new DoubleCodec());
     codecs.put(DefaultBinType.UTF8, new Utf8Codec());
+    codecs.put(DefaultBinType.DATE, new LocalDateCodec());
+    codecs.put(DefaultBinType.DATE_TIME, new LocalDateTimeCodec());
+    codecs.put(DefaultBinType.INSTANT, new InstantCodec());
     codecs.put(DefaultBinType.ZONED_DATE_TIME, new ZonedDateTimeCodec());
+    codecs.put(DefaultBinType.IDXKEY, new IndexedKeyCodec(this));
+    codecs.put(DefaultBinType.COLLECTION, new CollectionCodec(this));
     codecs.put(DefaultBinType.MAP, new MapCodec(this));
-    codecs.put(DefaultBinType.OBJECT, new BooleanCodec());
+    
   }
   
-  public DefaultBinContext(Map<BinType,BinCodec> codecs) {
+  public DefaultBinContext(Map<BinType, BinCodec> codecs) {
     this.codecs = Objects.requireNonNull(codecs);
   }
   
   @Override
   public <T> BinCodec<T> getBinCodec(BinType<T> type) throws BinTypeNotFoundException {
-    BinCodec c = codecs.get(type);
-    if(c == null) throw new BinTypeNotFoundException(type.type());
-    return (BinCodec<T>) c;
+    return codecs.entrySet().stream()
+        .filter(e->e.getKey().equals(type))
+        .map(Map.Entry::getValue)
+        .findFirst()
+        .orElseThrow(()->new BinTypeNotFoundException(type.type()));
   }
   
   @Override
   public <T> BinCodec<T> getBinCodec(Class<T> cls) {
     Optional<BinCodec> opt = codecs.entrySet().stream()
-        .filter(e->e.getKey().type() == cls)
+        .filter(e->e.getKey().isTypeOf(cls))
         .map(Map.Entry::getValue)
         .findFirst();
     if(opt.isEmpty()) {
-      opt = codecs.entrySet().stream()
-        .filter(e->e.getKey().type().isAssignableFrom(cls))
-        .map(Map.Entry::getValue)
-        .findFirst();
+      BinType<T> type = new DefaultBinType(cls);
+      BinCodec<T> codec = cls.isArray() ? new ArrayCodec(this, type) : new ObjectCodec<>(this, type);
+      System.out.printf("* DefaultBinContext.getBinCodec( %s ): type=%s, codec=%s%n", cls, type, codec);
+      codecs.put(type, codec);
+      opt = Optional.of(codec);
     }
-    return opt.orElse(cls.isArray() ? codecs.get(DefaultBinType.COLLECTION) : codecs.get(DefaultBinType.OBJECT));
+    return opt.get();
   }
   
   @Override
   public <T> BinCodec<T> getBinCodec(long id) throws UnknownBinTypeException {
-    Optional<BinCodec> opt = codecs.entrySet().stream()
-        .filter(e->e.getKey().id() == id)
+    return codecs.entrySet().stream()
+        .filter(e->e.getKey().isTypeOf(id))
         .map(Map.Entry::getValue)
-        .findFirst();
-    return opt.orElseThrow(()->new UnknownBinTypeException(id));
+        .findFirst()
+        .orElseThrow(()->new UnknownBinTypeException(id));
   }
 
   @Override
-  public <T> BinType<T> getBinType(Class<T> cls) {
-    Optional<BinType> opt = codecs.keySet().stream()
-        .filter(t->t.type() == cls)
-        .findFirst();
-    if(opt.isEmpty()) {
-      opt = codecs.keySet().stream()
-        .filter(t->t.type().isAssignableFrom(cls))
-        .findFirst();
-    }
-    return opt.orElse(cls.isArray() ? DefaultBinType.COLLECTION : DefaultBinType.OBJECT);
+  public <T> BinType<T> getBinType(Class<T> cls) throws BinTypeNotFoundException {
+    return codecs.entrySet().stream()
+        .filter(e->e.getKey().isTypeOf(cls))
+        .map(Map.Entry::getKey)
+        .findFirst()
+        .orElseThrow(()->new BinTypeNotFoundException(cls));
   }
 
   @Override
   public <T> BinType<T> getBinType(long id) throws UnknownBinTypeException {
-    Optional<BinCodec> opt = codecs.entrySet().stream()
-        .filter(e->e.getKey().id() == id)
-        .map(Map.Entry::getValue)
-        .findFirst();
-    return (BinType<T>) opt.orElseThrow(()->new UnknownBinTypeException(id));
+    return codecs.entrySet().stream()
+        .filter(e->e.getKey().isTypeOf(id))
+        .map(Map.Entry::getKey)
+        .findFirst()
+        .orElseThrow(()->new UnknownBinTypeException(id));
   }
 
   @Override
