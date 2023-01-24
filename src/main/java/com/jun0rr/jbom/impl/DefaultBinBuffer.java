@@ -12,6 +12,7 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -22,6 +23,8 @@ public class DefaultBinBuffer implements BinBuffer {
   protected final List<ByteBuffer> buffers;
   
   protected final BufferAllocator malloc;
+  
+  protected int mark;
   
   public DefaultBinBuffer(BufferAllocator ba) {
     this.malloc = Objects.requireNonNull(ba);
@@ -49,6 +52,15 @@ public class DefaultBinBuffer implements BinBuffer {
 
   @Override
   public BinBuffer compact() {
+    List<ByteBuffer> ls = buffers.stream().collect(Collectors.toList());
+    buffers.clear();
+    ls.stream()
+        .map(b->malloc.alloc())
+        .forEach(buffers::add);
+    ls.stream()
+        .filter(ByteBuffer::hasRemaining)
+        .forEach(b->put(b));
+    ls.clear();
     return this;
   }
 
@@ -114,6 +126,105 @@ public class DefaultBinBuffer implements BinBuffer {
   }
 
   @Override
+  public char getChar() {
+    if(remaining() < Character.BYTES) {
+      throw new BufferUnderflowException();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() < Character.BYTES) {
+      b = ByteBuffer.allocate(Character.BYTES);
+      get(b);
+      b.flip();
+    }
+    return b.getChar();
+  }
+
+  @Override
+  public double getDouble() {
+    if(remaining() < Double.BYTES) {
+      throw new BufferUnderflowException();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() < Double.BYTES) {
+      b = ByteBuffer.allocate(Double.BYTES);
+      get(b);
+      b.flip();
+    }
+    return b.getDouble();
+  }
+
+  @Override
+  public float getFloat() {
+    if(remaining() < Float.BYTES) {
+      throw new BufferUnderflowException();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() < Float.BYTES) {
+      b = ByteBuffer.allocate(Float.BYTES);
+      get(b);
+      b.flip();
+    }
+    return b.getFloat();
+  }
+
+  @Override
+  public int getInt() {
+    if(remaining() < Integer.BYTES) {
+      throw new BufferUnderflowException();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() < Integer.BYTES) {
+      b = ByteBuffer.allocate(Integer.BYTES);
+      get(b);
+      b.flip();
+    }
+    return b.getInt();
+  }
+
+  @Override
+  public long getLong() {
+    if(remaining() < Long.BYTES) {
+      throw new BufferUnderflowException();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() < Long.BYTES) {
+      b = ByteBuffer.allocate(Long.BYTES);
+      get(b);
+      b.flip();
+    }
+    return b.getLong();
+  }
+
+  @Override
+  public short getShort() {
+    if(remaining() < Short.BYTES) {
+      throw new BufferUnderflowException();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() < Short.BYTES) {
+      b = ByteBuffer.allocate(Short.BYTES);
+      get(b);
+      b.flip();
+    }
+    return b.getShort();
+  }
+  
+  @Override
+  public String getString(Charset cs) {
+    int len = getShort();
+    if(remaining() < len) {
+      throw new BufferUnderflowException();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() < len) {
+      b = ByteBuffer.allocate(len);
+      get(b);
+      b.flip();
+    }
+    return cs.decode(b).toString();
+  }
+
+  @Override
   public BinBuffer get(ByteBuffer buf) {
     while(buf.hasRemaining() && hasRemaining()) {
       ByteBuffer b = buffers.get(_index());
@@ -160,7 +271,8 @@ public class DefaultBinBuffer implements BinBuffer {
 
   @Override
   public BinBuffer mark() {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    this.mark = position();
+    return this;
   }
 
   @Override
@@ -170,8 +282,8 @@ public class DefaultBinBuffer implements BinBuffer {
   
   @Override
   public BinBuffer position(int pos) {
-    while(pos > limit()) {
-      limit(pos);
+    while(pos > capacity()) {
+      allocate();
     }
     int i = 0;
     int _pos = pos;
@@ -227,6 +339,122 @@ public class DefaultBinBuffer implements BinBuffer {
   }
 
   @Override
+  public BinBuffer putChar(char s) {
+    while(remaining() < Character.BYTES) {
+      allocate();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() >= Character.BYTES) {
+      b.putChar(s);
+    }
+    else {
+      b = ByteBuffer.allocate(Character.BYTES);
+      b.putChar(s);
+      b.flip();
+      put(b);
+    }
+    return this;
+  }
+  
+  @Override
+  public BinBuffer putShort(short s) {
+    while(remaining() < Short.BYTES) {
+      allocate();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() >= Short.BYTES) {
+      b.putShort(s);
+    }
+    else {
+      b = ByteBuffer.allocate(Short.BYTES);
+      b.putShort(s);
+      b.flip();
+      put(b);
+    }
+    return this;
+  }
+  
+  @Override
+  public BinBuffer putInt(int s) {
+    while(remaining() < Integer.BYTES) {
+      allocate();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() >= Integer.BYTES) {
+      b.putInt(s);
+    }
+    else {
+      b = ByteBuffer.allocate(Integer.BYTES);
+      b.putInt(s);
+      b.flip();
+      put(b);
+    }
+    return this;
+  }
+  
+  @Override
+  public BinBuffer putLong(long s) {
+    while(remaining() < Long.BYTES) {
+      allocate();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() >= Long.BYTES) {
+      b.putLong(s);
+    }
+    else {
+      b = ByteBuffer.allocate(Long.BYTES);
+      b.putLong(s);
+      b.flip();
+      put(b);
+    }
+    return this;
+  }
+  
+  @Override
+  public BinBuffer putFloat(float s) {
+    while(remaining() < Float.BYTES) {
+      allocate();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() >= Float.BYTES) {
+      b.putFloat(s);
+    }
+    else {
+      b = ByteBuffer.allocate(Float.BYTES);
+      b.putFloat(s);
+      b.flip();
+      put(b);
+    }
+    return this;
+  }
+  
+  @Override
+  public BinBuffer putDouble(double s) {
+    while(remaining() < Double.BYTES) {
+      allocate();
+    }
+    ByteBuffer b = buffers.get(_index());
+    if(b.remaining() >= Double.BYTES) {
+      b.putDouble(s);
+    }
+    else {
+      b = ByteBuffer.allocate(Double.BYTES);
+      b.putDouble(s);
+      b.flip();
+      put(b);
+    }
+    return this;
+  }
+  
+  @Override
+  public BinBuffer put(String str, Charset cs) {
+    ByteBuffer bs = cs.encode(str);
+    putShort((short)bs.remaining());
+    put(bs);
+    return this;
+  }
+  
+  @Override
   public BinBuffer put(ByteBuffer buf) {
     while(remaining() < buf.remaining()) {
       allocate();
@@ -257,13 +485,14 @@ public class DefaultBinBuffer implements BinBuffer {
 
   @Override
   public BinBuffer reset() {
-    buffers.forEach(ByteBuffer::reset);
+    position(mark);
     return this;
   }
 
   @Override
   public BinBuffer rewind() {
-    buffers.forEach(ByteBuffer::rewind);
+    position(0);
+    mark = 0;
     return this;
   }
 

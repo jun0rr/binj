@@ -230,4 +230,34 @@ public class TestBinBuffer {
     }
   }
   
+  @Test
+  public void compact() {
+    System.out.println("--------- compact() ---------");
+    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
+    try {
+      buf.position(24);
+      System.out.println("position(24): " + buf);
+      char c = 0x41;
+      for(int i = 0; i < 27; i++) {
+        buf.putChar(c++);
+      }
+      buf.flip();
+      System.out.println("flip        : " + buf);
+      buf.position(24);
+      System.out.println("position(24): " + buf);
+      buf.compact();
+      System.out.println("compact     : " + buf);
+      buf.flip();
+      System.out.printf("[");
+      while(buf.hasRemaining()) {
+        System.out.printf("%s, ", buf.getChar());
+      }
+      System.out.println("]");
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+      throw e;
+    }
+  }
+  
 }
