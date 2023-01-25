@@ -7,8 +7,8 @@ package com.jun0rr.jbom.codec;
 import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
-import java.nio.ByteBuffer;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -25,7 +25,7 @@ public class LocalDateTimeCodec implements BinCodec<LocalDateTime> {
   }
 
   @Override
-  public LocalDateTime read(ByteBuffer buf) {
+  public LocalDateTime read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -34,7 +34,7 @@ public class LocalDateTimeCodec implements BinCodec<LocalDateTime> {
   }
   
   @Override
-  public void write(ByteBuffer buf, LocalDateTime val) {
+  public void write(BinBuffer buf, LocalDateTime val) {
     buf.putLong(bintype().id());
     buf.putLong(val.toInstant(ZoneOffset.UTC).toEpochMilli());
   }

@@ -7,7 +7,7 @@ package com.jun0rr.jbom.codec;
 import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
-import java.nio.ByteBuffer;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import java.util.Objects;
 
 /**
@@ -31,12 +31,12 @@ public class ObjectCodec<T> implements BinCodec<T> {
   }
 
   @Override
-  public T read(ByteBuffer buf) {
+  public T read(BinBuffer buf) {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
 
   @Override
-  public void write(ByteBuffer buf, T val) {
+  public void write(BinBuffer buf, T val) {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
 

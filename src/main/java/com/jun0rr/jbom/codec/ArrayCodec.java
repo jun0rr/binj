@@ -8,10 +8,11 @@ import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
-import com.jun0rr.jbom.impl.DefaultBinType;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -37,7 +38,7 @@ public class ArrayCodec<T> implements BinCodec<T[]> {
   }
 
   @Override
-  public T[] read(ByteBuffer buf) {
+  public T[] read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -52,7 +53,7 @@ public class ArrayCodec<T> implements BinCodec<T[]> {
   }
   
   @Override
-  public void write(ByteBuffer buf, T[] array) {
+  public void write(BinBuffer buf, T[] array) {
     buf.putLong(bintype().id());
     buf.putShort((short)array.length);
     int kpos = buf.position();

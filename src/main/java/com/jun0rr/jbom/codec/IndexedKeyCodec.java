@@ -8,9 +8,9 @@ import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
 import com.jun0rr.jbom.impl.DefaultIndexedKey;
-import java.nio.ByteBuffer;
 import java.util.Objects;
 
 /**
@@ -26,7 +26,7 @@ public class IndexedKeyCodec implements BinCodec<IndexedKey> {
   }
 
   @Override
-  public IndexedKey<IndexedKey> read(ByteBuffer buf) {
+  public IndexedKey<IndexedKey> read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -36,7 +36,7 @@ public class IndexedKeyCodec implements BinCodec<IndexedKey> {
   }
 
   @Override
-  public void write(ByteBuffer buf, IndexedKey val) {
+  public void write(BinBuffer buf, IndexedKey val) {
     buf.putLong(bintype().id());
     buf.putShort((short)val.index());
     ctx.write(buf, val.key());

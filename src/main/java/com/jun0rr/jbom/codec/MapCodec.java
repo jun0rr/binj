@@ -8,10 +8,10 @@ import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
 import com.jun0rr.jbom.impl.DefaultIndexedKey;
 import com.jun0rr.jbom.impl.Pair;
-import java.nio.ByteBuffer;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +33,7 @@ public class MapCodec implements BinCodec<Map> {
   }
 
   @Override
-  public Map read(ByteBuffer buf) {
+  public Map read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -53,7 +53,7 @@ public class MapCodec implements BinCodec<Map> {
   }
 
   @Override
-  public void write(ByteBuffer buf, Map val) {
+  public void write(BinBuffer buf, Map val) {
     buf.putLong(bintype().id());
     buf.putShort((short)val.size());
     int kpos = buf.position();

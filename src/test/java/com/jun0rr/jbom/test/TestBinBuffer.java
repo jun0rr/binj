@@ -4,10 +4,8 @@
  */
 package com.jun0rr.jbom.test;
 
-import com.jun0rr.jbom.BinBuffer;
-import com.jun0rr.jbom.impl.DefaultBinBuffer;
-import com.jun0rr.jbom.impl.DefaultBufferAllocator;
-import java.nio.ByteBuffer;
+import com.jun0rr.jbom.buffer.BinBuffer;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -18,245 +16,206 @@ public class TestBinBuffer {
   
   @Test
   public void put_byte() {
-    System.out.println("--------- put_byte() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
     buf.limit(27);
+    byte[] bs = new byte[27];
     byte c = 0x41;
-    for(int i = 0; i < 27; i++) {
+    for(int i = 0; i < bs.length; i++) {
+      bs[i] = c;
       buf.put(c++);
     }
     buf.flip();
-    System.out.printf("[");
+    int i = 0;
     while(buf.hasRemaining()) {
-      System.out.printf("%d, ", buf.get());
+      Assertions.assertEquals(bs[i++], buf.get());
     }
-    System.out.println("]");
   }
   
   @Test
   public void position_10_limit_25() {
-    System.out.println("--------- position_10_limit_25() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
     buf.limit(27);
+    byte[] bs = new byte[27];
     byte c = 0x41;
-    for(int i = 0; i < 27; i++) {
+    for(int i = 0; i < bs.length; i++) {
+      bs[i] = c;
       buf.put(c++);
     }
     buf.flip();
     buf.position(10).limit(25);
-    System.out.println(buf);
-    System.out.printf("[");
+    int i = 10;
     while(buf.hasRemaining()) {
-      System.out.printf("%d, ", buf.get());
+      Assertions.assertEquals(bs[i++], buf.get());
     }
-    System.out.println("]");
   }
   
   @Test
   public void put_bytearray() {
-    System.out.println("--------- put_bytearray() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
     byte[] array = new byte[27];
     byte c = 0x41;
     for(int i = 0; i < 27; i++) {
       array[i] = c++;
     }
     buf.put(array);
-    System.out.println(buf);
     buf.flip();
-    System.out.printf("[");
+    int i = 0;
     while(buf.hasRemaining()) {
-      System.out.printf("%d, ", buf.get());
+      Assertions.assertEquals(array[i++], buf.get());
     }
-    System.out.println("]");
   }
   
   @Test
   public void put_bytearray_offset_length() {
-    System.out.println("--------- put_bytearray_offset_length() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
     byte[] array = new byte[27];
     byte c = 0x41;
     for(int i = 0; i < 27; i++) {
       array[i] = c++;
     }
     buf.put(array, 0, 12);
-    System.out.println(buf);
     buf.put(array, 12, 15);
-    System.out.println(buf);
     buf.flip();
-    System.out.printf("[");
+    int i = 0;
     while(buf.hasRemaining()) {
-      System.out.printf("%d, ", buf.get());
+      Assertions.assertEquals(array[i++], buf.get());
     }
-    System.out.println("]");
   }
   
   @Test
   public void put_char() {
-    System.out.println("--------- put_char() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
-    try {
-      char c = 0x41;
-      for(int i = 0; i < 27; i++) {
-        buf.putChar(c++);
-      }
-      buf.flip();
-      System.out.println(buf);
-      System.out.printf("[");
-      while(buf.hasRemaining()) {
-        System.out.printf("%s, ", buf.getChar());
-      }
-      System.out.println("]");
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
+    char[] cs = new char[27];
+    char c = 0x41;
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = c;
+      buf.putChar(c++);
     }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
+    buf.flip();
+    int i = 0;
+    while(buf.hasRemaining()) {
+      Assertions.assertEquals(cs[i++], buf.getChar());
     }
   }
   
   @Test
   public void put_short() {
-    System.out.println("--------- put_short() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
-    try {
-      short c = 0x41;
-      for(int i = 0; i < 27; i++) {
-        buf.putShort(c++);
-      }
-      buf.flip();
-      System.out.println(buf);
-      System.out.printf("[");
-      while(buf.hasRemaining()) {
-        System.out.printf("%s, ", buf.getShort());
-      }
-      System.out.println("]");
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
+    short[] cs = new short[27];
+    short c = 0x41;
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = c;
+      buf.putShort(c++);
     }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
+    buf.flip();
+    int i = 0;
+    while(buf.hasRemaining()) {
+      Assertions.assertEquals(cs[i++], buf.getShort());
     }
   }
   
   @Test
   public void put_int() {
-    System.out.println("--------- put_int() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
-    try {
-      int c = 0x41;
-      for(int i = 0; i < 27; i++) {
-        buf.putInt(c++);
-      }
-      buf.flip();
-      System.out.println(buf);
-      System.out.printf("[");
-      while(buf.hasRemaining()) {
-        System.out.printf("%s, ", buf.getInt());
-      }
-      System.out.println("]");
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
+    int[] cs = new int[27];
+    int c = 0x41;
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = c;
+      buf.putInt(c++);
     }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
+    buf.flip();
+    int i = 0;
+    while(buf.hasRemaining()) {
+      Assertions.assertEquals(cs[i++], buf.getInt());
     }
   }
   
   @Test
   public void put_long() {
-    System.out.println("--------- put_long() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
-    try {
-      long c = 0x41;
-      for(int i = 0; i < 27; i++) {
-        buf.putLong(c++);
-      }
-      buf.flip();
-      System.out.println(buf);
-      System.out.printf("[");
-      while(buf.hasRemaining()) {
-        System.out.printf("%s, ", buf.getLong());
-      }
-      System.out.println("]");
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
+    long[] cs = new long[27];
+    long c = 0x41;
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = c;
+      buf.putLong(c++);
     }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
+    buf.flip();
+    int i = 0;
+    while(buf.hasRemaining()) {
+      Assertions.assertEquals(cs[i++], buf.getLong());
     }
   }
   
   @Test
   public void put_float() {
-    System.out.println("--------- put_float() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
-    try {
-      float c = 0x41;
-      for(int i = 0; i < 27; i++) {
-        buf.putFloat(c++);
-      }
-      buf.flip();
-      System.out.println(buf);
-      System.out.printf("[");
-      while(buf.hasRemaining()) {
-        System.out.printf("%s, ", buf.getFloat());
-      }
-      System.out.println("]");
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
+    float[] cs = new float[27];
+    float c = 0x41;
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = c;
+      buf.putFloat(c++);
     }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
+    buf.flip();
+    int i = 0;
+    while(buf.hasRemaining()) {
+      Assertions.assertEquals(cs[i++], buf.getFloat());
     }
   }
   
   @Test
   public void put_double() {
-    System.out.println("--------- put_double() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
-    try {
-      double c = 0x41;
-      for(int i = 0; i < 27; i++) {
-        buf.putDouble(c++);
-      }
-      buf.flip();
-      System.out.println(buf);
-      System.out.printf("[");
-      while(buf.hasRemaining()) {
-        System.out.printf("%s, ", buf.getDouble());
-      }
-      System.out.println("]");
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
+    double[] cs = new double[27];
+    double c = 0x41;
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = c;
+      buf.putDouble(c++);
     }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
+    buf.flip();
+    int i = 0;
+    while(buf.hasRemaining()) {
+      Assertions.assertEquals(cs[i++], buf.getDouble());
     }
   }
   
   @Test
   public void compact() {
-    System.out.println("--------- compact() ---------");
-    BinBuffer buf = new DefaultBinBuffer(DefaultBufferAllocator.heapAllocator(10));
-    try {
-      buf.position(24);
-      System.out.println("position(24): " + buf);
-      char c = 0x41;
-      for(int i = 0; i < 27; i++) {
-        buf.putChar(c++);
-      }
-      buf.flip();
-      System.out.println("flip        : " + buf);
-      buf.position(24);
-      System.out.println("position(24): " + buf);
-      buf.compact();
-      System.out.println("compact     : " + buf);
-      buf.flip();
-      System.out.printf("[");
-      while(buf.hasRemaining()) {
-        System.out.printf("%s, ", buf.getChar());
-      }
-      System.out.println("]");
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
+    buf.position(24);
+    char[] cs = new char[27];
+    char c = 0x41;
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = c;
+      buf.putChar(c++);
     }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
+    buf.flip();
+    buf.position(24);
+    buf.compact();
+    buf.flip();
+    Assertions.assertEquals(0, buf.position());
+    Assertions.assertEquals(54, buf.limit());
+    int i = 0;
+    while(buf.hasRemaining()) {
+      Assertions.assertEquals(cs[i++], buf.getChar());
+    }
+  }
+  
+  @Test
+  public void slice() {
+    BinBuffer buf = BinBuffer.ofHeapAllocator(10);
+    char[] cs = new char[27];
+    char c = 0x41;
+    for(int i = 0; i < cs.length; i++) {
+      cs[i] = c;
+      buf.putChar(c++);
+    }
+    buf.flip();
+    buf.position(14);
+    buf = buf.slice();
+    Assertions.assertEquals(0, buf.position());
+    int i = 7;
+    while(buf.hasRemaining()) {
+      Assertions.assertEquals(cs[i++], buf.getChar());
     }
   }
   

@@ -2,10 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.jun0rr.jbom.impl;
-
-import java.nio.channels.FileChannel;
-import java.util.List;
+package com.jun0rr.jbom.buffer;
 
 /**
  *
@@ -13,8 +10,13 @@ import java.util.List;
  */
 public class MappedBinBuffer extends DefaultBinBuffer {
   
-  private final List<FileChannel> channels;
+  public MappedBinBuffer(BufferAllocator alloc) {
+    super(alloc);
+  }
   
-  
+  @Override
+  public void close() {
+    malloc.close();
+  }
   
 }

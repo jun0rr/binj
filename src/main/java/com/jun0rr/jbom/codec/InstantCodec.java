@@ -7,8 +7,8 @@ package com.jun0rr.jbom.codec;
 import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
-import java.nio.ByteBuffer;
 import java.time.Instant;
 
 /**
@@ -23,7 +23,7 @@ public class InstantCodec implements BinCodec<Instant> {
   }
 
   @Override
-  public Instant read(ByteBuffer buf) {
+  public Instant read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -32,7 +32,7 @@ public class InstantCodec implements BinCodec<Instant> {
   }
   
   @Override
-  public void write(ByteBuffer buf, Instant val) {
+  public void write(BinBuffer buf, Instant val) {
     buf.putLong(bintype().id());
     buf.putLong(val.toEpochMilli());
   }

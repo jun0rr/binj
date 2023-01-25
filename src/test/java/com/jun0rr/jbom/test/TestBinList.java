@@ -30,9 +30,7 @@ public class TestBinList {
   
   public static BinList<Integer> createBinList() {
     try {
-      System.out.println(values);
       BinContext ctx = new DefaultBinContext();
-      System.out.println(ctx.calcSize(values));
       ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(values));
       ctx.write(buf, values);
       buf.flip();

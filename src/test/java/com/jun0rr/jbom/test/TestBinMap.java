@@ -40,9 +40,7 @@ public class TestBinMap {
     for(int i = 0; i < length; i++) {
       map.put((int)c, Character.toString(c++));
     }
-    System.out.println(map);
     BinContext ctx = new DefaultBinContext();
-    System.out.println(ctx.calcSize(map));
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(map));
     ctx.write(buf, map);
     buf.flip();

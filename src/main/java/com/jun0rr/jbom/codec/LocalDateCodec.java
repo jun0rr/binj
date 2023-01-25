@@ -7,8 +7,8 @@ package com.jun0rr.jbom.codec;
 import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
-import java.nio.ByteBuffer;
 import java.time.LocalDate;
 
 /**
@@ -23,7 +23,7 @@ public class LocalDateCodec implements BinCodec<LocalDate> {
   }
 
   @Override
-  public LocalDate read(ByteBuffer buf) {
+  public LocalDate read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -35,7 +35,7 @@ public class LocalDateCodec implements BinCodec<LocalDate> {
   }
   
   @Override
-  public void write(ByteBuffer buf, LocalDate val) {
+  public void write(BinBuffer buf, LocalDate val) {
     buf.putLong(bintype().id());
     buf.putShort((short)val.getYear())
         .put((byte)val.getMonthValue())

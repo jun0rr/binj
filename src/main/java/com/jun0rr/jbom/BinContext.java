@@ -4,6 +4,7 @@
  */
 package com.jun0rr.jbom;
 
+import com.jun0rr.jbom.buffer.BinBuffer;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -25,9 +26,17 @@ public interface BinContext {
   
   public Map<BinType,BinCodec> codecs();
   
-  public <T> T read(ByteBuffer buf) throws UnknownBinTypeException;
+  public <T> T read(BinBuffer buf) throws UnknownBinTypeException;
   
-  public <T> void write(ByteBuffer buf, T o) throws BinTypeNotFoundException;
+  public <T> void write(BinBuffer buf, T o) throws BinTypeNotFoundException;
+  
+  public default <T> T read(ByteBuffer buf) {
+    return read(BinBuffer.of(buf));
+  }
+  
+  public default <T> void write(ByteBuffer buf, T val) {
+    write(BinBuffer.of(buf), val);
+  }
   
   public int calcSize(Object o) throws BinTypeNotFoundException;
   

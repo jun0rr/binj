@@ -5,6 +5,7 @@
 package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.codec.IndexedKey;
 import com.jun0rr.jbom.codec.BooleanCodec;
 import com.jun0rr.jbom.codec.ByteCodec;
@@ -184,15 +185,12 @@ public class TestBinCodecs {
   
   @Test
   public void collectionCodec() {
-    System.out.println("--------- collectionCodec() ---------");
     Collection<String> cs = new ArrayList<>();
     char c = 0x41;
     for(int i = 0; i < 31; i++) {
       cs.add(Character.toString(c++));
     }
-    System.out.println(cs);
     BinContext ctx = new DefaultBinContext();
-    System.out.println(ctx.calcSize(cs));
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(cs));
     ctx.write(buf, cs);
     buf.flip();
@@ -201,39 +199,27 @@ public class TestBinCodecs {
   
   @Test
   public void arrayCodec() {
-    System.out.println("--------- arrayCodec() ---------");
-    try {
-      String[] cs = new String[31];
-      char c = 0x41;
-      for(int i = 0; i < 31; i++) {
-        cs[i] = Character.toString(c++);
-      }
-      System.out.println(Arrays.toString(cs));
-      BinContext ctx = new DefaultBinContext();
-      System.out.println(ctx.calcSize(cs));
-      ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(cs));
-      ctx.write(buf, cs);
-      buf.flip();
-      String[] ds = ctx.read(buf);
-      Assertions.assertTrue(Arrays.equals(cs, ds));
+    String[] cs = new String[31];
+    char c = 0x41;
+    for(int i = 0; i < 31; i++) {
+      cs[i] = Character.toString(c++);
     }
-    catch(Exception e) {
-      e.printStackTrace();
-      throw e;
-    }
+    BinContext ctx = new DefaultBinContext();
+    BinBuffer buf = BinBuffer.ofHeapAllocator(ctx.calcSize(cs));
+    ctx.write(buf, cs);
+    buf.flip();
+    String[] ds = ctx.read(buf);
+    Assertions.assertTrue(Arrays.equals(cs, ds));
   }
   
   @Test
   public void mapCodec() {
-    System.out.println("--------- mapCodec() ---------");
     Map<Integer,String> map = new HashMap<>();
     char c = 0x41;
     for(int i = 0; i < 31; i++) {
       map.put((int)c, Character.toString(c++));
     }
-    System.out.println(map);
     BinContext ctx = new DefaultBinContext();
-    System.out.println(ctx.calcSize(map));
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(map));
     ctx.write(buf, map);
     buf.flip();
@@ -242,26 +228,16 @@ public class TestBinCodecs {
   
   @Test
   public void binMap() {
-    System.out.println("--------- binMap() ---------");
-    try {
     Map<Integer,String> map = new HashMap<>();
     char c = 0x41;
     for(int i = 0; i < 31; i++) {
       map.put((int)c, Character.toString(c++));
     }
-    System.out.println(map);
     BinContext ctx = new DefaultBinContext();
-    System.out.println(ctx.calcSize(map));
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(map));
     ctx.write(buf, map);
     buf.flip();
     BinMap<Integer,String> bm = new BinMap(ctx, buf);
-    System.out.println("bm: " + bm);
-      System.out.println("bm.printContent(): " + bm.printContent());
-    }
-    catch(Exception e) {
-      e.printStackTrace();
-    }
   }
   
 }

@@ -8,8 +8,8 @@ import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
-import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -34,7 +34,7 @@ public class CollectionCodec implements BinCodec<Collection> {
   }
 
   @Override
-  public Collection read(ByteBuffer buf) {
+  public Collection read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -49,7 +49,7 @@ public class CollectionCodec implements BinCodec<Collection> {
   }
   
   @Override
-  public void write(ByteBuffer buf, Collection val) {
+  public void write(BinBuffer buf, Collection val) {
     buf.putLong(bintype().id());
     buf.putShort((short)val.size());
     int kpos = buf.position();

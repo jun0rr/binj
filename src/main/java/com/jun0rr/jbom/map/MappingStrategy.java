@@ -2,21 +2,19 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package com.jun0rr.jbom;
+package com.jun0rr.jbom.map;
 
-import java.io.Closeable;
-import java.nio.ByteBuffer;
+import java.util.List;
+import java.util.function.Function;
 
 /**
  *
  * @author F6036477
  */
-public interface BufferAllocator extends Closeable {
+public interface MappingStrategy {
   
-  public int bufferSize();
+  public List<Function> supply(Object o);
   
-  public ByteBuffer alloc();
-  
-  public ByteBuffer alloc(int size);
+  public List<Function> consume(Object o);
   
 }

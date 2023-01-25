@@ -2,10 +2,8 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package com.jun0rr.jbom.impl;
+package com.jun0rr.jbom.buffer;
 
-import com.jun0rr.jbom.BinBuffer;
-import com.jun0rr.jbom.BufferAllocator;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
@@ -72,17 +70,20 @@ public class DefaultBinBuffer implements BinBuffer {
   @Override
   public BinBuffer flip() {
     buffers.forEach(ByteBuffer::flip);
-    System.out.println("* flip: " + toString());
     return this;
   }
   
   protected void allocate() {
     buffers.add(malloc.alloc());
-    System.out.println("* allocate: " + toString());
   }
   
   protected int _index() {
-    return position() / malloc.bufferSize();
+    for(int i = 0; i < buffers.size(); i++) {
+      if(buffers.get(i).hasRemaining()) {
+        return i;
+      }
+    }
+    return buffers.size() -1;
   }
   
   @Override
@@ -237,8 +238,14 @@ public class DefaultBinBuffer implements BinBuffer {
     return this;
   }
   
+  @Override
   public BinBuffer get(BinBuffer buf) {
-    ((DefaultBinBuffer)buf).buffers.forEach(this::get);
+    if(!hasRemaining()) {
+      throw new BufferUnderflowException();
+    }
+    buffers.stream()
+        .filter(ByteBuffer::hasRemaining)
+        .forEach(buf::put);
     return this;
   }
   
@@ -259,13 +266,12 @@ public class DefaultBinBuffer implements BinBuffer {
     }
     int i = 0;
     int _lim = lim;
-    while(_lim > 0) {
+    while(_lim > 0 && i < buffers.size()) {
       ByteBuffer b = buffers.get(i++);
       int l = Math.min(b.capacity(), _lim);
       b.limit(l);
       _lim -= l;
     }
-    System.out.println("* setLimit: " + this);
     return this;
   }
 
@@ -287,13 +293,12 @@ public class DefaultBinBuffer implements BinBuffer {
     }
     int i = 0;
     int _pos = pos;
-    while(_pos > 0) {
+    while(_pos >= 0 && i < buffers.size()) {
       ByteBuffer b = buffers.get(i++);
       int l = Math.min(b.limit(), _pos);
       b.position(l);
       _pos -= l;
     }
-    System.out.println("* setPosition: " + this);
     return this;
   }
   
@@ -474,7 +479,7 @@ public class DefaultBinBuffer implements BinBuffer {
 
   @Override
   public BinBuffer put(BinBuffer buf) {
-    ((DefaultBinBuffer)buf).buffers.forEach(this::put);
+    buf.get(this);
     return this;
   }
   
@@ -498,36 +503,16 @@ public class DefaultBinBuffer implements BinBuffer {
 
   @Override
   public BinBuffer slice() {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    return new DefaultBinBuffer(malloc, buffers.stream()
+        .filter(ByteBuffer::hasRemaining)
+        .map(ByteBuffer::slice)
+        .collect(Collectors.toList())
+    );
   }
 
   @Override
   public String toString() {
     return "DefaultBinBuffer{" + "pos=" + position() + ", lim=" + limit() + ", buffers=" + buffers + '}';
-  }
-  
-  
-  
-  public static BinBuffer wrap(byte[] bs) {
-    return new DefaultBinBuffer(
-        DefaultBufferAllocator.heapAllocator(bs.length), 
-        List.of(ByteBuffer.wrap(bs))
-    );
-  }
-  
-  public static BinBuffer wrap(byte[] bs, int offset, int length) {
-    return new DefaultBinBuffer(
-        DefaultBufferAllocator.heapAllocator(bs.length), 
-        List.of(ByteBuffer.wrap(bs, offset, length))
-    );
-  }
-  
-  public static BinBuffer wrap(ByteBuffer buf) {
-    return new DefaultBinBuffer(buf.isDirect() 
-        ? DefaultBufferAllocator.directAllocator(buf.capacity()) 
-        : DefaultBufferAllocator.heapAllocator(buf.capacity()), 
-        List.of(buf)
-    );
   }
   
 }

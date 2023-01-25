@@ -9,6 +9,7 @@ import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.BinTypeNotFoundException;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.codec.ArrayCodec;
 import com.jun0rr.jbom.codec.BooleanCodec;
 import com.jun0rr.jbom.codec.ByteCodec;
@@ -27,7 +28,6 @@ import com.jun0rr.jbom.codec.ObjectCodec;
 import com.jun0rr.jbom.codec.ShortCodec;
 import com.jun0rr.jbom.codec.Utf8Codec;
 import com.jun0rr.jbom.codec.ZonedDateTimeCodec;
-import java.nio.ByteBuffer;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -84,7 +84,6 @@ public class DefaultBinContext implements BinContext {
     if(opt.isEmpty()) {
       BinType<T> type = new DefaultBinType(cls);
       BinCodec<T> codec = cls.isArray() ? new ArrayCodec(this, type) : new ObjectCodec<>(this, type);
-      System.out.printf("* DefaultBinContext.getBinCodec( %s ): type=%s, codec=%s%n", cls, type, codec);
       codecs.put(type, codec);
       opt = Optional.of(codec);
     }
@@ -124,7 +123,7 @@ public class DefaultBinContext implements BinContext {
   }
 
   @Override
-  public <T> T read(ByteBuffer buf) throws UnknownBinTypeException {
+  public <T> T read(BinBuffer buf) throws UnknownBinTypeException {
     int pos = buf.position();
     long id = buf.getLong();
     buf.position(pos);
@@ -133,7 +132,7 @@ public class DefaultBinContext implements BinContext {
   }
 
   @Override
-  public <T> void write(ByteBuffer buf, T o) throws BinTypeNotFoundException {
+  public <T> void write(BinBuffer buf, T o) throws BinTypeNotFoundException {
     BinCodec c = getBinCodec(o.getClass());
     c.write(buf, o);
   }

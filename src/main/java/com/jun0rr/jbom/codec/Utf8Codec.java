@@ -7,6 +7,7 @@ package com.jun0rr.jbom.codec;
 import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -23,7 +24,7 @@ public class Utf8Codec implements BinCodec<String> {
   }
 
   @Override
-  public String read(ByteBuffer buf) {
+  public String read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -31,8 +32,9 @@ public class Utf8Codec implements BinCodec<String> {
     int lim = buf.limit();
     try {
       int len = buf.getShort();
-      buf.limit(buf.position() + len);
-      return StandardCharsets.UTF_8.decode(buf).toString();
+      ByteBuffer bf = ByteBuffer.allocate(len);
+      buf.get(bf);
+      return StandardCharsets.UTF_8.decode(bf.flip()).toString();
     }
     finally {
       buf.limit(lim);
@@ -40,7 +42,7 @@ public class Utf8Codec implements BinCodec<String> {
   }
   
   @Override
-  public void write(ByteBuffer buf, String val) {
+  public void write(BinBuffer buf, String val) {
     buf.putLong(bintype().id());
     buf.putShort((short)val.length());
     buf.put(StandardCharsets.UTF_8.encode(val));

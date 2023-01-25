@@ -7,8 +7,8 @@ package com.jun0rr.jbom.codec;
 import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
-import java.nio.ByteBuffer;
 
 /**
  *
@@ -22,7 +22,7 @@ public class LongCodec implements BinCodec<Long> {
   }
 
   @Override
-  public Long read(ByteBuffer buf) {
+  public Long read(BinBuffer buf) {
     long id = buf.getLong();
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
@@ -31,7 +31,7 @@ public class LongCodec implements BinCodec<Long> {
   }
   
   @Override
-  public void write(ByteBuffer buf, Long val) {
+  public void write(BinBuffer buf, Long val) {
     buf.putLong(bintype().id());
     buf.putLong(val);
   }

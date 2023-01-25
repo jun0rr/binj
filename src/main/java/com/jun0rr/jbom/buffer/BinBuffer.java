@@ -2,12 +2,15 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Interface.java to edit this template
  */
-package com.jun0rr.jbom;
+package com.jun0rr.jbom.buffer;
 
 import java.io.Closeable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.function.Supplier;
 
 /**
  *
@@ -103,5 +106,53 @@ public interface BinBuffer extends Closeable {
   public BinBuffer rewind();
   
   public BinBuffer slice();
+  
+  
+  
+  public static BinBuffer of(byte[] bs) {
+    return new DefaultBinBuffer(
+        BufferAllocator.heapAllocator(bs.length), 
+        List.of(ByteBuffer.wrap(bs))
+    );
+  }
+  
+  public static BinBuffer of(byte[] bs, int offset, int length) {
+    return new DefaultBinBuffer(
+        BufferAllocator.heapAllocator(bs.length), 
+        List.of(ByteBuffer.wrap(bs, offset, length))
+    );
+  }
+  
+  public static BinBuffer of(ByteBuffer buf) {
+    return new DefaultBinBuffer(buf.isDirect() 
+        ? BufferAllocator.directAllocator(buf.capacity()) 
+        : BufferAllocator.heapAllocator(buf.capacity()), 
+        List.of(buf)
+    );
+  }
+  
+  public static BinBuffer of(BufferAllocator alloc) {
+    return new DefaultBinBuffer(alloc);
+  }
+  
+  public static BinBuffer ofHeapAllocator(int bufsize) {
+    return new DefaultBinBuffer(BufferAllocator.heapAllocator(bufsize));
+  }
+  
+  public static BinBuffer ofDirectAllocator(int bufsize) {
+    return new DefaultBinBuffer(BufferAllocator.directAllocator(bufsize));
+  }
+  
+  public static BinBuffer ofMappedFileAllocator(Path root, int bufsize) {
+    return new DefaultBinBuffer(BufferAllocator.mappedFileAllocator(root, bufsize));
+  }
+  
+  public static BinBuffer ofMappedFileAllocator(Path root, int bufsize, boolean overwrite) {
+    return new DefaultBinBuffer(BufferAllocator.mappedFileAllocator(root, bufsize, overwrite));
+  }
+  
+  public static BinBuffer ofMappedFileAllocator(Path root, Supplier<String> filename, int bufsize, boolean overwrite) {
+    return new DefaultBinBuffer(BufferAllocator.mappedFileAllocator(root, filename, bufsize, overwrite));
+  }
   
 }
