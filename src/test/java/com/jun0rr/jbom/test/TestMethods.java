@@ -32,18 +32,26 @@ public class TestMethods {
   @Test
   public void test() throws IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, Throwable {
     A a = new A();
-    Method meth = List.of(A.class.getDeclaredMethods()).stream()
+    Method get = List.of(A.class.getDeclaredMethods()).stream()
         .filter(m->m.getName().startsWith("get"))
         .filter(m->m.getReturnType() != void.class)
         .filter(m->m.getParameterCount() == 0)
         .findAny().get();
-    MethodType type = MethodType.methodType(meth.getReturnType());
+    Method set = List.of(A.class.getDeclaredMethods()).stream()
+        .filter(m->m.getName().startsWith("get"))
+        .filter(m->m.getReturnType() != void.class)
+        .filter(m->m.getParameterCount() == 1)
+        .findAny().get();
+    System.out.println("get: " + get);
+    System.out.println("set: " + set);
+    MethodType getType = MethodType.methodType(get.getReturnType());
+    MethodType setType = MethodType.methodType(set.getReturnType(), set.getParameterTypes());
     Lookup lo = MethodHandles.publicLookup();
-    System.out.println(type);
-    System.out.println(lo);
-    MethodHandle handle = lo.findVirtual(meth.getDeclaringClass(), meth.getName(), type);
-    System.out.println(meth + ".invoke: " + handle.invoke(a));
-    handle.invokeExact(a);
+    MethodHandle getHandle = lo.findVirtual(get.getDeclaringClass(), get.getName(), getType);
+    MethodHandle setHandle = lo.findVirtual(set.getDeclaringClass(), set.getName(), setType);
+    System.out.println("invoke: " + (int)setHandle.invokeExact(a, (int)getHandle.invokeExact(a)));
+    //int i = (int)handle.invokeExact(a);
+    //System.out.println(meth + ".invoke: " + (String)handle.invokeExact(a));
   }
   
 }
