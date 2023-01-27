@@ -4,7 +4,6 @@
  */
 package com.jun0rr.jbom.mapping;
 
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,14 +11,13 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class FieldInjectStrategy implements InjectStrategy {
+public class NoArgsConstructStrategy implements ConstructStrategy {
 
   @Override
-  public List<InjectFunction> injectors(Class cls) {
-    return List.of(cls.getDeclaredFields()).stream()
-        .filter(f->!Modifier.isFinal(f.getModifiers()))
-        .filter(f->!Modifier.isTransient(f.getModifiers()))
-        .map(DefaultInjectFunction::of)
+  public List<ConstructFunction> constructors(Class cls) {
+    return List.of(cls.getDeclaredConstructors()).stream()
+        .filter(c->c.getParameterCount() == 0)
+        .map(DefaultConstructFunction::of)
         .collect(Collectors.toList());
   }
   

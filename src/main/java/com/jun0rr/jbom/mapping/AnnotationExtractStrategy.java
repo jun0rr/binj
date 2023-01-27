@@ -18,11 +18,13 @@ public class AnnotationExtractStrategy implements ExtractStrategy {
   public List<ExtractFunction> extractors(Class cls) {
     return Stream.concat(
         List.of(cls.getDeclaredFields()).stream()
-            .filter(f->f.isAnnotationPresent(MapValue.class))
-            .map(ExtractFunction::of),
+            .filter(f->f.isAnnotationPresent(Binary.class))
+            .map(DefaultExtractFunction::of),
         List.of(cls.getDeclaredMethods()).stream()
-            .filter(m->m.isAnnotationPresent(MapValue.class))
-            .map(ExtractFunction::of)
+            .filter(m->m.isAnnotationPresent(Binary.class))
+            .filter(m->m.getParameterCount() == 0)
+            .filter(m->m.getReturnType() != void.class)
+            .map(DefaultExtractFunction::of)
     ).collect(Collectors.toList());
   }
   

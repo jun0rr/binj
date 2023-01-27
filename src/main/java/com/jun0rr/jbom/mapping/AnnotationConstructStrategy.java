@@ -11,14 +11,13 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class SetterInjectStrategy implements InjectStrategy {
+public class AnnotationConstructStrategy implements ConstructStrategy {
 
   @Override
-  public List<InjectFunction> injectors(Class cls) {
-    return List.of(cls.getDeclaredMethods()).stream()
-        .filter(m->m.getName().startsWith("set"))
-        .filter(m->m.getParameterCount() == 1)
-        .map(InjectFunction::of)
+  public List<ConstructFunction> constructors(Class cls) {
+    return List.of(cls.getDeclaredConstructors()).stream()
+        .filter(c->c.isAnnotationPresent(MapConstructor.class) || c.getParameterCount() == 0)
+        .map(DefaultConstructFunction::of)
         .collect(Collectors.toList());
   }
   

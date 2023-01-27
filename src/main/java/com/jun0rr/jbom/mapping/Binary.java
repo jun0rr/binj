@@ -4,6 +4,7 @@
  */
 package com.jun0rr.jbom.mapping;
 
+import com.jun0rr.jbom.BinCodec;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -13,8 +14,8 @@ import java.lang.annotation.Target;
  *
  * @author F6036477
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.FIELD,ElementType.METHOD})
-public @interface MapValue {
+public @interface Binary {
   
 }

@@ -4,7 +4,6 @@
  */
 package com.jun0rr.jbom.mapping;
 
-import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -12,13 +11,13 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class FieldInjectStrategy implements InjectStrategy {
+public class SetterStrategy implements InjectStrategy {
 
   @Override
   public List<InjectFunction> injectors(Class cls) {
-    return List.of(cls.getDeclaredFields()).stream()
-        .filter(f->!Modifier.isFinal(f.getModifiers()))
-        .filter(f->!Modifier.isTransient(f.getModifiers()))
+    return List.of(cls.getDeclaredMethods()).stream()
+        .filter(m->m.getName().startsWith("set"))
+        .filter(m->m.getParameterCount() == 1)
         .map(DefaultInjectFunction::of)
         .collect(Collectors.toList());
   }

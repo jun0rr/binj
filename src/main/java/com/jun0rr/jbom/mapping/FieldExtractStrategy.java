@@ -18,7 +18,7 @@ public class FieldExtractStrategy implements ExtractStrategy {
   public List<ExtractFunction> extractors(Class cls) {
     return List.of(cls.getDeclaredFields()).stream()
         .filter(f->!Modifier.isTransient(f.getModifiers()))
-        .map(ExtractFunction::of)
+        .map(DefaultExtractFunction::of)
         .collect(Collectors.toList());
   }
   

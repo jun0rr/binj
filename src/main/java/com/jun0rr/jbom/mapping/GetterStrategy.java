@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class GetterExtractStrategy implements ExtractStrategy {
+public class GetterStrategy implements ExtractStrategy {
 
   @Override
   public List<ExtractFunction> extractors(Class cls) {
@@ -19,7 +19,7 @@ public class GetterExtractStrategy implements ExtractStrategy {
         .filter(m->m.getName().startsWith("get"))
         .filter(m->m.getParameterCount() == 0)
         .filter(m->m.getReturnType() != void.class)
-        .map(ExtractFunction::of)
+        .map(DefaultExtractFunction::of)
         .collect(Collectors.toList());
   }
   

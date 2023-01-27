@@ -28,6 +28,7 @@ import com.jun0rr.jbom.codec.ObjectCodec;
 import com.jun0rr.jbom.codec.ShortCodec;
 import com.jun0rr.jbom.codec.Utf8Codec;
 import com.jun0rr.jbom.codec.ZonedDateTimeCodec;
+import com.jun0rr.jbom.mapping.ObjectMapper;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -39,9 +40,12 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class DefaultBinContext implements BinContext {
   
+  private final ObjectMapper mapper;
+  
   private final Map<BinType, BinCodec> codecs;
   
-  public DefaultBinContext() {
+  public DefaultBinContext(ObjectMapper mapper) {
+    this.mapper = Objects.requireNonNull(mapper);
     this.codecs = new ConcurrentHashMap<>();
     codecs.put(DefaultBinType.BOOLEAN, new BooleanCodec());
     codecs.put(DefaultBinType.BYTE, new ByteCodec());
@@ -59,10 +63,10 @@ public class DefaultBinContext implements BinContext {
     codecs.put(DefaultBinType.IDXKEY, new IndexedKeyCodec(this));
     codecs.put(DefaultBinType.COLLECTION, new CollectionCodec(this));
     codecs.put(DefaultBinType.MAP, new MapCodec(this));
-    
   }
   
-  public DefaultBinContext(Map<BinType, BinCodec> codecs) {
+  public DefaultBinContext(ObjectMapper mapper, Map<BinType, BinCodec> codecs) {
+    this.mapper = Objects.requireNonNull(mapper);
     this.codecs = Objects.requireNonNull(codecs);
   }
   
@@ -83,7 +87,7 @@ public class DefaultBinContext implements BinContext {
         .findFirst();
     if(opt.isEmpty()) {
       BinType<T> type = new DefaultBinType(cls);
-      BinCodec<T> codec = cls.isArray() ? new ArrayCodec(this, type) : new ObjectCodec<>(this, type);
+      BinCodec<T> codec = cls.isArray() ? new ArrayCodec(this, type) : new ObjectCodec(this, type);
       codecs.put(type, codec);
       opt = Optional.of(codec);
     }

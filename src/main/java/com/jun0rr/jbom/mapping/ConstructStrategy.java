@@ -4,14 +4,14 @@
  */
 package com.jun0rr.jbom.mapping;
 
+import java.util.List;
+
 /**
  *
  * @author F6036477
  */
-public interface InjectFunction {
+public interface ConstructStrategy {
   
-  public String name();
-  
-  public void inject(Object obj, Object val);
+  public List<ConstructFunction> constructors(Class cls);
   
 }

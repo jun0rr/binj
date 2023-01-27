@@ -20,11 +20,12 @@ public class AnnotationInjectStrategy implements InjectStrategy {
     return Stream.concat(
         List.of(cls.getDeclaredFields()).stream()
             .filter(f->!Modifier.isFinal(f.getModifiers()))
-            .filter(f->f.isAnnotationPresent(MapValue.class))
-            .map(InjectFunction::of),
+            .filter(f->f.isAnnotationPresent(Binary.class))
+            .map(DefaultInjectFunction::of),
         List.of(cls.getDeclaredMethods()).stream()
-            .filter(m->m.isAnnotationPresent(MapValue.class))
-            .map(InjectFunction::of)
+            .filter(m->m.isAnnotationPresent(Binary.class))
+            .filter(m->m.getParameterCount() == 1)
+            .map(DefaultInjectFunction::of)
     ).collect(Collectors.toList());
   }
   

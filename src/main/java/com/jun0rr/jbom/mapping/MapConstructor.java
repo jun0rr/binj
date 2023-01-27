@@ -13,10 +13,10 @@ import java.lang.annotation.Target;
  *
  * @author F6036477
  */
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.CONSTRUCTOR)
 public @interface MapConstructor {
   
-  public String[] value();
+  public String[] value() default {};
   
 }

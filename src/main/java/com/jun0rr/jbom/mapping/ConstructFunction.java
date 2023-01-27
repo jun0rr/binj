@@ -4,14 +4,18 @@
  */
 package com.jun0rr.jbom.mapping;
 
+import java.util.Map;
+
 /**
  *
  * @author F6036477
  */
-public interface InjectFunction {
+public interface ConstructFunction {
   
-  public String name();
+  public String[] arguments();
   
-  public void inject(Object obj, Object val);
+  public <T> T create(Map<String,Object> map);
+  
+  public <T> T create();
   
 }
