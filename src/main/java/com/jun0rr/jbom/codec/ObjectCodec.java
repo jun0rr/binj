@@ -8,7 +8,6 @@ import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.buffer.BinBuffer;
-import com.jun0rr.jbom.impl.DefaultBinType;
 import com.jun0rr.jbom.mapping.ObjectMapper;
 import java.util.Map;
 import java.util.Objects;
@@ -38,20 +37,27 @@ public class ObjectCodec<T> implements BinCodec<T> {
 
   @Override
   public T read(BinBuffer buf) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    long id = buf.getLong();
+    BinType type = ctx.getBinType(id);
+    Map<String,Object> map = ctx.read(buf);
+    map.put(ObjectMapper.KEY_CLASS, type.type());
+    return (T) mapper.unmap(map);
   }
 
   @Override
   public void write(BinBuffer buf, T val) {
     Map<String,Object> map = mapper.map(val);
-    Class<T> cls = (Class) map.get(ObjectMapper.KEY_CLASS);
-    ctx.codecs().put(new DefaultBinType(cls), this);
-    
+    Class<T> cls = (Class) map.remove(ObjectMapper.KEY_CLASS);
+    BinType type = ctx.putIfAbsent(cls, this);
+    buf.putLong(type.id());
+    ctx.write(buf, map);
   }
 
   @Override
   public int calcSize(T val) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    Map<String,Object> map = mapper.map(val);
+    map.remove(ObjectMapper.KEY_CLASS);
+    return Long.BYTES + ctx.calcSize(map);
   }
   
 }

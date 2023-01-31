@@ -38,6 +38,8 @@ public class DefaultBinType<T> implements BinType<T> {
   
   public static final BinType<String> UTF8 = new DefaultBinType(String.class);
   
+  public static final BinType<Class> CLASS = new DefaultBinType(Class.class);
+  
   public static final BinType<LocalDate> DATE = new DefaultBinType(LocalDate.class);
   
   public static final BinType<LocalDateTime> DATE_TIME = new DefaultBinType(LocalDateTime.class);

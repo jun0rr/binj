@@ -22,6 +22,7 @@ import com.jun0rr.jbom.codec.Utf8Codec;
 import com.jun0rr.jbom.codec.ZonedDateTimeCodec;
 import com.jun0rr.jbom.impl.DefaultBinContext;
 import com.jun0rr.jbom.impl.DefaultIndexedKey;
+import com.jun0rr.jbom.mapping.ObjectMapper;
 import com.jun0rr.jbom.type.BinMap;
 import java.nio.ByteBuffer;
 import java.time.Instant;
@@ -176,7 +177,7 @@ public class TestBinCodecs {
   @Test
   public void indexedKeyCodec() {
     IndexedKey<String> i = new DefaultIndexedKey<>(1, "Hello World 123456789ABC!!!");
-    BinContext ctx = new DefaultBinContext();
+    BinContext ctx = new DefaultBinContext(new ObjectMapper());
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(i));
     ctx.write(buf, i);
     buf.flip();
@@ -190,7 +191,7 @@ public class TestBinCodecs {
     for(int i = 0; i < 31; i++) {
       cs.add(Character.toString(c++));
     }
-    BinContext ctx = new DefaultBinContext();
+    BinContext ctx = new DefaultBinContext(new ObjectMapper());
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(cs));
     ctx.write(buf, cs);
     buf.flip();
@@ -204,7 +205,7 @@ public class TestBinCodecs {
     for(int i = 0; i < 31; i++) {
       cs[i] = Character.toString(c++);
     }
-    BinContext ctx = new DefaultBinContext();
+    BinContext ctx = new DefaultBinContext(new ObjectMapper());
     BinBuffer buf = BinBuffer.ofHeapAllocator(ctx.calcSize(cs));
     ctx.write(buf, cs);
     buf.flip();
@@ -219,7 +220,7 @@ public class TestBinCodecs {
     for(int i = 0; i < 31; i++) {
       map.put((int)c, Character.toString(c++));
     }
-    BinContext ctx = new DefaultBinContext();
+    BinContext ctx = new DefaultBinContext(new ObjectMapper());
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(map));
     ctx.write(buf, map);
     buf.flip();
@@ -233,7 +234,7 @@ public class TestBinCodecs {
     for(int i = 0; i < 31; i++) {
       map.put((int)c, Character.toString(c++));
     }
-    BinContext ctx = new DefaultBinContext();
+    BinContext ctx = new DefaultBinContext(new ObjectMapper());
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(map));
     ctx.write(buf, map);
     buf.flip();

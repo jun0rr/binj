@@ -24,6 +24,10 @@ public interface BinContext {
   
   public <T> BinType<T> getBinType(long id) throws UnknownBinTypeException;
   
+  public BinType putIfAbsent(BinType t, BinCodec c);
+  
+  public BinType putIfAbsent(Class c, BinCodec d);
+  
   public Map<BinType,BinCodec> codecs();
   
   public <T> T read(BinBuffer buf) throws UnknownBinTypeException;

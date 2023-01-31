@@ -18,6 +18,8 @@ import java.util.function.Supplier;
  */
 public interface BinBuffer extends Closeable {
   
+  public BufferAllocator allocator();
+  
   public int capacity();
   
   public BinBuffer clear();

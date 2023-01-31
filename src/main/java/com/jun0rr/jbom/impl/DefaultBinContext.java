@@ -14,6 +14,7 @@ import com.jun0rr.jbom.codec.ArrayCodec;
 import com.jun0rr.jbom.codec.BooleanCodec;
 import com.jun0rr.jbom.codec.ByteCodec;
 import com.jun0rr.jbom.codec.CharCodec;
+import com.jun0rr.jbom.codec.ClassCodec;
 import com.jun0rr.jbom.codec.CollectionCodec;
 import com.jun0rr.jbom.codec.DoubleCodec;
 import com.jun0rr.jbom.codec.FloatCodec;
@@ -56,6 +57,7 @@ public class DefaultBinContext implements BinContext {
     codecs.put(DefaultBinType.FLOAT, new FloatCodec());
     codecs.put(DefaultBinType.DOUBLE, new DoubleCodec());
     codecs.put(DefaultBinType.UTF8, new Utf8Codec());
+    codecs.put(DefaultBinType.CLASS, new ClassCodec());
     codecs.put(DefaultBinType.DATE, new LocalDateCodec());
     codecs.put(DefaultBinType.DATE_TIME, new LocalDateTimeCodec());
     codecs.put(DefaultBinType.INSTANT, new InstantCodec());
@@ -87,7 +89,7 @@ public class DefaultBinContext implements BinContext {
         .findFirst();
     if(opt.isEmpty()) {
       BinType<T> type = new DefaultBinType(cls);
-      BinCodec<T> codec = cls.isArray() ? new ArrayCodec(this, type) : new ObjectCodec(this, type);
+      BinCodec<T> codec = cls.isArray() ? new ArrayCodec(this, type) : new ObjectCodec(this, mapper, type);
       codecs.put(type, codec);
       opt = Optional.of(codec);
     }
@@ -119,6 +121,30 @@ public class DefaultBinContext implements BinContext {
         .map(Map.Entry::getKey)
         .findFirst()
         .orElseThrow(()->new UnknownBinTypeException(id));
+  }
+  
+  @Override
+  public BinType putIfAbsent(BinType t, BinCodec c) {
+    Optional<BinType> opt = codecs.keySet().stream()
+        .filter(k->k.isTypeOf(t.type()))
+        .findAny();
+    if(opt.isEmpty()) {
+      codecs.put(t, c);
+    }
+    return opt.orElse(t);
+  }
+
+  @Override
+  public BinType putIfAbsent(Class c, BinCodec d) {
+    Optional<BinType> opt = codecs.keySet().stream()
+        .filter(k->k.isTypeOf(c))
+        .findAny();
+    if(opt.isEmpty()) {
+      BinType t = new DefaultBinType(c);
+      codecs.put(t, d);
+      return t;
+    }
+    return opt.get();
   }
 
   @Override

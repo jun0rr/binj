@@ -6,6 +6,7 @@ package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.impl.DefaultBinContext;
+import com.jun0rr.jbom.mapping.ObjectMapper;
 import com.jun0rr.jbom.type.BinList;
 import java.nio.ByteBuffer;
 import java.util.Iterator;
@@ -30,7 +31,7 @@ public class TestBinList {
   
   public static BinList<Integer> createBinList() {
     try {
-      BinContext ctx = new DefaultBinContext();
+      BinContext ctx = new DefaultBinContext(new ObjectMapper());
       ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(values));
       ctx.write(buf, values);
       buf.flip();

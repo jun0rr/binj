@@ -6,8 +6,10 @@ package com.jun0rr.jbom.type;
 
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.codec.IndexedKey;
 import com.jun0rr.jbom.impl.DefaultBinType;
+import com.jun0rr.jbom.impl.DefaultIndexedKey;
 import com.jun0rr.jbom.impl.Pair;
 import com.jun0rr.jbom.impl.SupplierIterator;
 import java.nio.ByteBuffer;
@@ -18,7 +20,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -29,15 +33,19 @@ public class BinMap<K,V> implements Map<K,V> {
   
   private final BinContext ctx;
   
-  private final ByteBuffer buf;
+  private final BinBuffer buf;
   
   private final int size;
   
   private final int kpos;
   
   public BinMap(BinContext ctx, ByteBuffer buf) {
+    this(ctx, BinBuffer.of(buf));
+  }
+  
+  public BinMap(BinContext ctx, BinBuffer bb) {
     this.ctx = Objects.requireNonNull(ctx);
-    this.buf = Objects.requireNonNull(buf).slice();
+    this.buf = Objects.requireNonNull(bb).slice();
     long id = buf.getLong();
     if(id != DefaultBinType.MAP.id()) {
       throw new UnknownBinTypeException(id);
@@ -117,6 +125,34 @@ public class BinMap<K,V> implements Map<K,V> {
   public void clear() {
     throw new UnsupportedOperationException("Read-Only binary Map");
   }
+  
+  public static <X,Y> BinMap<X,Y> put(BinMap<X,Y> map, X key, Y val) {
+    BinBuffer buf = BinBuffer.of(map.buf.allocator());
+    buf.putLong(DefaultBinType.MAP.id());
+    buf.putShort((short)(map.size + 1));
+    int bpos = buf.position();
+    map.buf.position(bpos);
+    IndexedKey ik = new DefaultIndexedKey(key);
+    List<Pair<IndexedKey,Object>> pairs = new ArrayList<>(map.size + 1);
+    for(int i = 0; i < map.size; i++) {
+      IndexedKey k = map.ctx.read(map.buf);
+      int pos = map.buf.position();
+      map.buf.position(k.index());
+      pairs.add(Pair.of(k, map.ctx.read(map.buf)));
+      map.buf.position(pos);
+    }
+    pairs.add(Pair.of(ik, val));
+    AtomicInteger vpos = new AtomicInteger(bpos + pairs.stream()
+        .map(Pair::key)
+        .mapToInt(map.ctx::calcSize).sum()
+    );
+    pairs = pairs.stream().map(p->Pair.of(p.key().with(
+        vpos.getAndUpdate(i->i + map.ctx.calcSize(p.value()))), p.value())
+    ).collect(Collectors.toList());
+    pairs.stream().map(Pair::key).forEach(i->map.ctx.write(buf, i));
+    pairs.stream().map(Pair::value).forEach(i->map.ctx.write(buf, i));
+    return new BinMap(map.ctx, buf.flip());
+  }
 
   @Override
   public Set<K> keySet() {
@@ -156,19 +192,19 @@ public class BinMap<K,V> implements Map<K,V> {
   }
   
   public Stream<K> streamKeys() {
-    ByteBuffer bb = buf.position(kpos).slice();
+    BinBuffer bb = buf.position(kpos).slice();
     return new SupplierIterator(size, ()->ctx.<IndexedKey>read(bb).key()).stream();
   }
   
   public Stream<V> streamValues() {
     buf.position(kpos);
     IndexedKey key = ctx.read(buf);
-    ByteBuffer bb = buf.position(key.index()).slice();
+    BinBuffer bb = buf.position(key.index()).slice();
     return new SupplierIterator(size, ()->ctx.read(bb)).stream();
   }
   
   public Stream<Pair<K,V>> streamEntries() {
-    ByteBuffer bb = buf.position(0).slice().position(kpos);
+    BinBuffer bb = buf.position(0).slice().position(kpos);
     Supplier<Pair<K,V>> sup = ()->{
       IndexedKey k = ctx.read(bb);
       int pos = bb.position();

@@ -7,6 +7,7 @@ package com.jun0rr.jbom.test;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.impl.DefaultBinContext;
 import com.jun0rr.jbom.impl.Pair;
+import com.jun0rr.jbom.mapping.ObjectMapper;
 import com.jun0rr.jbom.type.BinMap;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class TestBinMap {
     for(int i = 0; i < length; i++) {
       map.put((int)c, Character.toString(c++));
     }
-    BinContext ctx = new DefaultBinContext();
+    BinContext ctx = new DefaultBinContext(new ObjectMapper());
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(map));
     ctx.write(buf, map);
     buf.flip();
@@ -83,6 +84,17 @@ public class TestBinMap {
     }
   }
   
+  @Test
+  public void testStaticPut() {
+    try {
+      BinMap bm = BinMap.put(map, 64, "*");
+      System.out.println(bm.printContent());
+    }
+    catch(Exception e) {
+      e.printStackTrace();
+    }
+  }
+
   @Test
   public void testKeySet() {
     Set<Integer> set = new TreeSet<>(keys);

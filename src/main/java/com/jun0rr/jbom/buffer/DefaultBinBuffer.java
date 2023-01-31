@@ -38,6 +38,11 @@ public class DefaultBinBuffer implements BinBuffer {
   }
   
   @Override
+  public BufferAllocator allocator() {
+    return malloc;
+  }
+  
+  @Override
   public int capacity() {
     return buffers.stream().mapToInt(ByteBuffer::capacity).sum();
   }

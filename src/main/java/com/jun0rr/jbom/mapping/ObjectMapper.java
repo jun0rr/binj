@@ -92,4 +92,30 @@ public class ObjectMapper {
     return map;
   }
   
+  
+  
+  public static ObjectMapper withAnnotationStrategies() {
+    ObjectMapper om = new ObjectMapper();
+    om.constructStrategy().add(new AnnotationConstructStrategy());
+    om.extractStrategy().add(new AnnotationExtractStrategy());
+    om.injectStrategy().add(new AnnotationInjectStrategy());
+    return om;
+  }
+  
+  public static ObjectMapper withGetterSetterStrategies() {
+    ObjectMapper om = new ObjectMapper();
+    om.constructStrategy().add(new NoArgsConstructStrategy());
+    om.extractStrategy().add(new GetterStrategy());
+    om.injectStrategy().add(new SetterStrategy());
+    return om;
+  }
+  
+  public static ObjectMapper withFieldStrategies() {
+    ObjectMapper om = new ObjectMapper();
+    om.constructStrategy().add(new NoArgsConstructStrategy());
+    om.extractStrategy().add(new FieldExtractStrategy());
+    om.injectStrategy().add(new FieldInjectStrategy());
+    return om;
+  }
+  
 }
