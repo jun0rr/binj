@@ -27,13 +27,8 @@ public class TestSetterStrategy {
   @Test
   public void test() {
     Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
-    ObjectMapper mp = new ObjectMapper();
+    ObjectMapper mp = ObjectMapper.withGetterSetterStrategies();
     ExtractStrategy ex = new GetterStrategy();
-    InjectStrategy is = new SetterStrategy();
-    ConstructStrategy cs = new NoArgsConstructStrategy();
-    mp.extractStrategy().add(ex);
-    mp.injectStrategy().add(is);
-    mp.constructStrategy().add(cs);
     Map<String,Object> map = mp.map(p);
     ex.extractors(p.getClass()).stream()
         .forEach(e->Assertions.assertEquals(e.extract(p), map.get(e.name())));

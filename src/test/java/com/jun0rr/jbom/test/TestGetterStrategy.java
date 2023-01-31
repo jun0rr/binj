@@ -22,7 +22,7 @@ public class TestGetterStrategy {
   @Test
   public void test() {
     Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
-    ObjectMapper mp = new ObjectMapper();
+    ObjectMapper mp = ObjectMapper.withGetterSetterStrategies();
     GetterStrategy gs = new GetterStrategy();
     mp.extractStrategy().add(gs);
     Map<String,Object> map = mp.map(p);
