@@ -60,6 +60,7 @@ public class ObjectMapper {
     if(!map.containsKey(KEY_CLASS)) {
       throw new MappingException("$class key not found");
     }
+    //System.out.printf("ObjectMapper.create(): map=%s%n", map);
     Class<T> cls = (Class<T>) map.get(KEY_CLASS);
     List<ConstructFunction> cs = constructors.stream()
         .flatMap(c->c.constructors(cls).stream())
@@ -89,6 +90,7 @@ public class ObjectMapper {
     }
     extractors.stream().flatMap(e->e.extractors(obj.getClass()).stream())
         .forEach(e->map.put(e.name(), e.extract(obj)));
+    //System.out.printf("ObjectMapper.extract( %s ): map=%s%n", obj, map);
     return map;
   }
   

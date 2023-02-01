@@ -5,7 +5,6 @@
 package com.jun0rr.jbom.impl;
 
 import com.jun0rr.jbom.BinType;
-import com.jun0rr.jbom.codec.IndexedKey;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

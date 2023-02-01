@@ -4,13 +4,14 @@
  */
 package com.jun0rr.jbom.codec;
 
+import com.jun0rr.jbom.impl.IndexedKey;
 import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
-import com.jun0rr.jbom.impl.DefaultIndexedKey;
+import com.jun0rr.jbom.impl.IndexedKey;
 import java.util.Objects;
 
 /**
@@ -32,7 +33,7 @@ public class IndexedKeyCodec implements BinCodec<IndexedKey> {
       throw new UnknownBinTypeException(id);
     }
     int idx = buf.getShort();
-    return new DefaultIndexedKey(idx, ctx.read(buf));
+    return new IndexedKey(idx, ctx.read(buf));
   }
 
   @Override

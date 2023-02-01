@@ -6,7 +6,7 @@ package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.buffer.BinBuffer;
-import com.jun0rr.jbom.codec.IndexedKey;
+import com.jun0rr.jbom.impl.IndexedKey;
 import com.jun0rr.jbom.codec.BooleanCodec;
 import com.jun0rr.jbom.codec.ByteCodec;
 import com.jun0rr.jbom.codec.CharCodec;
@@ -21,7 +21,7 @@ import com.jun0rr.jbom.codec.ShortCodec;
 import com.jun0rr.jbom.codec.Utf8Codec;
 import com.jun0rr.jbom.codec.ZonedDateTimeCodec;
 import com.jun0rr.jbom.impl.DefaultBinContext;
-import com.jun0rr.jbom.impl.DefaultIndexedKey;
+import com.jun0rr.jbom.impl.IndexedKey;
 import com.jun0rr.jbom.mapping.ObjectMapper;
 import com.jun0rr.jbom.type.BinMap;
 import java.nio.ByteBuffer;
@@ -176,7 +176,7 @@ public class TestBinCodecs {
   
   @Test
   public void indexedKeyCodec() {
-    IndexedKey<String> i = new DefaultIndexedKey<>(1, "Hello World 123456789ABC!!!");
+    IndexedKey<String> i = new IndexedKey<>(1, "Hello World 123456789ABC!!!");
     BinContext ctx = new DefaultBinContext(new ObjectMapper());
     ByteBuffer buf = ByteBuffer.allocate(ctx.calcSize(i));
     ctx.write(buf, i);

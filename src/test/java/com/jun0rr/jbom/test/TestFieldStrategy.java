@@ -7,7 +7,10 @@ package com.jun0rr.jbom.test;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinContext;
-import com.jun0rr.jbom.mapping.Binary;
+import com.jun0rr.jbom.mapping.AnnotationConstructStrategy;
+import com.jun0rr.jbom.mapping.ConstructStrategy;
+import com.jun0rr.jbom.mapping.ExtractStrategy;
+import com.jun0rr.jbom.mapping.FieldExtractStrategy;
 import com.jun0rr.jbom.mapping.MapConstructor;
 import com.jun0rr.jbom.mapping.ObjectMapper;
 import java.time.LocalDate;
@@ -19,7 +22,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author F6036477
  */
-public class TestObjectMapper {
+public class TestFieldStrategy {
   
   
   @Test
@@ -27,7 +30,11 @@ public class TestObjectMapper {
     try {
       Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
       System.out.println(p);
-      ObjectMapper mp = ObjectMapper.withAnnotationStrategies();
+      ConstructStrategy cs = new AnnotationConstructStrategy();
+      ExtractStrategy es = new FieldExtractStrategy();
+      ObjectMapper mp = new ObjectMapper();
+      mp.constructStrategy().add(cs);
+      mp.extractStrategy().add(es);
       BinContext ctx = new DefaultBinContext(mp);
       BinBuffer buf = BinBuffer.ofHeapAllocator(128);
       System.out.println(ctx.calcSize(p));
@@ -47,13 +54,15 @@ public class TestObjectMapper {
   
   public static class Person {
     
-    private final String name;
+    public final String name;
     
-    private final String last;
+    public final String last;
     
-    private final LocalDate birth;
+    public final LocalDate birth;
     
-    private long id;
+    public final long id;
+    
+    public transient final Class cls = Person.class;
 
     @MapConstructor({"name", "last", "birth", "id"})
     public Person(String name, String last, LocalDate birth, long id) {
@@ -61,26 +70,6 @@ public class TestObjectMapper {
       this.last = last;
       this.birth = birth;
       this.id = id;
-    }
-
-    @Binary
-    public String name() {
-      return name;
-    }
-    
-    @Binary
-    public String last() {
-      return last;
-    }
-
-    @Binary
-    public LocalDate birth() {
-      return birth;
-    }
-
-    @Binary
-    public long id() {
-      return id;
     }
 
     @Override

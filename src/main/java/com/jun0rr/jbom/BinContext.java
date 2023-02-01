@@ -5,6 +5,8 @@
 package com.jun0rr.jbom;
 
 import com.jun0rr.jbom.buffer.BinBuffer;
+import com.jun0rr.jbom.impl.DefaultBinContext;
+import com.jun0rr.jbom.mapping.ObjectMapper;
 import java.nio.ByteBuffer;
 import java.util.Map;
 
@@ -30,6 +32,8 @@ public interface BinContext {
   
   public Map<BinType,BinCodec> codecs();
   
+  public ObjectMapper mapper();
+  
   public <T> T read(BinBuffer buf) throws UnknownBinTypeException;
   
   public <T> void write(BinBuffer buf, T o) throws BinTypeNotFoundException;
@@ -43,5 +47,14 @@ public interface BinContext {
   }
   
   public int calcSize(Object o) throws BinTypeNotFoundException;
+  
+  
+  public static BinContext of(ObjectMapper om) {
+    return new DefaultBinContext(om);
+  }
+  
+  public static BinContext newContext() {
+    return new DefaultBinContext(new ObjectMapper());
+  }
   
 }

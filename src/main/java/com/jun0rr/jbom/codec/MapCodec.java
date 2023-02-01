@@ -4,13 +4,14 @@
  */
 package com.jun0rr.jbom.codec;
 
+import com.jun0rr.jbom.impl.IndexedKey;
 import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
-import com.jun0rr.jbom.impl.DefaultIndexedKey;
+import com.jun0rr.jbom.impl.IndexedKey;
 import com.jun0rr.jbom.impl.Pair;
 import java.util.AbstractMap;
 import java.util.ArrayList;
@@ -57,9 +58,9 @@ public class MapCodec implements BinCodec<Map> {
     buf.putLong(bintype().id());
     buf.putShort((short)val.size());
     int kpos = buf.position();
-    List<Pair<DefaultIndexedKey,Object>> keys = ((Map<Object,Object>)val)
+    List<Pair<IndexedKey,Object>> keys = ((Map<Object,Object>)val)
         .entrySet().stream()
-        .map(e->Pair.of(new DefaultIndexedKey(e.getKey()), e.getValue()))
+        .map(e->Pair.of(new IndexedKey(e.getKey()), e.getValue()))
         .collect(Collectors.toList());
     AtomicInteger vpos = new AtomicInteger(kpos + keys.stream()
         .map(Pair::key)
@@ -75,7 +76,7 @@ public class MapCodec implements BinCodec<Map> {
   @Override
   public int calcSize(Map val) {
     int len = ((Map<Object,Object>)val).entrySet().stream()
-        .map(e->new AbstractMap.SimpleEntry<>(new DefaultIndexedKey(e.getKey()), e.getValue()))
+        .map(e->new AbstractMap.SimpleEntry<>(new IndexedKey(e.getKey()), e.getValue()))
         .mapToInt(e->ctx.calcSize(e.getKey()) + ctx.calcSize(e.getValue()))
         .sum();
     return Long.BYTES + Short.BYTES + len;

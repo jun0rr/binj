@@ -7,9 +7,9 @@ package com.jun0rr.jbom.type;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
-import com.jun0rr.jbom.codec.IndexedKey;
+import com.jun0rr.jbom.impl.IndexedKey;
 import com.jun0rr.jbom.impl.DefaultBinType;
-import com.jun0rr.jbom.impl.DefaultIndexedKey;
+import com.jun0rr.jbom.impl.IndexedKey;
 import com.jun0rr.jbom.impl.Pair;
 import com.jun0rr.jbom.impl.SupplierIterator;
 import java.nio.ByteBuffer;
@@ -132,7 +132,7 @@ public class BinMap<K,V> implements Map<K,V> {
     buf.putShort((short)(map.size + 1));
     int bpos = buf.position();
     map.buf.position(bpos);
-    IndexedKey ik = new DefaultIndexedKey(key);
+    IndexedKey ik = new IndexedKey(key);
     List<Pair<IndexedKey,Object>> pairs = new ArrayList<>(map.size + 1);
     for(int i = 0; i < map.size; i++) {
       IndexedKey k = map.ctx.read(map.buf);

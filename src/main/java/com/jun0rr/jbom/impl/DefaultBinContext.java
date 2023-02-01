@@ -151,6 +151,11 @@ public class DefaultBinContext implements BinContext {
   public Map<BinType, BinCodec> codecs() {
     return codecs;
   }
+  
+  @Override
+  public ObjectMapper mapper() {
+    return mapper;
+  }
 
   @Override
   public <T> T read(BinBuffer buf) throws UnknownBinTypeException {
@@ -158,12 +163,14 @@ public class DefaultBinContext implements BinContext {
     long id = buf.getLong();
     buf.position(pos);
     BinCodec<T> c = getBinCodec(id);
+    //System.out.printf("DefaultBinContext.read( %s ): codec=%s%n", buf, c);
     return c.read(buf);
   }
 
   @Override
   public <T> void write(BinBuffer buf, T o) throws BinTypeNotFoundException {
     BinCodec c = getBinCodec(o.getClass());
+    //System.out.printf("DefaultBinContext.write( %s, %s ): codec=%s%n", buf, o, c);
     c.write(buf, o);
   }
   

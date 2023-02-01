@@ -29,7 +29,7 @@ public class DefaultBinBuffer implements BinBuffer {
     this.buffers = new ArrayList<>();
   }
   
-  protected DefaultBinBuffer(BufferAllocator ba, List<ByteBuffer> buffers) {
+  public DefaultBinBuffer(BufferAllocator ba, List<ByteBuffer> buffers) {
     if(buffers == null || buffers.isEmpty()) {
       throw new IllegalArgumentException("Bad null/empty buffers List");
     }
