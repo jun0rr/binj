@@ -8,7 +8,9 @@ import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.BinTypeNotFoundException;
+import com.jun0rr.jbom.ContextObserver;
 import com.jun0rr.jbom.UnknownBinTypeException;
+import com.jun0rr.jbom.WriteEvent;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.codec.ArrayCodec;
 import com.jun0rr.jbom.codec.BooleanCodec;
@@ -30,10 +32,12 @@ import com.jun0rr.jbom.codec.ShortCodec;
 import com.jun0rr.jbom.codec.Utf8Codec;
 import com.jun0rr.jbom.codec.ZonedDateTimeCodec;
 import com.jun0rr.jbom.mapping.ObjectMapper;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  *
@@ -45,9 +49,12 @@ public class DefaultBinContext implements BinContext {
   
   private final Map<BinType, BinCodec> codecs;
   
+  private final List<ContextObserver> observers;
+  
   public DefaultBinContext(ObjectMapper mapper) {
     this.mapper = Objects.requireNonNull(mapper);
     this.codecs = new ConcurrentHashMap<>();
+    this.observers = new CopyOnWriteArrayList<>();
     codecs.put(DefaultBinType.BOOLEAN, new BooleanCodec());
     codecs.put(DefaultBinType.BYTE, new ByteCodec());
     codecs.put(DefaultBinType.CHAR, new CharCodec());
@@ -70,6 +77,7 @@ public class DefaultBinContext implements BinContext {
   public DefaultBinContext(ObjectMapper mapper, Map<BinType, BinCodec> codecs) {
     this.mapper = Objects.requireNonNull(mapper);
     this.codecs = Objects.requireNonNull(codecs);
+    this.observers = new CopyOnWriteArrayList<>();
   }
   
   @Override
@@ -164,6 +172,7 @@ public class DefaultBinContext implements BinContext {
     buf.position(pos);
     BinCodec<T> c = getBinCodec(id);
     //System.out.printf("DefaultBinContext.read( %s ): codec=%s%n", buf, c);
+    observers.forEach(x->x.read(c.bintype()));
     return c.read(buf);
   }
 
@@ -171,13 +180,27 @@ public class DefaultBinContext implements BinContext {
   public <T> void write(BinBuffer buf, T o) throws BinTypeNotFoundException {
     BinCodec c = getBinCodec(o.getClass());
     //System.out.printf("DefaultBinContext.write( %s, %s ): codec=%s%n", buf, o, c);
+    int pos = buf.position();
     c.write(buf, o);
+    if(!observers.isEmpty()) {
+      int lim = buf.limit();
+      int pos2 = buf.position();
+      buf.position(pos).limit(pos2);
+      WriteEvent e = new DefaultWriteEvent(c.bintype(), buf.hash("SHA-1"), pos2 - pos);
+      buf.limit(lim).position(pos2);
+      observers.forEach(x->x.write(e));
+    }
   }
   
   @Override
   public int calcSize(Object o) throws BinTypeNotFoundException {
     BinCodec c = getBinCodec(o.getClass());
     return c.calcSize(o);
+  }
+  
+  @Override
+  public List<ContextObserver> observers() {
+    return observers;
   }
   
 }

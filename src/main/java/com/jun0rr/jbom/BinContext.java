@@ -8,6 +8,7 @@ import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinContext;
 import com.jun0rr.jbom.mapping.ObjectMapper;
 import java.nio.ByteBuffer;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -47,6 +48,8 @@ public interface BinContext {
   }
   
   public int calcSize(Object o) throws BinTypeNotFoundException;
+  
+  public List<ContextObserver> observers();
   
   
   public static BinContext of(ObjectMapper om) {

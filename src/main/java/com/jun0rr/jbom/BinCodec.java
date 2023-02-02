@@ -6,6 +6,7 @@ package com.jun0rr.jbom;
 
 import com.jun0rr.jbom.buffer.BinBuffer;
 import java.nio.ByteBuffer;
+import java.util.List;
 
 /**
  *

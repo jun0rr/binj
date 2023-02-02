@@ -5,6 +5,9 @@
 package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
+import com.jun0rr.jbom.BinType;
+import com.jun0rr.jbom.ContextObserver;
+import com.jun0rr.jbom.WriteEvent;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.mapping.AnnotationConstructStrategy;
 import com.jun0rr.jbom.mapping.AnnotationExtractStrategy;
@@ -19,7 +22,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author F6036477
  */
-public class TestNestedObjects {
+public class TestNestedObjects implements ContextObserver {
   
   
   @Test
@@ -30,6 +33,7 @@ public class TestNestedObjects {
       BinContext ctx = BinContext.newContext();
       ctx.mapper().constructStrategy().add(new AnnotationConstructStrategy());
       ctx.mapper().extractStrategy().add(new AnnotationExtractStrategy());
+      ctx.observers().add(this);
       BinBuffer buf = BinBuffer.ofHeapAllocator(128);
       System.out.println(ctx.calcSize(p));
       ctx.write(buf, p);
@@ -42,7 +46,17 @@ public class TestNestedObjects {
       throw th;
     }
   }
-  
+
+  @Override
+  public void write(WriteEvent e) {
+    System.out.printf("write( %s )%n", e);
+  }
+
+  @Override
+  public void read(BinType t) {
+    System.out.printf("read( %s )%n", t);
+  }
+
   
   
   public static class Person {

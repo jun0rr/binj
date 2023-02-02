@@ -109,6 +109,8 @@ public interface BinBuffer extends Closeable {
   
   public BinBuffer slice();
   
+  public byte[] hash(String algorithm);
+  
   
   
   public static BinBuffer of(byte[] bs) {

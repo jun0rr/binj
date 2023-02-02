@@ -7,6 +7,8 @@ package com.jun0rr.jbom.buffer;
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -513,6 +515,20 @@ public class DefaultBinBuffer implements BinBuffer {
         .map(ByteBuffer::slice)
         .collect(Collectors.toList())
     );
+  }
+  
+  @Override
+  public byte[] hash(String algorithm) {
+    try {
+      MessageDigest md = MessageDigest.getInstance(algorithm);
+      buffers.stream()
+          .filter(ByteBuffer::hasRemaining)
+          .forEach(md::update);
+      return md.digest();
+    }
+    catch(NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   @Override
