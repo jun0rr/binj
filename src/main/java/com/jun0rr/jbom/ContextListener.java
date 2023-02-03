@@ -8,10 +8,22 @@ package com.jun0rr.jbom;
  *
  * @author F6036477
  */
-public interface ContextObserver {
+public interface ContextListener {
   
-  public void write(WriteEvent e);
+  public void write(ContextEvent e);
   
-  public void read(BinType t);
+  public void read(ContextEvent e);
+  
+  
+  
+  public static interface ContextEvent {
+  
+    public int size();
+
+    public long checksum();
+
+    public BinType type();
+
+  }
   
 }

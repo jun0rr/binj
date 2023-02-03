@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import java.util.zip.CRC32;
 
 /**
  *
@@ -530,10 +531,19 @@ public class DefaultBinBuffer implements BinBuffer {
       throw new RuntimeException(e);
     }
   }
+  
+  @Override
+  public long checksum() {
+    CRC32 crc = new CRC32();
+    buffers.stream()
+        .filter(ByteBuffer::hasRemaining)
+        .forEach(crc::update);
+    return crc.getValue();
+  }
 
   @Override
   public String toString() {
-    return "DefaultBinBuffer{" + "pos=" + position() + ", lim=" + limit() + ", buffers=" + buffers + '}';
+    return "DefaultBinBuffer{" + "pos=" + position() + ", lim=" + limit() + ", buffers=" + buffers.size() + '}';
   }
   
 }

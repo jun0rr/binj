@@ -40,14 +40,17 @@ public class MapCodec implements BinCodec<Map> {
       throw new UnknownBinTypeException(id);
     }
     int size = buf.getShort();
+    int maxpos = 0;
     List<Pair<IndexedKey,Object>> keys = new ArrayList<>(size);
     for(int i = 0; i < size; i++) {
       IndexedKey k = ctx.read(buf);
       int pos = buf.position();
       buf.position(k.index());
       keys.add(Pair.of(k, ctx.read(buf)));
+      maxpos = Math.max(maxpos, buf.position());
       buf.position(pos);
     }
+    buf.position(maxpos);
     return keys.stream()
         .map(p->p.withKey(p.key().key()))
         .collect(Collectors.toMap(Pair::key, Pair::value));

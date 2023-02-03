@@ -6,8 +6,6 @@ package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
-import com.jun0rr.jbom.ContextObserver;
-import com.jun0rr.jbom.WriteEvent;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.mapping.AnnotationConstructStrategy;
 import com.jun0rr.jbom.mapping.AnnotationExtractStrategy;
@@ -17,12 +15,13 @@ import java.time.LocalDate;
 import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import com.jun0rr.jbom.ContextListener;
 
 /**
  *
  * @author F6036477
  */
-public class TestNestedObjects implements ContextObserver {
+public class TestNestedObjects implements ContextListener {
   
   
   @Test
@@ -33,8 +32,9 @@ public class TestNestedObjects implements ContextObserver {
       BinContext ctx = BinContext.newContext();
       ctx.mapper().constructStrategy().add(new AnnotationConstructStrategy());
       ctx.mapper().extractStrategy().add(new AnnotationExtractStrategy());
-      ctx.observers().add(this);
+      ctx.listeners().add(this);
       BinBuffer buf = BinBuffer.ofHeapAllocator(128);
+      System.out.println(buf);
       System.out.println(ctx.calcSize(p));
       ctx.write(buf, p);
       buf.flip();
@@ -48,13 +48,13 @@ public class TestNestedObjects implements ContextObserver {
   }
 
   @Override
-  public void write(WriteEvent e) {
+  public void write(ContextEvent e) {
     System.out.printf("write( %s )%n", e);
   }
 
   @Override
-  public void read(BinType t) {
-    System.out.printf("read( %s )%n", t);
+  public void read(ContextEvent e) {
+    System.out.printf("read( %s )%n", e);
   }
 
   

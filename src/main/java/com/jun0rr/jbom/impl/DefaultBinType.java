@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -21,19 +22,35 @@ public class DefaultBinType<T> implements BinType<T> {
   
   public static final BinType<Byte> BYTE = new PrimitiveBinType(byte.class, Byte.class);
   
+  public static final BinType<byte[]> BYTE_ARRAY = new DefaultBinType(byte[].class);
+  
   public static final BinType<Character> CHAR = new PrimitiveBinType(char.class, Character.class);
+  
+  public static final BinType<char[]> CHAR_ARRAY = new DefaultBinType(char[].class);
   
   public static final BinType<Boolean> BOOLEAN = new PrimitiveBinType(boolean.class, Boolean.class);
   
+  public static final BinType<boolean[]> BOOLEAN_ARRAY = new DefaultBinType(boolean[].class);
+  
   public static final BinType<Short> SHORT = new PrimitiveBinType(short.class, Short.class);
+  
+  public static final BinType<short[]> SHORT_ARRAY = new DefaultBinType(short[].class);
   
   public static final BinType<Integer> INTEGER = new PrimitiveBinType(int.class, Integer.class);
   
+  public static final BinType<int[]> INT_ARRAY = new DefaultBinType(int[].class);
+  
   public static final BinType<Long> LONG = new PrimitiveBinType(long.class, Long.class);
+  
+  public static final BinType<long[]> LONG_ARRAY = new DefaultBinType(long[].class);
   
   public static final BinType<Float> FLOAT = new PrimitiveBinType(float.class, Float.class);
   
+  public static final BinType<float[]> FLOAT_ARRAY = new DefaultBinType(float[].class);
+  
   public static final BinType<Double> DOUBLE = new PrimitiveBinType(double.class, Double.class);
+  
+  public static final BinType<double[]> DOUBLE_ARRAY = new DefaultBinType(double[].class);
   
   public static final BinType<String> UTF8 = new DefaultBinType(String.class);
   
@@ -52,6 +69,14 @@ public class DefaultBinType<T> implements BinType<T> {
   public static final BinType<Map> MAP = new DefaultBinType(Map.class);
   
   public static final BinType<Collection> COLLECTION = new DefaultBinType(Collection.class);
+  
+  public static final List<BinType> DEFAULT_TYPES = List.of(
+      BYTE,             BYTE_ARRAY, CHAR,         CHAR_ARRAY,   BOOLEAN, 
+      BOOLEAN_ARRAY,    SHORT,      SHORT_ARRAY,  INTEGER,      INT_ARRAY, 
+      LONG,             LONG_ARRAY, FLOAT,        FLOAT_ARRAY,  DOUBLE, 
+      DOUBLE_ARRAY,     UTF8,       CLASS,        DATE,         DATE_TIME, 
+      ZONED_DATE_TIME,  INSTANT,    IDXKEY,       MAP,          COLLECTION
+  );
   
   
   private final long id;

@@ -49,7 +49,7 @@ public interface BinContext {
   
   public int calcSize(Object o) throws BinTypeNotFoundException;
   
-  public List<ContextObserver> observers();
+  public List<ContextListener> listeners();
   
   
   public static BinContext of(ObjectMapper om) {
