@@ -46,7 +46,7 @@ public class CharArrayCodec implements BinCodec<char[]> {
 
   @Override
   public int calcSize(char[] array) {
-    return Long.BYTES + Character.BYTES + Character.BYTES * array.length;
+    return Long.BYTES + Short.BYTES + Character.BYTES * array.length;
   }
 
 }

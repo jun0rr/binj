@@ -73,7 +73,7 @@ public class DefaultContextEvent implements ContextEvent {
 
   @Override
   public String toString() {
-    return "DefaultWriteEvent{" + "type=" + type + ", checksum=" + checksum + ", size=" + size + '}';
+    return "ContextEvent{" + "type=" + type + ", checksum=" + checksum + ", size=" + size + '}';
   }
 
 }

@@ -46,7 +46,7 @@ public class FloatArrayCodec implements BinCodec<float[]> {
 
   @Override
   public int calcSize(float[] array) {
-    return Long.BYTES + Float.BYTES + Float.BYTES * array.length;
+    return Long.BYTES + Short.BYTES + Float.BYTES * array.length;
   }
 
 }

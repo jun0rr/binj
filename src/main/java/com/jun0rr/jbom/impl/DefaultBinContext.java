@@ -38,6 +38,14 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import com.jun0rr.jbom.ContextListener;
 import com.jun0rr.jbom.ContextListener.ContextEvent;
+import com.jun0rr.jbom.codec.BooleanArrayCodec;
+import com.jun0rr.jbom.codec.ByteArrayCodec;
+import com.jun0rr.jbom.codec.CharArrayCodec;
+import com.jun0rr.jbom.codec.DoubleArrayCodec;
+import com.jun0rr.jbom.codec.FloatArrayCodec;
+import com.jun0rr.jbom.codec.IntArrayCodec;
+import com.jun0rr.jbom.codec.LongArrayCodec;
+import com.jun0rr.jbom.codec.ShortArrayCodec;
 
 /**
  *
@@ -56,13 +64,21 @@ public class DefaultBinContext implements BinContext {
     this.codecs = new ConcurrentHashMap<>();
     this.listeners = new CopyOnWriteArrayList<>();
     codecs.put(DefaultBinType.BOOLEAN, new BooleanCodec());
+    codecs.put(DefaultBinType.BOOLEAN_ARRAY, new BooleanArrayCodec());
     codecs.put(DefaultBinType.BYTE, new ByteCodec());
+    codecs.put(DefaultBinType.BYTE_ARRAY, new ByteArrayCodec());
     codecs.put(DefaultBinType.CHAR, new CharCodec());
+    codecs.put(DefaultBinType.CHAR_ARRAY, new CharArrayCodec());
     codecs.put(DefaultBinType.SHORT, new ShortCodec());
+    codecs.put(DefaultBinType.SHORT_ARRAY, new ShortArrayCodec());
     codecs.put(DefaultBinType.INTEGER, new IntegerCodec());
+    codecs.put(DefaultBinType.INT_ARRAY, new IntArrayCodec());
     codecs.put(DefaultBinType.LONG, new LongCodec());
+    codecs.put(DefaultBinType.LONG_ARRAY, new LongArrayCodec());
     codecs.put(DefaultBinType.FLOAT, new FloatCodec());
+    codecs.put(DefaultBinType.FLOAT_ARRAY, new FloatArrayCodec());
     codecs.put(DefaultBinType.DOUBLE, new DoubleCodec());
+    codecs.put(DefaultBinType.DOUBLE_ARRAY, new DoubleArrayCodec());
     codecs.put(DefaultBinType.UTF8, new Utf8Codec());
     codecs.put(DefaultBinType.CLASS, new ClassCodec());
     codecs.put(DefaultBinType.DATE, new LocalDateCodec());
@@ -172,11 +188,11 @@ public class DefaultBinContext implements BinContext {
     BinCodec<T> c = getBinCodec(buf.getLong());
     buf.position(pos);
     T o = c.read(buf);
-    //System.out.printf("BinContext.read( %s ): class=%s, buf=%s%n", sbuf, o.getClass().getCanonicalName(), buf);
     if(!listeners.isEmpty()) {
       int lim = buf.limit();
       int pos2 = buf.position();
       buf.position(pos).limit(pos2);
+      //System.out.printf("BinContext.read( %s ): pos=%d, pos2=%d, buf=%s, obj=%s%n", sbuf, pos, pos2, buf, o);
       ContextEvent evt = new DefaultContextEvent(c.bintype(), buf.remaining(), buf.checksum());
       buf.limit(lim).position(pos2);
       listeners.forEach(x->x.read(evt));

@@ -46,7 +46,7 @@ public class LongArrayCodec implements BinCodec<long[]> {
 
   @Override
   public int calcSize(long[] array) {
-    return Long.BYTES + Long.BYTES + Long.BYTES * array.length;
+    return Long.BYTES + Short.BYTES + Long.BYTES * array.length;
   }
 
 }

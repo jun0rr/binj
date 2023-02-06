@@ -274,7 +274,7 @@ public class DefaultBinBuffer implements BinBuffer {
     }
     int i = 0;
     int _lim = lim;
-    while(_lim > 0 && i < buffers.size()) {
+    while(i < buffers.size()) {
       ByteBuffer b = buffers.get(i++);
       int l = Math.min(b.capacity(), _lim);
       b.limit(l);
@@ -301,7 +301,7 @@ public class DefaultBinBuffer implements BinBuffer {
     }
     int i = 0;
     int _pos = pos;
-    while(_pos >= 0 && i < buffers.size()) {
+    while(i < buffers.size()) {
       ByteBuffer b = buffers.get(i++);
       int l = Math.min(b.limit(), _pos);
       b.position(l);

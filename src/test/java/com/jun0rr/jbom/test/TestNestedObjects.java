@@ -5,7 +5,6 @@
 package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.mapping.AnnotationConstructStrategy;
 import com.jun0rr.jbom.mapping.AnnotationExtractStrategy;
@@ -16,6 +15,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.jun0rr.jbom.ContextListener;
+import java.util.Arrays;
 
 /**
  *
@@ -27,7 +27,7 @@ public class TestNestedObjects implements ContextListener {
   @Test
   public void test() {
     try {
-      Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L, new Address("Bitwise Street", "Byte City", 1024));
+      Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), new Address("Bitwise Street", "Byte City", 1024), new long[]{(long)(Math.random() * Short.MAX_VALUE), (long)(Math.random() * Short.MAX_VALUE)});
       System.out.println(p);
       BinContext ctx = BinContext.newContext();
       ctx.mapper().constructStrategy().add(new AnnotationConstructStrategy());
@@ -67,17 +67,17 @@ public class TestNestedObjects implements ContextListener {
     
     private final LocalDate birth;
     
-    private final long id;
-    
     private final Address address;
-
-    @MapConstructor({"name", "last", "birth", "id", "address"})
-    public Person(String name, String last, LocalDate birth, long id, Address address) {
+    
+    private final long[] ids;
+    
+    @MapConstructor({"name", "last", "birth", "address", "ids"})
+    public Person(String name, String last, LocalDate birth, Address address, long[] ids) {
       this.name = Objects.requireNonNull(name);
       this.last = Objects.requireNonNull(last);
       this.birth = Objects.requireNonNull(birth);
       this.address = Objects.requireNonNull(address);
-      this.id = id;
+      this.ids = ids;
     }
 
     @Binary
@@ -96,8 +96,8 @@ public class TestNestedObjects implements ContextListener {
     }
 
     @Binary
-    public long id() {
-      return id;
+    public long[] ids() {
+      return ids;
     }
 
     @Binary
@@ -107,12 +107,12 @@ public class TestNestedObjects implements ContextListener {
 
     @Override
     public int hashCode() {
-      int hash = 3;
-      hash = 71 * hash + Objects.hashCode(this.name);
-      hash = 71 * hash + Objects.hashCode(this.last);
-      hash = 71 * hash + Objects.hashCode(this.birth);
-      hash = 71 * hash + (int) (this.id ^ (this.id >>> 32));
-      hash = 71 * hash + Objects.hashCode(this.address);
+      int hash = 7;
+      hash = 89 * hash + Objects.hashCode(this.name);
+      hash = 89 * hash + Objects.hashCode(this.last);
+      hash = 89 * hash + Objects.hashCode(this.birth);
+      hash = 89 * hash + Objects.hashCode(this.address);
+      hash = 89 * hash + Arrays.hashCode(this.ids);
       return hash;
     }
 
@@ -128,9 +128,6 @@ public class TestNestedObjects implements ContextListener {
         return false;
       }
       final Person other = (Person) obj;
-      if (this.id != other.id) {
-        return false;
-      }
       if (!Objects.equals(this.name, other.name)) {
         return false;
       }
@@ -140,12 +137,15 @@ public class TestNestedObjects implements ContextListener {
       if (!Objects.equals(this.birth, other.birth)) {
         return false;
       }
-      return Objects.equals(this.address, other.address);
+      if (!Objects.equals(this.address, other.address)) {
+        return false;
+      }
+      return Arrays.equals(this.ids, other.ids);
     }
-
+    
     @Override
     public String toString() {
-      return "Person{" + "name=" + name + ", last=" + last + ", birth=" + birth + ", id=" + id + ", address=" + address + '}';
+      return "Person{" + "name=" + name + ", last=" + last + ", birth=" + birth + ", address=" + address + ", ids=" + Arrays.toString(ids) + '}';
     }
     
   }

@@ -46,7 +46,7 @@ public class IntArrayCodec implements BinCodec<int[]> {
 
   @Override
   public int calcSize(int[] array) {
-    return Long.BYTES + Integer.BYTES + Integer.BYTES * array.length;
+    return Long.BYTES + Short.BYTES + Integer.BYTES * array.length;
   }
 
 }
