@@ -53,4 +53,8 @@ public interface BufferAllocator extends Closeable {
     return new MappedBufferAllocator(root, filename, bufferSize, overwrite);
   }
   
+  public static BufferAllocator overflowAllocator() {
+    return new OverflowBufferAllocator();
+  }
+  
 }

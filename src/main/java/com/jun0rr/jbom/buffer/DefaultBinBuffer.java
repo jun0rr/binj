@@ -49,6 +49,13 @@ public class DefaultBinBuffer implements BinBuffer {
   public int capacity() {
     return buffers.stream().mapToInt(ByteBuffer::capacity).sum();
   }
+  
+  @Override
+  public void capacity(int cap) {
+    while(cap > capacity()) {
+      allocate();
+    }
+  }
 
   @Override
   public BinBuffer clear() {

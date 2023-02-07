@@ -22,6 +22,8 @@ public interface BinBuffer extends Closeable {
   
   public int capacity();
   
+  public void capacity(int cap);
+  
   public BinBuffer clear();
   
   @Override
@@ -139,6 +141,26 @@ public interface BinBuffer extends Closeable {
   
   public static BinBuffer of(BufferAllocator alloc) {
     return new DefaultBinBuffer(alloc);
+  }
+  
+  public static BinBuffer fixedHeapBuffer(int bufsize) {
+    return fixedSizeBuffer(ByteBuffer.allocate(bufsize));
+  }
+  
+  public static BinBuffer fixedDirectBuffer(int bufsize) {
+    return fixedSizeBuffer(ByteBuffer.allocateDirect(bufsize));
+  }
+  
+  public static BinBuffer fixedSizeBuffer(ByteBuffer buf) {
+    return new DefaultBinBuffer(BufferAllocator.overflowAllocator(), List.of(buf));
+  }
+  
+  public static BinBuffer fixedSizeBuffer(byte[] array) {
+    return fixedSizeBuffer(ByteBuffer.wrap(array));
+  }
+  
+  public static BinBuffer fixedSizeBuffer(byte[] array, int offset, int length) {
+    return fixedSizeBuffer(ByteBuffer.wrap(array, offset, length));
   }
   
   public static BinBuffer ofHeapAllocator(int bufsize) {
