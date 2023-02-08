@@ -547,6 +547,18 @@ public class DefaultBinBuffer implements BinBuffer {
         .forEach(crc::update);
     return crc.getValue();
   }
+  
+  public String contentString() {
+    int pos = position();
+    StringBuffer sb = new StringBuffer("[");
+    while(hasRemaining()) {
+      sb.append(get()).append(", ");
+    }
+    if(sb.length() > 1) {
+      sb.delete(sb.length() - 2, sb.length());
+    }
+    return sb.append("]").toString();
+  }
 
   @Override
   public String toString() {

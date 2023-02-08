@@ -42,6 +42,7 @@ import com.jun0rr.jbom.codec.BooleanArrayCodec;
 import com.jun0rr.jbom.codec.ByteArrayCodec;
 import com.jun0rr.jbom.codec.CharArrayCodec;
 import com.jun0rr.jbom.codec.DoubleArrayCodec;
+import com.jun0rr.jbom.codec.EnumCodec;
 import com.jun0rr.jbom.codec.FloatArrayCodec;
 import com.jun0rr.jbom.codec.IntArrayCodec;
 import com.jun0rr.jbom.codec.LongArrayCodec;
@@ -88,6 +89,7 @@ public class DefaultBinContext implements BinContext {
     codecs.put(DefaultBinType.IDXKEY, new IndexedKeyCodec(this));
     codecs.put(DefaultBinType.COLLECTION, new CollectionCodec(this));
     codecs.put(DefaultBinType.MAP, new MapCodec(this));
+    codecs.put(DefaultBinType.ENUM, new EnumCodec(this));
   }
   
   public DefaultBinContext(ObjectMapper mapper, Map<BinType, BinCodec> codecs) {

@@ -115,6 +115,8 @@ public interface BinBuffer extends Closeable {
   
   public long checksum();
   
+  public String contentString();
+  
   
   
   public static BinBuffer of(byte[] bs) {
