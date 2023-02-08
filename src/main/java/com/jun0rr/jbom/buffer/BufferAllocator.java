@@ -17,28 +17,50 @@ public interface BufferAllocator extends Closeable {
   
   public int bufferSize();
   
-  public ByteBuffer alloc();
+  public default ByteBuffer alloc() {
+    return alloc(bufferSize());
+  }
   
   public ByteBuffer alloc(int size);
   
-  @Override
-  public default void close() {}
+  @Override public default void close() {}
+  
+  
+  public static class DirectAllocator extends DefaultBufferAllocator {
+    
+    public DirectAllocator(int bufsize) {
+      super(bufsize);
+    }
+    
+    @Override
+    public ByteBuffer alloc(int size) {
+      return ByteBuffer.allocateDirect(size);
+    }
+    
+  }
+  
+  public static class HeapAllocator extends DefaultBufferAllocator {
+    
+    public HeapAllocator(int bufsize) {
+      super(bufsize);
+    }
+    
+    @Override
+    public ByteBuffer alloc(int size) {
+      return ByteBuffer.allocate(size);
+    }
+    
+  }
+  
+  
   
   
   public static BufferAllocator directAllocator(int bufferSize) {
-    return new DefaultBufferAllocator(bufferSize) {
-      public ByteBuffer alloc(int size) {
-        return ByteBuffer.allocateDirect(size);
-      }
-    };
+    return new DirectAllocator(bufferSize);
   }
   
   public static BufferAllocator heapAllocator(int bufferSize) {
-    return new DefaultBufferAllocator(bufferSize) {
-      public ByteBuffer alloc(int size) {
-        return ByteBuffer.allocate(size);
-      }
-    };
+    return new HeapAllocator(bufferSize);
   }
   
   public static BufferAllocator mappedFileAllocator(Path root, int bufferSize) {
