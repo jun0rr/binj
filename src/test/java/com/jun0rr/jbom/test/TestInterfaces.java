@@ -30,8 +30,9 @@ public class TestInterfaces implements ContextListener {
     try {
       Person p = new DefaultPerson("Hello", "World", LocalDate.of(1980, 7, 7), new DefaultAddress("Bitwise Street", "Byte City", 1024), new long[]{(long)(Math.random() * Short.MAX_VALUE), (long)(Math.random() * Short.MAX_VALUE)});
       List.of(DefaultPerson.class.getDeclaredMethods()).stream()
-          .filter(m->m.getAnnotations().length > 0)
-          .forEach(System.out::println);
+          //.filter(m->m.getAnnotations().length > 0)
+          .peek(System.out::println)
+          .forEach(m->System.out.println(Arrays.toString(m.getDeclaredAnnotations())));
       //System.out.println(p);
       //BinContext ctx = BinContext.newContext();
       //ctx.mapper().constructStrategy().add(new AnnotationConstructStrategy());
