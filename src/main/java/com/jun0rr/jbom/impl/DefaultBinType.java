@@ -58,6 +58,8 @@ public class DefaultBinType<T> implements BinType<T> {
   
   public static final BinType<Enum> ENUM = new DefaultBinType(Enum.class);
   
+  public static final BinType<BinType> BINTYPE = new DefaultBinType(BinType.class);
+  
   public static final BinType<LocalDate> DATE = new DefaultBinType(LocalDate.class);
   
   public static final BinType<LocalDateTime> DATE_TIME = new DefaultBinType(LocalDateTime.class);
