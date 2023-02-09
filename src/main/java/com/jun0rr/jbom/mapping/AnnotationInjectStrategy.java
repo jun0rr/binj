@@ -5,6 +5,7 @@
 package com.jun0rr.jbom.mapping;
 
 import java.lang.reflect.Modifier;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -17,16 +18,28 @@ public class AnnotationInjectStrategy implements InjectStrategy {
 
   @Override
   public List<InjectFunction> injectors(Class cls) {
-    return Stream.concat(
-        List.of(cls.getDeclaredFields()).stream()
-            .filter(f->!Modifier.isFinal(f.getModifiers()))
-            .filter(f->f.isAnnotationPresent(Binary.class))
-            .map(DefaultInjectFunction::of),
-        List.of(cls.getDeclaredMethods()).stream()
-            .filter(m->m.isAnnotationPresent(Binary.class))
-            .filter(m->m.getParameterCount() == 1)
-            .map(DefaultInjectFunction::of)
-    ).collect(Collectors.toList());
+    List<InjectFunction> fns = new LinkedList<>();
+    Class sup = cls;
+    while(sup != null && sup != Object.class) {
+      Stream.concat(
+          List.of(cls.getDeclaredFields()).stream()
+              .filter(f->!Modifier.isFinal(f.getModifiers()))
+              .filter(f->f.isAnnotationPresent(Binary.class))
+              .map(DefaultInjectFunction::of),
+          List.of(cls.getDeclaredMethods()).stream()
+              .filter(m->m.getParameterCount() == 1)
+              .filter(m->m.isAnnotationPresent(Binary.class))
+              .map(DefaultInjectFunction::of)
+      ).forEach(fns::add);
+      List.of(cls.getInterfaces()).stream()
+          .flatMap(c->List.of(c.getDeclaredMethods()).stream())
+          .filter(m->m.getParameterCount() == 1)
+          .filter(m->m.isAnnotationPresent(Binary.class))
+          .map(DefaultInjectFunction::of)
+          .forEach(fns::add);
+      sup = sup.getSuperclass();
+    }
+    return fns;
   }
   
 }

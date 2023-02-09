@@ -4,8 +4,11 @@
  */
 package com.jun0rr.jbom.mapping;
 
+import java.lang.reflect.Modifier;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -15,11 +18,23 @@ public class SetterStrategy implements InjectStrategy {
 
   @Override
   public List<InjectFunction> injectors(Class cls) {
-    return List.of(cls.getDeclaredMethods()).stream()
-        .filter(m->m.getName().startsWith("set"))
-        .filter(m->m.getParameterCount() == 1)
-        .map(DefaultInjectFunction::of)
-        .collect(Collectors.toList());
+    List<InjectFunction> fns = new LinkedList<>();
+    Class sup = cls;
+    while(sup != null && sup != Object.class) {
+      List.of(cls.getDeclaredMethods()).stream()
+          .filter(m->m.getName().startsWith("set"))
+          .filter(m->m.getParameterCount() == 1)
+          .map(DefaultInjectFunction::of)
+          .forEach(fns::add);
+      List.of(cls.getInterfaces()).stream()
+          .flatMap(c->List.of(c.getDeclaredMethods()).stream())
+          .filter(m->m.getName().startsWith("set"))
+          .filter(m->m.getParameterCount() == 1)
+          .map(DefaultInjectFunction::of)
+          .forEach(fns::add);
+      sup = sup.getSuperclass();
+    }
+    return fns;
   }
   
 }

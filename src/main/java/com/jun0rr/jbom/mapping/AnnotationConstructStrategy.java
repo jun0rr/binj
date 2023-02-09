@@ -17,7 +17,7 @@ public class AnnotationConstructStrategy implements ConstructStrategy {
   public List<ConstructFunction> constructors(Class cls) {
     return List.of(cls.getDeclaredConstructors()).stream()
         .filter(c->c.isAnnotationPresent(MapConstructor.class) || c.getParameterCount() == 0)
-        .map(DefaultConstructFunction::of)
+        .map(DefaultConstructFunction::ofAnnotated)
         .collect(Collectors.toList());
   }
   

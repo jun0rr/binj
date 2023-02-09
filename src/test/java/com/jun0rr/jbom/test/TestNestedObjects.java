@@ -6,7 +6,6 @@ package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.buffer.BinBuffer;
-import com.jun0rr.jbom.mapping.AnnotationConstructStrategy;
 import com.jun0rr.jbom.mapping.AnnotationExtractStrategy;
 import com.jun0rr.jbom.mapping.Binary;
 import com.jun0rr.jbom.mapping.MapConstructor;
@@ -15,6 +14,7 @@ import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.jun0rr.jbom.ContextListener;
+import com.jun0rr.jbom.mapping.DefaultConstructStrategy;
 import java.util.Arrays;
 
 /**
@@ -30,7 +30,8 @@ public class TestNestedObjects implements ContextListener {
       Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), new Address("Bitwise Street", "Byte City", 1024), new long[]{(long)(Math.random() * Short.MAX_VALUE), (long)(Math.random() * Short.MAX_VALUE)});
       System.out.println(p);
       BinContext ctx = BinContext.newContext();
-      ctx.mapper().constructStrategy().add(new AnnotationConstructStrategy());
+      //ctx.mapper().constructStrategy().add(new AnnotationConstructStrategy());
+      ctx.mapper().constructStrategy().add(new DefaultConstructStrategy());
       ctx.mapper().extractStrategy().add(new AnnotationExtractStrategy());
       ctx.listeners().add(this);
       BinBuffer buf = BinBuffer.ofHeapAllocator(128);
@@ -71,7 +72,7 @@ public class TestNestedObjects implements ContextListener {
     
     private final long[] ids;
     
-    @MapConstructor({"name", "last", "birth", "address", "ids"})
+    //@MapConstructor({"name", "last", "birth", "address", "ids"})
     public Person(String name, String last, LocalDate birth, Address address, long[] ids) {
       this.name = Objects.requireNonNull(name);
       this.last = Objects.requireNonNull(last);
@@ -159,7 +160,7 @@ public class TestNestedObjects implements ContextListener {
     
     private final int number;
     
-    @MapConstructor({"street", "city", "number"})
+    //@MapConstructor({"street", "city", "number"})
     public Address(String street, String city, int number) {
       this.street = Objects.requireNonNull(street);
       this.city = Objects.requireNonNull(city);

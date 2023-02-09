@@ -4,8 +4,8 @@
  */
 package com.jun0rr.jbom.mapping;
 
+import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -15,12 +15,25 @@ public class GetterStrategy implements ExtractStrategy {
 
   @Override
   public List<ExtractFunction> extractors(Class cls) {
-    return List.of(cls.getDeclaredMethods()).stream()
-        .filter(m->m.getName().startsWith("get"))
-        .filter(m->m.getParameterCount() == 0)
-        .filter(m->m.getReturnType() != void.class)
-        .map(DefaultExtractFunction::of)
-        .collect(Collectors.toList());
+    List<ExtractFunction> fns = new LinkedList<>();
+    Class sup = cls;
+    while(sup != null && sup != Object.class) {
+      List.of(cls.getDeclaredMethods()).stream()
+          .filter(m->m.getName().startsWith("get"))
+          .filter(m->m.getParameterCount() == 0)
+          .filter(m->m.getReturnType() != void.class)
+          .map(DefaultExtractFunction::of)
+          .forEach(fns::add);
+      List.of(cls.getInterfaces()).stream()
+          .flatMap(c->List.of(c.getDeclaredMethods()).stream())
+          .filter(m->m.getName().startsWith("get"))
+          .filter(m->m.getParameterCount() == 0)
+          .filter(m->m.getReturnType() != void.class)
+          .map(DefaultExtractFunction::of)
+          .forEach(fns::add);
+      sup = sup.getSuperclass();
+    }
+    return fns;
   }
   
 }

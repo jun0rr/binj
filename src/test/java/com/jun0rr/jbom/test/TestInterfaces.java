@@ -5,18 +5,17 @@
 package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
-import com.jun0rr.jbom.buffer.BinBuffer;
-import com.jun0rr.jbom.mapping.AnnotationConstructStrategy;
-import com.jun0rr.jbom.mapping.AnnotationExtractStrategy;
 import com.jun0rr.jbom.mapping.Binary;
 import com.jun0rr.jbom.mapping.MapConstructor;
 import java.time.LocalDate;
 import java.util.Objects;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import com.jun0rr.jbom.ContextListener;
+import com.jun0rr.jbom.buffer.BinBuffer;
+import com.jun0rr.jbom.mapping.AnnotationExtractStrategy;
+import com.jun0rr.jbom.mapping.DefaultConstructStrategy;
 import java.util.Arrays;
-import java.util.List;
+import org.junit.jupiter.api.Assertions;
 
 /**
  *
@@ -29,23 +28,19 @@ public class TestInterfaces implements ContextListener {
   public void test() {
     try {
       Person p = new DefaultPerson("Hello", "World", LocalDate.of(1980, 7, 7), new DefaultAddress("Bitwise Street", "Byte City", 1024), new long[]{(long)(Math.random() * Short.MAX_VALUE), (long)(Math.random() * Short.MAX_VALUE)});
-      List.of(DefaultPerson.class.getDeclaredMethods()).stream()
-          //.filter(m->m.getAnnotations().length > 0)
-          .peek(System.out::println)
-          .forEach(m->System.out.println(Arrays.toString(m.getDeclaredAnnotations())));
-      //System.out.println(p);
-      //BinContext ctx = BinContext.newContext();
-      //ctx.mapper().constructStrategy().add(new AnnotationConstructStrategy());
-      //ctx.mapper().extractStrategy().add(new AnnotationExtractStrategy());
-      //ctx.listeners().add(this);
-      //BinBuffer buf = BinBuffer.ofHeapAllocator(128);
-      //System.out.println(buf);
-      //System.out.println(ctx.calcSize(p));
-      //ctx.write(buf, p);
-      //buf.flip();
-      //Person q = ctx.read(buf);
-      //System.out.println(q);
-      //Assertions.assertEquals(p, q);
+      System.out.println(p);
+      BinContext ctx = BinContext.newContext();
+      ctx.mapper().constructStrategy().add(new DefaultConstructStrategy());
+      ctx.mapper().extractStrategy().add(new AnnotationExtractStrategy());
+      ctx.listeners().add(this);
+      BinBuffer buf = BinBuffer.ofHeapAllocator(128);
+      System.out.println(buf);
+      System.out.println(ctx.calcSize(p));
+      ctx.write(buf, p);
+      buf.flip();
+      Person q = ctx.read(buf);
+      System.out.println(q);
+      Assertions.assertEquals(p, q);
     } catch(Throwable th) {
       th.printStackTrace();
       throw th;
@@ -112,7 +107,7 @@ public class TestInterfaces implements ContextListener {
     
     private final long[] ids;
     
-    @MapConstructor({"name", "last", "birth", "address", "ids"})
+    //@MapConstructor({"name", "last", "birth", "address", "ids"})
     public DefaultPerson(String name, String last, LocalDate birth, Address address, long[] ids) {
       this.name = Objects.requireNonNull(name);
       this.last = Objects.requireNonNull(last);

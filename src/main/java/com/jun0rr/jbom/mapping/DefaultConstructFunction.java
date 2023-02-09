@@ -7,11 +7,11 @@ package com.jun0rr.jbom.mapping;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  *
@@ -21,25 +21,29 @@ public class DefaultConstructFunction implements ConstructFunction {
   
   private final MethodHandle handle;
   
-  private final String[] arguments;
+  private final List<String> arguments;
   
   public DefaultConstructFunction(MethodHandle mh, String... args) {
     this.handle = Objects.requireNonNull(mh);
-    this.arguments = (args == null ? new String[0] : args);
+    this.arguments = (args == null ? Collections.EMPTY_LIST : List.of(args));
+  }
+  
+  public DefaultConstructFunction(MethodHandle mh, List<String> args) {
+    this.handle = Objects.requireNonNull(mh);
+    this.arguments = Objects.requireNonNull(args);
   }
   
   @Override
-  public String[] arguments() {
+  public List<String> arguments() {
     return arguments;
   }
   
   @Override
   public <T> T create(Map<String,Object> map) {
     try {
-      List<Object> args = new ArrayList<>(arguments.length);
-      for(int i = 0; i < arguments.length; i++) {
-        args.add(map.get(arguments[i]));
-      }
+      List<Object> args = arguments.stream()
+          .map(a->map.get(a))
+          .collect(Collectors.toList());
       return (T) handle.invokeWithArguments(args);
     }
     catch(Throwable t) {
@@ -56,7 +60,7 @@ public class DefaultConstructFunction implements ConstructFunction {
     }
   }
   
-  public static DefaultConstructFunction of(Constructor c) {
+  public static DefaultConstructFunction ofAnnotated(Constructor c) {
     try {
       MapConstructor mc = c.getDeclaredAnnotation(MapConstructor.class);
       return new DefaultConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c), (mc != null ? mc.value() : null));
@@ -66,9 +70,21 @@ public class DefaultConstructFunction implements ConstructFunction {
     }
   }
 
+  public static DefaultConstructFunction ofParameters(Constructor c) {
+    try {
+      List<String> args = List.of(c.getParameters()).stream()
+          .map(p->p.getName())
+          .collect(Collectors.toList());
+      return new DefaultConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c), args);
+    }
+    catch(IllegalAccessException e) {
+      throw new MappingException(e);
+    }
+  }
+
   @Override
   public String toString() {
-    return "ConstructFunction{" + "handle=" + handle + ", arguments=" + Arrays.toString(arguments) + '}';
+    return "ConstructFunction{" + "handle=" + handle + ", arguments=" + arguments + '}';
   }
   
 }

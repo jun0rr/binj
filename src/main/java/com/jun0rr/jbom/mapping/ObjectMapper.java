@@ -60,18 +60,17 @@ public class ObjectMapper {
     if(!map.containsKey(KEY_CLASS)) {
       throw new MappingException("$class key not found");
     }
-    //System.out.printf("ObjectMapper.create(): map=%s%n", map);
     Class<T> cls = (Class<T>) map.get(KEY_CLASS);
     List<ConstructFunction> cs = constructors.stream()
         .flatMap(c->c.constructors(cls).stream())
         .collect(Collectors.toList());
     Optional<ConstructFunction> cct = cs.stream()
-        .sorted((a,b)->Integer.compare(a.arguments().length, b.arguments().length) * -1)
-        .filter(c->c.arguments().length <= map.size())
-        .filter(c->List.of(c.arguments()).stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
+        .sorted((a,b)->Integer.compare(a.arguments().size(), b.arguments().size()) * -1)
+        .filter(c->c.arguments().size() <= map.size())
+        .filter(c->c.arguments().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
         .findFirst();
     if(cct.isEmpty()) {
-      cct = cs.stream().filter(c->c.arguments().length == 0).findAny();
+      cct = cs.stream().filter(c->c.arguments().size() == 0).findAny();
     }
     ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found"));
     return cf.create(map);

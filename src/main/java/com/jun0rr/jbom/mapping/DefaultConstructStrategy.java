@@ -11,13 +11,12 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class NoArgsConstructStrategy implements ConstructStrategy {
+public class DefaultConstructStrategy implements ConstructStrategy {
 
   @Override
   public List<ConstructFunction> constructors(Class cls) {
     return List.of(cls.getDeclaredConstructors()).stream()
-        .filter(c->c.getParameterCount() == 0)
-        .map(DefaultConstructFunction::ofAnnotated)
+        .map(DefaultConstructFunction::ofParameters)
         .collect(Collectors.toList());
   }
   

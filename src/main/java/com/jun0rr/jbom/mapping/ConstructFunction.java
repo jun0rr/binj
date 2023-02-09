@@ -4,6 +4,7 @@
  */
 package com.jun0rr.jbom.mapping;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Map;
  */
 public interface ConstructFunction {
   
-  public String[] arguments();
+  public List<String> arguments();
   
   public <T> T create(Map<String,Object> map);
   
