@@ -4,8 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
@@ -15,13 +13,12 @@ import java.time.Instant;
  *
  * @author F6036477
  */
-public class InstantCodec implements BinCodec<Instant> {
+public class InstantCodec extends AbstractBinCodec<Instant> {
   
-  @Override
-  public BinType<Instant> bintype() {
-    return DefaultBinType.INSTANT;
+  public InstantCodec() {
+    super(DefaultBinType.INSTANT);
   }
-
+  
   @Override
   public Instant read(BinBuffer buf) {
     long id = buf.getLong();

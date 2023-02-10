@@ -4,8 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
@@ -15,13 +13,12 @@ import java.time.LocalDate;
  *
  * @author F6036477
  */
-public class LocalDateCodec implements BinCodec<LocalDate> {
+public class LocalDateCodec extends AbstractBinCodec<LocalDate> {
   
-  @Override
-  public BinType<LocalDate> bintype() {
-    return DefaultBinType.DATE;
+  public LocalDateCodec() {
+    super(DefaultBinType.DATE);
   }
-
+  
   @Override
   public LocalDate read(BinBuffer buf) {
     long id = buf.getLong();

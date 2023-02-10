@@ -4,10 +4,7 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.impl.IndexedKey;
-import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
@@ -18,11 +15,12 @@ import java.util.Objects;
  *
  * @author Juno
  */
-public class IndexedKeyCodec implements BinCodec<IndexedKey> {
+public class IndexedKeyCodec extends AbstractBinCodec<IndexedKey> {
   
   private final BinContext ctx;
   
   public IndexedKeyCodec(BinContext ctx) {
+    super(DefaultBinType.IDXKEY);
     this.ctx = Objects.requireNonNull(ctx);
   }
 
@@ -48,9 +46,4 @@ public class IndexedKeyCodec implements BinCodec<IndexedKey> {
     return Long.BYTES + Short.BYTES + ctx.calcSize(val.key());
   }
 
-  @Override
-  public BinType bintype() {
-    return DefaultBinType.IDXKEY;
-  }
-  
 }

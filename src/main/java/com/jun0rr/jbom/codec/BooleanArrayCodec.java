@@ -14,15 +14,12 @@ import com.jun0rr.jbom.impl.DefaultBinType;
  *
  * @author F6036477
  */
-public class BooleanArrayCodec implements BinCodec<boolean[]> {
+public class BooleanArrayCodec extends AbstractBinCodec<boolean[]> {
   
-  public BooleanArrayCodec() {}
-  
-  @Override
-  public BinType<boolean[]> bintype() {
-    return DefaultBinType.BOOLEAN_ARRAY;
+  public BooleanArrayCodec() {
+    super(DefaultBinType.BOOLEAN_ARRAY);
   }
-
+  
   @Override
   public boolean[] read(BinBuffer buf) {
     long id = buf.getLong();

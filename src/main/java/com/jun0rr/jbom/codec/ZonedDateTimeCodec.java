@@ -4,8 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
@@ -18,13 +16,12 @@ import java.time.ZonedDateTime;
  *
  * @author F6036477
  */
-public class ZonedDateTimeCodec implements BinCodec<ZonedDateTime> {
+public class ZonedDateTimeCodec extends AbstractBinCodec<ZonedDateTime> {
   
-  @Override
-  public BinType<ZonedDateTime> bintype() {
-    return DefaultBinType.ZONED_DATE_TIME;
+  public ZonedDateTimeCodec() {
+    super(DefaultBinType.ZONED_DATE_TIME);
   }
-
+  
   @Override
   public ZonedDateTime read(BinBuffer buf) {
     long id = buf.getLong();

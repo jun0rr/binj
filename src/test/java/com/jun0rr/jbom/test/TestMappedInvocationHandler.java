@@ -4,6 +4,7 @@
  */
 package com.jun0rr.jbom.test;
 
+import com.jun0rr.jbom.ContextEvent;
 import com.jun0rr.jbom.mapping.Binary;
 import com.jun0rr.jbom.mapping.MapConstructor;
 import java.time.LocalDate;
@@ -11,7 +12,6 @@ import java.util.Objects;
 import org.junit.jupiter.api.Test;
 import com.jun0rr.jbom.ContextListener;
 import com.jun0rr.jbom.type.MappedInvocationHandler;
-import com.jun0rr.jbom.type.MappedInvocationHandler.InvocationException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;

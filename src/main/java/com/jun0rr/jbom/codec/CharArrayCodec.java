@@ -14,13 +14,12 @@ import com.jun0rr.jbom.impl.DefaultBinType;
  *
  * @author F6036477
  */
-public class CharArrayCodec implements BinCodec<char[]> {
+public class CharArrayCodec extends AbstractBinCodec<char[]> {
   
-  @Override
-  public BinType<char[]> bintype() {
-    return DefaultBinType.CHAR_ARRAY;
+  public CharArrayCodec() {
+    super(DefaultBinType.CHAR_ARRAY);
   }
-
+  
   @Override
   public char[] read(BinBuffer buf) {
     long id = buf.getLong();

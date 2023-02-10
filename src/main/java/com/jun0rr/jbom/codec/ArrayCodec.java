@@ -4,7 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
@@ -19,22 +18,15 @@ import java.util.Objects;
  *
  * @author F6036477
  */
-public class ArrayCodec<T> implements BinCodec<T[]> {
+public class ArrayCodec<T> extends AbstractBinCodec<T[]> {
   
   private final BinContext ctx;
   
-  private final BinType<T[]> type;
-  
   public ArrayCodec(BinContext ctx, BinType<T[]> type) {
+    super(type);
     this.ctx = Objects.requireNonNull(ctx);
-    this.type = Objects.requireNonNull(type);
   }
   
-  @Override
-  public BinType<T[]> bintype() {
-    return type;
-  }
-
   @Override
   public T[] read(BinBuffer buf) {
     long id = buf.getLong();

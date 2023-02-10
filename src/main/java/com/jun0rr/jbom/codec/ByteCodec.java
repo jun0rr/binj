@@ -14,13 +14,12 @@ import com.jun0rr.jbom.impl.DefaultBinType;
  *
  * @author F6036477
  */
-public class ByteCodec implements BinCodec<Byte> {
+public class ByteCodec extends AbstractBinCodec<Byte> {
   
-  @Override
-  public BinType<Byte> bintype() {
-    return DefaultBinType.BYTE;
+  public ByteCodec() {
+    super(DefaultBinType.BYTE);
   }
-
+  
   @Override
   public Byte read(BinBuffer buf) {
     long id = buf.getLong();

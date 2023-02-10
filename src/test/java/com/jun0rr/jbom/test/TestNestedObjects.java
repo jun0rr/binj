@@ -5,10 +5,10 @@
 package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
+import com.jun0rr.jbom.ContextEvent;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.mapping.AnnotationExtractStrategy;
 import com.jun0rr.jbom.mapping.Binary;
-import com.jun0rr.jbom.mapping.MapConstructor;
 import java.time.LocalDate;
 import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
@@ -30,7 +30,6 @@ public class TestNestedObjects implements ContextListener {
       Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), new Address("Bitwise Street", "Byte City", 1024), new long[]{(long)(Math.random() * Short.MAX_VALUE), (long)(Math.random() * Short.MAX_VALUE)});
       System.out.println(p);
       BinContext ctx = BinContext.newContext();
-      //ctx.mapper().constructStrategy().add(new AnnotationConstructStrategy());
       ctx.mapper().constructStrategy().add(new DefaultConstructStrategy());
       ctx.mapper().extractStrategy().add(new AnnotationExtractStrategy());
       ctx.listeners().add(this);

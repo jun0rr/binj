@@ -4,8 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
@@ -14,13 +12,12 @@ import com.jun0rr.jbom.impl.DefaultBinType;
  *
  * @author F6036477
  */
-public class IntegerCodec implements BinCodec<Integer> {
+public class IntegerCodec extends AbstractBinCodec<Integer> {
   
-  @Override
-  public BinType<Integer> bintype() {
-    return DefaultBinType.INTEGER;
+  public IntegerCodec() {
+    super(DefaultBinType.INTEGER);
   }
-
+  
   @Override
   public Integer read(BinBuffer buf) {
     long id = buf.getLong();

@@ -37,7 +37,7 @@ public interface BinContext {
   
   public <T> T read(BinBuffer buf) throws UnknownBinTypeException;
   
-  public <T> void write(BinBuffer buf, T o) throws BinTypeNotFoundException;
+  public <T> ContextEvent write(BinBuffer buf, T o) throws BinTypeNotFoundException;
   
   public default <T> T read(ByteBuffer buf) {
     return read(BinBuffer.of(buf));

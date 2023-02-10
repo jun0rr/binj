@@ -4,8 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
@@ -16,13 +14,12 @@ import java.nio.charset.StandardCharsets;
  *
  * @author F6036477
  */
-public class Utf8Codec implements BinCodec<String> {
+public class Utf8Codec extends AbstractBinCodec<String> {
   
-  @Override
-  public BinType<String> bintype() {
-    return DefaultBinType.UTF8;
+  public Utf8Codec() {
+    super(DefaultBinType.UTF8);
   }
-
+  
   @Override
   public String read(BinBuffer buf) {
     long id = buf.getLong();

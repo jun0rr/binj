@@ -4,8 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
@@ -14,13 +12,12 @@ import com.jun0rr.jbom.impl.DefaultBinType;
  *
  * @author F6036477
  */
-public class DoubleCodec implements BinCodec<Double> {
+public class DoubleCodec extends AbstractBinCodec<Double> {
   
-  @Override
-  public BinType<Double> bintype() {
-    return DefaultBinType.DOUBLE;
+  public DoubleCodec() {
+    super(DefaultBinType.DOUBLE);
   }
-
+  
   @Override
   public Double read(BinBuffer buf) {
     long id = buf.getLong();

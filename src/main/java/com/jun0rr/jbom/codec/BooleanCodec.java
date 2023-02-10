@@ -4,7 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
@@ -14,13 +13,12 @@ import com.jun0rr.jbom.impl.DefaultBinType;
  *
  * @author F6036477
  */
-public class BooleanCodec implements BinCodec<Boolean> {
+public class BooleanCodec extends AbstractBinCodec<Boolean> {
   
-  @Override
-  public BinType<Boolean> bintype() {
-    return DefaultBinType.BOOLEAN;
+  public BooleanCodec() {
+    super(DefaultBinType.BOOLEAN);
   }
-
+  
   @Override
   public Boolean read(BinBuffer buf) {
     long id = buf.getLong();

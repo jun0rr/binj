@@ -4,9 +4,9 @@
  */
 package com.jun0rr.jbom.impl;
 
-import com.jun0rr.jbom.BinType;
+import com.jun0rr.jbom.BinCodec;
+import com.jun0rr.jbom.ContextEvent;
 import java.util.Objects;
-import com.jun0rr.jbom.ContextListener.ContextEvent;
 
 /**
  *
@@ -14,14 +14,14 @@ import com.jun0rr.jbom.ContextListener.ContextEvent;
  */
 public class DefaultContextEvent implements ContextEvent {
   
-  private final BinType type;
+  private final BinCodec codec;
   
   private final long checksum;
   
   private final int size;
   
-  public DefaultContextEvent(BinType t, int size, long checksum) {
-    this.type = Objects.requireNonNull(t);
+  public DefaultContextEvent(BinCodec c, int size, long checksum) {
+    this.codec = Objects.requireNonNull(c);
     this.checksum = Objects.requireNonNull(checksum);
     this.size = size;
   }
@@ -37,16 +37,16 @@ public class DefaultContextEvent implements ContextEvent {
   }
   
   @Override
-  public BinType type() {
-    return type;
+  public BinCodec codec() {
+    return codec;
   }
 
   @Override
   public int hashCode() {
     int hash = 7;
-    hash = 37 * hash + Objects.hashCode(this.type);
-    hash = 37 * hash + (int) (this.checksum ^ (this.checksum >>> 32));
-    hash = 37 * hash + this.size;
+    hash = 97 * hash + Objects.hashCode(this.codec);
+    hash = 97 * hash + (int) (this.checksum ^ (this.checksum >>> 32));
+    hash = 97 * hash + this.size;
     return hash;
   }
 
@@ -68,12 +68,12 @@ public class DefaultContextEvent implements ContextEvent {
     if (this.size != other.size) {
       return false;
     }
-    return Objects.equals(this.type, other.type);
+    return Objects.equals(this.codec, other.codec);
   }
 
   @Override
   public String toString() {
-    return "ContextEvent{" + "type=" + type + ", checksum=" + checksum + ", size=" + size + '}';
+    return "DefaultContextEvent{" + "codec=" + codec + ", size=" + size + ", checksum=" + checksum + '}';
   }
-
+  
 }

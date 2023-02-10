@@ -4,7 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.buffer.BinBuffer;
@@ -16,23 +15,16 @@ import java.util.Objects;
  *
  * @author Juno
  */
-public class ObjectCodec<T> implements BinCodec<T> {
+public class ObjectCodec<T> extends AbstractBinCodec<T> {
   
   private final ObjectMapper mapper;
   
   private final BinContext ctx;
   
-  private final BinType<T> type;
-  
   public ObjectCodec(BinContext ctx, ObjectMapper mapper, BinType<T> type) {
+    super(type);
     this.mapper = Objects.requireNonNull(mapper);
     this.ctx = Objects.requireNonNull(ctx);
-    this.type = Objects.requireNonNull(type);
-  }
-
-  @Override
-  public BinType bintype() {
-    return type;
   }
 
   @Override

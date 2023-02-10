@@ -4,7 +4,6 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
@@ -20,19 +19,15 @@ import java.util.Optional;
  *
  * @author F6036477
  */
-public class EnumCodec implements BinCodec<Enum> {
+public class EnumCodec extends AbstractBinCodec<Enum> {
   
   private final BinContext ctx;
   
   public EnumCodec(BinContext ctx) {
+    super(DefaultBinType.ENUM);
     this.ctx = Objects.requireNonNull(ctx);
   }
   
-  @Override
-  public BinType<Enum> bintype() {
-    return DefaultBinType.ENUM;
-  }
-
   @Override
   public Enum read(BinBuffer buf) {
     long id = buf.getLong();

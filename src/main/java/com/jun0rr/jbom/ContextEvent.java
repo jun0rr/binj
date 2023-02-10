@@ -8,10 +8,12 @@ package com.jun0rr.jbom;
  *
  * @author F6036477
  */
-public interface ContextListener {
+public interface ContextEvent {
   
-  public void write(ContextEvent e);
-  
-  public void read(ContextEvent e);
+  public int size();
+
+  public long checksum();
+
+  public BinCodec codec();
   
 }

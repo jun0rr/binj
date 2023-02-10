@@ -8,6 +8,7 @@ import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
 import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.BinTypeNotFoundException;
+import com.jun0rr.jbom.ContextEvent;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.codec.ArrayCodec;
@@ -37,7 +38,6 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import com.jun0rr.jbom.ContextListener;
-import com.jun0rr.jbom.ContextListener.ContextEvent;
 import com.jun0rr.jbom.codec.BooleanArrayCodec;
 import com.jun0rr.jbom.codec.ByteArrayCodec;
 import com.jun0rr.jbom.codec.CharArrayCodec;
@@ -195,7 +195,7 @@ public class DefaultBinContext implements BinContext {
       int pos2 = buf.position();
       buf.position(pos).limit(pos2);
       //System.out.printf("BinContext.read( %s ): pos=%d, pos2=%d, buf=%s, obj=%s%n", sbuf, pos, pos2, buf, o);
-      ContextEvent evt = new DefaultContextEvent(c.bintype(), buf.remaining(), buf.checksum());
+      ContextEvent evt = new DefaultContextEvent(c, buf.remaining(), buf.checksum());
       buf.limit(lim).position(pos2);
       listeners.forEach(x->x.read(evt));
     }
@@ -203,20 +203,19 @@ public class DefaultBinContext implements BinContext {
   }
 
   @Override
-  public <T> void write(BinBuffer buf, T o) throws BinTypeNotFoundException {
+  public <T> ContextEvent write(BinBuffer buf, T o) throws BinTypeNotFoundException {
     String sbuf = buf.toString();
     BinCodec c = getBinCodec(o.getClass());
     int pos = buf.position();
     c.write(buf, o);
     //System.out.printf("BinContext.write( %s, %s ): buf=%s%n", sbuf, o.getClass().getCanonicalName(), buf);
-    if(!listeners.isEmpty()) {
-      int lim = buf.limit();
-      int pos2 = buf.position();
-      buf.position(pos).limit(pos2);
-      ContextEvent evt = new DefaultContextEvent(c.bintype(), buf.remaining(), buf.checksum());
-      buf.limit(lim).position(pos2);
-      listeners.forEach(x->x.write(evt));
-    }
+    int lim = buf.limit();
+    int pos2 = buf.position();
+    buf.position(pos).limit(pos2);
+    ContextEvent evt = new DefaultContextEvent(c, buf.remaining(), buf.checksum());
+    buf.limit(lim).position(pos2);
+    listeners.forEach(x->x.write(evt));
+    return evt;
   }
   
   @Override

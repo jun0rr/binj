@@ -5,6 +5,7 @@
 package com.jun0rr.jbom.test;
 
 import com.jun0rr.jbom.BinContext;
+import com.jun0rr.jbom.ContextEvent;
 import com.jun0rr.jbom.mapping.Binary;
 import com.jun0rr.jbom.mapping.MapConstructor;
 import java.time.LocalDate;

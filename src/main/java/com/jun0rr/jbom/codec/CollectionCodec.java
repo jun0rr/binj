@@ -4,9 +4,7 @@
  */
 package com.jun0rr.jbom.codec;
 
-import com.jun0rr.jbom.BinCodec;
 import com.jun0rr.jbom.BinContext;
-import com.jun0rr.jbom.BinType;
 import com.jun0rr.jbom.UnknownBinTypeException;
 import com.jun0rr.jbom.buffer.BinBuffer;
 import com.jun0rr.jbom.impl.DefaultBinType;
@@ -20,19 +18,15 @@ import java.util.Objects;
  *
  * @author F6036477
  */
-public class CollectionCodec implements BinCodec<Collection> {
+public class CollectionCodec extends AbstractBinCodec<Collection> {
   
   private final BinContext ctx;
   
   public CollectionCodec(BinContext ctx) {
+    super(DefaultBinType.COLLECTION);
     this.ctx = Objects.requireNonNull(ctx);
   }
   
-  @Override
-  public BinType<Collection> bintype() {
-    return DefaultBinType.COLLECTION;
-  }
-
   @Override
   public Collection read(BinBuffer buf) {
     long id = buf.getLong();
