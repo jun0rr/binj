@@ -6,6 +6,7 @@
 module jun0rr.jbom {
   requires java.base;
   exports com.jun0rr.jbom;
+  exports com.jun0rr.jbom.codec;
   exports com.jun0rr.jbom.buffer;
   exports com.jun0rr.jbom.mapping;
 }
