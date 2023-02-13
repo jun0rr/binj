@@ -204,11 +204,12 @@ public class DefaultBinContext implements BinContext {
 
   @Override
   public <T> ContextEvent write(BinBuffer buf, T o) throws BinTypeNotFoundException {
+    //System.out.printf("[1]BinContext.write( %s, %s )%n", buf, o.getClass().getCanonicalName());
     String sbuf = buf.toString();
     BinCodec c = getBinCodec(o.getClass());
     int pos = buf.position();
     c.write(buf, o);
-    //System.out.printf("BinContext.write( %s, %s ): buf=%s%n", sbuf, o.getClass().getCanonicalName(), buf);
+    //System.out.printf("[2]BinContext.write( %s, %s ): buf=%s%n", sbuf, o.getClass().getCanonicalName(), buf);
     int lim = buf.limit();
     int pos2 = buf.position();
     buf.position(pos).limit(pos2);

@@ -74,14 +74,6 @@ public class DefaultBinType<T> implements BinType<T> {
   
   public static final BinType<Collection> COLLECTION = new DefaultBinType(Collection.class);
   
-  public static final List<BinType> DEFAULT_TYPES = List.of(
-      BYTE,             BYTE_ARRAY, CHAR,         CHAR_ARRAY,   BOOLEAN, 
-      BOOLEAN_ARRAY,    SHORT,      SHORT_ARRAY,  INTEGER,      INT_ARRAY, 
-      LONG,             LONG_ARRAY, FLOAT,        FLOAT_ARRAY,  DOUBLE, 
-      DOUBLE_ARRAY,     UTF8,       CLASS,        DATE,         DATE_TIME, 
-      ZONED_DATE_TIME,  INSTANT,    IDXKEY,       MAP,          COLLECTION
-  );
-  
   
   private final long id;
   

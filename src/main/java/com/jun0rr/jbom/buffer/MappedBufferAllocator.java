@@ -84,7 +84,7 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
       }
       else {
         opts = new OpenOption[]{
-          StandardOpenOption.CREATE_NEW, 
+          StandardOpenOption.CREATE, 
           StandardOpenOption.READ, 
           StandardOpenOption.WRITE, 
           StandardOpenOption.DSYNC

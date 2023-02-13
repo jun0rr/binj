@@ -63,7 +63,7 @@ public class EnumCodec extends AbstractBinCodec<Enum> {
     else {
       bt = opt.get();
     }
-    System.out.printf("EnumCodec.write( %s, %s ): t=%s, val.class=%s%n", buf, val, bt, val.getDeclaringClass());
+    //System.out.printf("EnumCodec.write( %s, %s ): t=%s, val.class=%s%n", buf, val, bt, val.getDeclaringClass());
     buf.putLong(bt.id());
     buf.putShort((short)val.ordinal());
   }
