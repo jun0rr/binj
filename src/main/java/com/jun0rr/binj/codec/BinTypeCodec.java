@@ -29,7 +29,7 @@ public class BinTypeCodec extends AbstractBinCodec<BinType> {
     try {
       String cname = buf.getUTF8();
       System.out.printf("BinTypeCodec.read( %s ): cname='%s', id=%d%n", buf, cname, id);
-      Class c = Class.forName(buf.getUTF8());
+      Class c = Class.forName(cname);
       return new DefaultBinType(id, c);
     }
     catch(ClassNotFoundException e) {
