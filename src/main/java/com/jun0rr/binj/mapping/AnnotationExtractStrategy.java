@@ -6,37 +6,42 @@ package com.jun0rr.binj.mapping;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 /**
  *
  * @author F6036477
  */
-public class AnnotationExtractStrategy implements ExtractStrategy {
+public class AnnotationExtractStrategy extends AbstractExtractStrategy {
 
   @Override
   public List<ExtractFunction> extractors(Class cls) {
-    List<ExtractFunction> fns = new LinkedList<>();
-    Class sup = cls;
-    while(sup != null && sup != Object.class) {
-      Stream.concat(
-          List.of(cls.getDeclaredFields()).stream()
-              .filter(f->f.isAnnotationPresent(Binary.class))
-              .map(DefaultExtractFunction::of),
-          List.of(cls.getDeclaredMethods()).stream()
-              .filter(m->m.getParameterCount() == 0)
-              .filter(m->m.getReturnType() != void.class)
-              .filter(m->m.isAnnotationPresent(Binary.class))
-              .map(DefaultExtractFunction::of)
-      ).forEach(fns::add);
-      List.of(cls.getInterfaces()).stream()
-          .flatMap(c->List.of(c.getDeclaredMethods()).stream())
-          .filter(m->m.getParameterCount() == 0)
-          .filter(m->m.getReturnType() != void.class)
-          .filter(m->m.isAnnotationPresent(Binary.class))
-          .map(DefaultExtractFunction::of)
-          .forEach(fns::add);
-      sup = sup.getSuperclass();
+    List<ExtractFunction> fns = cache.get(cls);
+    if(fns == null) {
+      fns = new LinkedList<>();
+      Class sup = cls;
+      while(sup != null && sup != Object.class) {
+        Stream.concat(
+            List.of(cls.getDeclaredFields()).stream()
+                .filter(f->f.isAnnotationPresent(Binary.class))
+                .map(DefaultExtractFunction::of),
+            List.of(cls.getDeclaredMethods()).stream()
+                .filter(m->m.getParameterCount() == 0)
+                .filter(m->m.getReturnType() != void.class)
+                .filter(m->m.isAnnotationPresent(Binary.class))
+                .map(DefaultExtractFunction::of)
+        ).forEach(fns::add);
+        List.of(cls.getInterfaces()).stream()
+            .flatMap(c->List.of(c.getDeclaredMethods()).stream())
+            .filter(m->m.getParameterCount() == 0)
+            .filter(m->m.getReturnType() != void.class)
+            .filter(m->m.isAnnotationPresent(Binary.class))
+            .map(DefaultExtractFunction::of)
+            .forEach(fns::add);
+        sup = sup.getSuperclass();
+      }
+      cache.put(cls, fns);
     }
     return fns;
   }

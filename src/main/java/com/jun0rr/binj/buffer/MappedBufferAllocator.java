@@ -44,7 +44,7 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
   public MappedBufferAllocator(Path root, int bufsize, boolean overwrite) {
     super(bufsize);
     this.root = Objects.requireNonNull(root);
-    this.filename = ()->String.format("jbom.buffer@%d.f%d", MappedBufferAllocator.this.hashCode(), number.getAndIncrement());
+    this.filename = ()->String.format("binj.buffer@%d.f%d", MappedBufferAllocator.this.hashCode(), number.getAndIncrement());
     this.channels = new ArrayList<>();
     this.overwrite = overwrite;
     Runtime.getRuntime().addShutdownHook(new Thread(this::close));
@@ -56,7 +56,6 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
   
   private void close(FileChannel c) {
     try {
-      System.out.printf("MappedBufferAllocator.close( %s )%n", c);
       c.close();
     }
     catch(IOException e) {

@@ -201,11 +201,11 @@ public class DefaultBinContext implements BinContext {
     BinCodec<T> c = getBinCodec(buf.getLong());
     buf.position(pos);
     T o = c.read(buf);
+    //System.out.printf("BinContext.read( %s ): obj=%s%n", buf, o);
     if(!listeners.isEmpty()) {
       int lim = buf.limit();
       int pos2 = buf.position();
       buf.position(pos).limit(pos2);
-      //System.out.printf("BinContext.read( %s ): pos=%d, pos2=%d, buf=%s, obj=%s%n", sbuf, pos, pos2, buf, o);
       ContextEvent evt = new DefaultContextEvent(c, buf.remaining(), buf.checksum());
       buf.limit(lim).position(pos2);
       listeners.forEach(x->x.read(evt));
@@ -215,7 +215,7 @@ public class DefaultBinContext implements BinContext {
 
   @Override
   public <T> ContextEvent write(BinBuffer buf, T o) throws BinTypeNotFoundException {
-    //System.out.printf("[1]BinContext.write( %s, %s )%n", buf, o.getClass().getCanonicalName());
+    //System.out.printf("BinContext.write( %s, %s )%n", buf, o);
     String sbuf = buf.toString();
     BinCodec c = getBinCodec(o.getClass());
     int pos = buf.position();

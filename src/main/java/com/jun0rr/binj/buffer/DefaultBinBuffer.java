@@ -231,14 +231,17 @@ public class DefaultBinBuffer implements BinBuffer {
     if(remaining() < len) {
       throw new BufferUnderflowException();
     }
-    System.out.printf("BinBuffer.getString( %s ): len=%d, buf=%s%n", cs, len, this);
     ByteBuffer b = buffers.get(_index());
     if(b.remaining() < len) {
       b = ByteBuffer.allocate(len);
       get(b);
       b.flip();
     }
-    return cs.decode(b).toString();
+    int lim = b.limit();
+    b.limit(b.position() + len);
+    String s = cs.decode(b).toString();
+    b.limit(lim);
+    return s;
   }
 
   @Override
@@ -469,7 +472,6 @@ public class DefaultBinBuffer implements BinBuffer {
   
   @Override
   public BinBuffer put(String str, Charset cs) {
-    System.out.printf("BinBuffer.put( %s, %s ): len=%d, buf=%s%n", str, cs, str.length(), this);
     ByteBuffer bs = cs.encode(str);
     putShort((short)bs.remaining());
     put(bs);

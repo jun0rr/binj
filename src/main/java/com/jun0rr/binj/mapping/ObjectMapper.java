@@ -72,7 +72,7 @@ public class ObjectMapper {
     if(cct.isEmpty()) {
       cct = cs.stream().filter(c->c.arguments().size() == 0).findAny();
     }
-    ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found"));
+    ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found for " + cls.getCanonicalName()));
     return cf.create(map);
   }
   

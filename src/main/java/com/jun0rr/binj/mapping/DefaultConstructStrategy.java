@@ -11,13 +11,18 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class DefaultConstructStrategy implements ConstructStrategy {
+public class DefaultConstructStrategy extends AbstractConstructStrategy {
 
   @Override
   public List<ConstructFunction> constructors(Class cls) {
-    return List.of(cls.getDeclaredConstructors()).stream()
-        .map(DefaultConstructFunction::ofParameters)
-        .collect(Collectors.toList());
+    List<ConstructFunction> fns = cache.get(cls);
+    if(fns == null) {
+      fns = List.of(cls.getDeclaredConstructors()).stream()
+          .map(DefaultConstructFunction::ofParameters)
+          .collect(Collectors.toList());
+      cache.put(cls, fns);
+    }
+    return fns;
   }
   
 }

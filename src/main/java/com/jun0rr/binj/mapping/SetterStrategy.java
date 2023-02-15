@@ -4,35 +4,36 @@
  */
 package com.jun0rr.binj.mapping;
 
-import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  *
  * @author F6036477
  */
-public class SetterStrategy implements InjectStrategy {
+public class SetterStrategy extends AbstractInjectStrategy {
 
   @Override
   public List<InjectFunction> injectors(Class cls) {
-    List<InjectFunction> fns = new LinkedList<>();
-    Class sup = cls;
-    while(sup != null && sup != Object.class) {
-      List.of(cls.getDeclaredMethods()).stream()
-          .filter(m->m.getName().startsWith("set"))
-          .filter(m->m.getParameterCount() == 1)
-          .map(DefaultInjectFunction::of)
-          .forEach(fns::add);
-      List.of(cls.getInterfaces()).stream()
-          .flatMap(c->List.of(c.getDeclaredMethods()).stream())
-          .filter(m->m.getName().startsWith("set"))
-          .filter(m->m.getParameterCount() == 1)
-          .map(DefaultInjectFunction::of)
-          .forEach(fns::add);
-      sup = sup.getSuperclass();
+    List<InjectFunction> fns = cache.get(cls);
+    if(fns == null) {
+      fns = new LinkedList<>();
+      Class sup = cls;
+      while(sup != null && sup != Object.class) {
+        List.of(cls.getDeclaredMethods()).stream()
+            .filter(m->m.getName().startsWith("set"))
+            .filter(m->m.getParameterCount() == 1)
+            .map(DefaultInjectFunction::of)
+            .forEach(fns::add);
+        List.of(cls.getInterfaces()).stream()
+            .flatMap(c->List.of(c.getDeclaredMethods()).stream())
+            .filter(m->m.getName().startsWith("set"))
+            .filter(m->m.getParameterCount() == 1)
+            .map(DefaultInjectFunction::of)
+            .forEach(fns::add);
+        sup = sup.getSuperclass();
+      }
+      cache.put(cls, fns);
     }
     return fns;
   }

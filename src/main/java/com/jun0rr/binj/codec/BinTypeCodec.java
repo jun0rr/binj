@@ -28,7 +28,6 @@ public class BinTypeCodec extends AbstractBinCodec<BinType> {
     id = buf.getLong();
     try {
       String cname = buf.getUTF8();
-      System.out.printf("BinTypeCodec.read( %s ): cname='%s', id=%d%n", buf, cname, id);
       Class c = Class.forName(cname);
       return new DefaultBinType(id, c);
     }
@@ -39,7 +38,6 @@ public class BinTypeCodec extends AbstractBinCodec<BinType> {
 
   @Override
   public void write(BinBuffer buf, BinType val) {
-    System.out.printf("BinTypeCodec.write( %s, %s )%n", buf, val);
     buf.putLong(bintype().id());
     buf.putLong(val.id());
     String cname = val.type().getCanonicalName();

@@ -11,14 +11,19 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class AnnotationConstructStrategy implements ConstructStrategy {
+public class AnnotationConstructStrategy extends AbstractConstructStrategy {
 
   @Override
   public List<ConstructFunction> constructors(Class cls) {
-    return List.of(cls.getDeclaredConstructors()).stream()
-        .filter(c->c.isAnnotationPresent(MapConstructor.class) || c.getParameterCount() == 0)
-        .map(DefaultConstructFunction::ofAnnotated)
-        .collect(Collectors.toList());
+    List<ConstructFunction> fns = cache.get(cls);
+    if(fns == null) {
+      fns = List.of(cls.getDeclaredConstructors()).stream()
+          .filter(c->c.isAnnotationPresent(MapConstructor.class) || c.getParameterCount() == 0)
+          .map(DefaultConstructFunction::ofAnnotated)
+          .collect(Collectors.toList());
+      cache.put(cls, fns);
+    }
+    return fns;
   }
   
 }
