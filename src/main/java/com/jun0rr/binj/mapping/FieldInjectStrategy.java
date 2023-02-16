@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class FieldInjectStrategy extends AbstractInjectStrategy {
+public class FieldInjectStrategy extends AbstractInvokeStrategy<InjectFunction> {
 
   @Override
-  public List<InjectFunction> injectors(Class cls) {
+  public List<InjectFunction> invokers(Class cls) {
     List<InjectFunction> fns = cache.get(cls);
     if(fns == null) {
       fns = List.of(cls.getDeclaredFields()).stream()

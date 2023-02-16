@@ -12,10 +12,10 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class FieldExtractStrategy extends AbstractExtractStrategy {
+public class FieldExtractStrategy extends AbstractInvokeStrategy<ExtractFunction> {
 
   @Override
-  public List<ExtractFunction> extractors(Class cls) {
+  public List<ExtractFunction> invokers(Class cls) {
     List<ExtractFunction> fns = cache.get(cls);
     if(fns == null) {
       fns = List.of(cls.getDeclaredFields()).stream()

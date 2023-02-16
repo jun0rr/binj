@@ -13,10 +13,10 @@ import java.util.stream.Stream;
  *
  * @author F6036477
  */
-public class AnnotationInjectStrategy extends AbstractInjectStrategy {
+public class AnnotationInjectStrategy extends AbstractInvokeStrategy<InjectFunction> {
 
   @Override
-  public List<InjectFunction> injectors(Class cls) {
+  public List<InjectFunction> invokers(Class cls) {
     List<InjectFunction> fns = cache.get(cls);
     if(fns == null) {
       fns = new LinkedList<>();

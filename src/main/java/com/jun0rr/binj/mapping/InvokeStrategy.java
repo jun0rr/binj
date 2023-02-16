@@ -10,8 +10,8 @@ import java.util.List;
  *
  * @author F6036477
  */
-public interface InjectStrategy {
+public interface InvokeStrategy<T> {
   
-  public List<InjectFunction> injectors(Class cls);
+  public List<T> invokers(Class cls);
   
 }

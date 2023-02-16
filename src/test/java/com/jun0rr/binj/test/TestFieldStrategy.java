@@ -8,8 +8,6 @@ import com.jun0rr.binj.BinContext;
 import com.jun0rr.binj.buffer.BinBuffer;
 import com.jun0rr.binj.impl.DefaultBinContext;
 import com.jun0rr.binj.mapping.AnnotationConstructStrategy;
-import com.jun0rr.binj.mapping.ConstructStrategy;
-import com.jun0rr.binj.mapping.ExtractStrategy;
 import com.jun0rr.binj.mapping.FieldExtractStrategy;
 import com.jun0rr.binj.mapping.MapConstructor;
 import com.jun0rr.binj.mapping.ObjectMapper;
@@ -30,8 +28,8 @@ public class TestFieldStrategy {
     try {
       Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
       System.out.println(p);
-      ConstructStrategy cs = new AnnotationConstructStrategy();
-      ExtractStrategy es = new FieldExtractStrategy();
+      AnnotationConstructStrategy cs = new AnnotationConstructStrategy();
+      FieldExtractStrategy es = new FieldExtractStrategy();
       ObjectMapper mp = new ObjectMapper();
       mp.constructStrategy().add(cs);
       mp.extractStrategy().add(es);

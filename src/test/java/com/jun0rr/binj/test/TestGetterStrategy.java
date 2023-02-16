@@ -26,7 +26,7 @@ public class TestGetterStrategy {
     GetterStrategy gs = new GetterStrategy();
     mp.extractStrategy().add(gs);
     Map<String,Object> map = mp.map(p);
-    gs.extractors(p.getClass()).stream()
+    gs.invokers(p.getClass()).stream()
         .forEach(e->Assertions.assertEquals(e.extract(p), map.get(e.name())));
   }
   

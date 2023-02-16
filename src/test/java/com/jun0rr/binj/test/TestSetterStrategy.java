@@ -4,13 +4,8 @@
  */
 package com.jun0rr.binj.test;
 
-import com.jun0rr.binj.mapping.ConstructStrategy;
-import com.jun0rr.binj.mapping.ExtractStrategy;
 import com.jun0rr.binj.mapping.GetterStrategy;
-import com.jun0rr.binj.mapping.InjectStrategy;
-import com.jun0rr.binj.mapping.NoArgsConstructStrategy;
 import com.jun0rr.binj.mapping.ObjectMapper;
-import com.jun0rr.binj.mapping.SetterStrategy;
 import java.time.LocalDate;
 import java.util.Map;
 import java.util.Objects;
@@ -28,9 +23,9 @@ public class TestSetterStrategy {
   public void test() {
     Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
     ObjectMapper mp = ObjectMapper.withGetterSetterStrategies();
-    ExtractStrategy ex = new GetterStrategy();
+    GetterStrategy ex = new GetterStrategy();
     Map<String,Object> map = mp.map(p);
-    ex.extractors(p.getClass()).stream()
+    ex.invokers(p.getClass()).stream()
         .forEach(e->Assertions.assertEquals(e.extract(p), map.get(e.name())));
     Assertions.assertEquals(p, mp.unmap(map));
   }

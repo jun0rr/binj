@@ -11,10 +11,10 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class DefaultConstructStrategy extends AbstractConstructStrategy {
+public class DefaultConstructStrategy extends AbstractInvokeStrategy<ConstructFunction> {
 
   @Override
-  public List<ConstructFunction> constructors(Class cls) {
+  public List<ConstructFunction> invokers(Class cls) {
     List<ConstructFunction> fns = cache.get(cls);
     if(fns == null) {
       fns = List.of(cls.getDeclaredConstructors()).stream()

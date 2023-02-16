@@ -19,11 +19,11 @@ public class ObjectMapper {
   
   public static final String KEY_CLASS = "$class";
   
-  private final List<ConstructStrategy> constructors;
+  private final List<InvokeStrategy<ConstructFunction>> constructors;
   
-  private final List<ExtractStrategy> extractors;
+  private final List<InvokeStrategy<ExtractFunction>> extractors;
   
-  private final List<InjectStrategy> injectors;
+  private final List<InvokeStrategy<InjectFunction>> injectors;
   
   public ObjectMapper() {
     this.constructors = new CopyOnWriteArrayList<>();
@@ -31,15 +31,15 @@ public class ObjectMapper {
     this.injectors = new CopyOnWriteArrayList<>();
   }
   
-  public List<ConstructStrategy> constructStrategy() {
+  public List<InvokeStrategy<ConstructFunction>> constructStrategy() {
     return constructors;
   }
   
-  public List<ExtractStrategy> extractStrategy() {
+  public List<InvokeStrategy<ExtractFunction>> extractStrategy() {
     return extractors;
   }
   
-  public List<InjectStrategy> injectStrategy() {
+  public List<InvokeStrategy<InjectFunction>> injectStrategy() {
     return injectors;
   }
   
@@ -62,7 +62,7 @@ public class ObjectMapper {
     }
     Class<T> cls = (Class<T>) map.get(KEY_CLASS);
     List<ConstructFunction> cs = constructors.stream()
-        .flatMap(c->c.constructors(cls).stream())
+        .flatMap(c->c.invokers(cls).stream())
         .collect(Collectors.toList());
     Optional<ConstructFunction> cct = cs.stream()
         .sorted((a,b)->Integer.compare(a.arguments().size(), b.arguments().size()) * -1)
@@ -77,7 +77,7 @@ public class ObjectMapper {
   }
   
   private <T> T inject(T obj, Map<String,Object> map) {
-    injectors.stream().flatMap(i->i.injectors(obj.getClass()).stream())
+    injectors.stream().flatMap(i->i.invokers(obj.getClass()).stream())
         .filter(i->map.containsKey(i.name()))
         .forEach(i->i.inject(obj, map.get(i.name())));
     return obj;
@@ -87,7 +87,7 @@ public class ObjectMapper {
     if(extractors.isEmpty()) {
       throw new MappingException("No ExtractStrategy found");
     }
-    extractors.stream().flatMap(e->e.extractors(obj.getClass()).stream())
+    extractors.stream().flatMap(e->e.invokers(obj.getClass()).stream())
         .forEach(e->map.put(e.name(), e.extract(obj)));
     //System.out.printf("ObjectMapper.extract( %s ): map=%s%n", obj, map);
     return map;

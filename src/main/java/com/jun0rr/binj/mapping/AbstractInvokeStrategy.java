@@ -12,11 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
  *
  * @author F6036477
  */
-public abstract class AbstractConstructStrategy implements ConstructStrategy {
+public abstract class AbstractInvokeStrategy<T> implements InvokeStrategy<T> {
   
-  protected final Map<Class,List<ConstructFunction>> cache;
+  protected final Map<Class,List<T>> cache;
   
-  public AbstractConstructStrategy() {
+  public AbstractInvokeStrategy() {
     cache = new ConcurrentHashMap<>();
   }
 

@@ -11,10 +11,10 @@ import java.util.List;
  *
  * @author F6036477
  */
-public class GetterStrategy extends AbstractExtractStrategy {
+public class GetterStrategy extends AbstractInvokeStrategy<ExtractFunction> {
 
   @Override
-  public List<ExtractFunction> extractors(Class cls) {
+  public List<ExtractFunction> invokers(Class cls) {
     List<ExtractFunction> fns = cache.get(cls);
     if(fns == null) {
       fns = new LinkedList<>();

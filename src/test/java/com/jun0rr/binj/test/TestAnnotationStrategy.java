@@ -8,9 +8,6 @@ import com.jun0rr.binj.mapping.AnnotationConstructStrategy;
 import com.jun0rr.binj.mapping.AnnotationExtractStrategy;
 import com.jun0rr.binj.mapping.AnnotationInjectStrategy;
 import com.jun0rr.binj.mapping.Binary;
-import com.jun0rr.binj.mapping.ConstructStrategy;
-import com.jun0rr.binj.mapping.ExtractStrategy;
-import com.jun0rr.binj.mapping.InjectStrategy;
 import com.jun0rr.binj.mapping.MapConstructor;
 import com.jun0rr.binj.mapping.ObjectMapper;
 import java.time.LocalDate;
@@ -30,14 +27,12 @@ public class TestAnnotationStrategy {
   public void test() {
     Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
     ObjectMapper mp = new ObjectMapper();
-    ExtractStrategy ex = new AnnotationExtractStrategy();
-    InjectStrategy is = new AnnotationInjectStrategy();
-    ConstructStrategy cs = new AnnotationConstructStrategy();
+    AnnotationExtractStrategy ex = new AnnotationExtractStrategy();
     mp.extractStrategy().add(ex);
-    mp.injectStrategy().add(is);
-    mp.constructStrategy().add(cs);
+    mp.injectStrategy().add(new AnnotationInjectStrategy());
+    mp.constructStrategy().add(new AnnotationConstructStrategy());
     Map<String,Object> map = mp.map(p);
-    ex.extractors(p.getClass()).stream()
+    ex.invokers(p.getClass()).stream()
         .forEach(e->Assertions.assertEquals(e.extract(p), map.get(e.name())));
     Assertions.assertEquals(p, mp.unmap(map));
   }
