@@ -125,7 +125,7 @@ public class DefaultBinContext implements BinContext {
         codec = new ArrayCodec(this, type);
       }
       else {
-        codec = new ObjectCodec(this, mapper, type);
+        codec = new ObjectCodec(this,type);
       }
       codecs.put(type, codec);
       opt = Optional.of(codec);

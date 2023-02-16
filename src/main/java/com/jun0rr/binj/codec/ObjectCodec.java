@@ -17,13 +17,11 @@ import java.util.Objects;
  */
 public class ObjectCodec<T> extends AbstractBinCodec<T> {
   
-  private final ObjectMapper mapper;
   
   private final BinContext ctx;
   
-  public ObjectCodec(BinContext ctx, ObjectMapper mapper, BinType<T> type) {
+  public ObjectCodec(BinContext ctx, BinType<T> type) {
     super(type);
-    this.mapper = Objects.requireNonNull(mapper);
     this.ctx = Objects.requireNonNull(ctx);
   }
 
@@ -33,12 +31,12 @@ public class ObjectCodec<T> extends AbstractBinCodec<T> {
     BinType type = ctx.getBinType(id);
     Map<String,Object> map = ctx.read(buf);
     map.put(ObjectMapper.KEY_CLASS, type.type());
-    return (T) mapper.unmap(map);
+    return (T) ctx.mapper().unmap(map);
   }
 
   @Override
   public void write(BinBuffer buf, T val) {
-    Map<String,Object> map = mapper.map(val);
+    Map<String,Object> map = ctx.mapper().map(val);
     Class<T> cls = (Class) map.remove(ObjectMapper.KEY_CLASS);
     BinType type = ctx.putIfAbsent(cls, this);
     buf.putLong(type.id());
@@ -47,7 +45,7 @@ public class ObjectCodec<T> extends AbstractBinCodec<T> {
 
   @Override
   public int calcSize(T val) {
-    Map<String,Object> map = mapper.map(val);
+    Map<String,Object> map = ctx.mapper().map(val);
     map.remove(ObjectMapper.KEY_CLASS);
     return Long.BYTES + ctx.calcSize(map);
   }
