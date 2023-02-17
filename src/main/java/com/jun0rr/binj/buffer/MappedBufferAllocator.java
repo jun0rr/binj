@@ -11,10 +11,10 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Supplier;
 
 /**
@@ -27,7 +27,9 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
   
   private final Path root;
   
-  private final AtomicInteger number = new AtomicInteger(0);
+  private final AtomicInteger number;
+  
+  private final AtomicLong offset;
   
   private final Supplier<String> filename;
   
@@ -38,18 +40,22 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
   public MappedBufferAllocator(Path root, Supplier<String> filename, int bufsize, boolean overwrite) {
     super(bufsize);
     this.root = Objects.requireNonNull(root);
+    this.number = new AtomicInteger(0);
     this.filename = Objects.requireNonNull(filename);
     this.channels = new ArrayList<>();
     this.overwrite = overwrite;
+    this.offset = new AtomicLong(bufsize);
     Runtime.getRuntime().addShutdownHook(new Thread(this::close));
   }
   
   public MappedBufferAllocator(Path root, int bufsize, boolean overwrite) {
     super(bufsize);
     this.root = Objects.requireNonNull(root);
+    this.number = new AtomicInteger(0);
     this.filename = ()->String.format("binj.buffer@%d.f%d", MappedBufferAllocator.this.hashCode(), number.getAndIncrement());
     this.channels = new ArrayList<>();
     this.overwrite = overwrite;
+    this.offset = new AtomicLong(bufsize);
     Runtime.getRuntime().addShutdownHook(new Thread(this::close));
   }
   
@@ -78,7 +84,7 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
       if(!channels.isEmpty()) {
         FileChannel c = channels.get(channels.size()-1);
         if(c.size() < MAX_FILE_SIZE) {
-          return c.map(FileChannel.MapMode.READ_WRITE, c.size(), size);
+          return c.map(FileChannel.MapMode.READ_WRITE, offset.getAndAdd(size), size);
         }
       }
       OpenOption[] opts;
