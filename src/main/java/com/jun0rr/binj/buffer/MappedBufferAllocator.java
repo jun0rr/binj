@@ -22,6 +22,8 @@ import java.util.function.Supplier;
  */
 public class MappedBufferAllocator extends DefaultBufferAllocator {
   
+  public static final int MAX_FILE_SIZE = 4 * 1024 * 1024 * 1024; //4GB
+  
   private final Path root;
   
   private final AtomicInteger number = new AtomicInteger(0);
@@ -72,6 +74,12 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
   @Override
   public ByteBuffer alloc(int size) {
     try {
+      if(!channels.isEmpty()) {
+        FileChannel c = channels.get(channels.size()-1);
+        if(c.size() < MAX_FILE_SIZE) {
+          return c.map(FileChannel.MapMode.READ_WRITE, c.size(), size);
+        }
+      }
       OpenOption[] opts;
       if(overwrite) {
         opts = new OpenOption[]{

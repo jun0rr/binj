@@ -563,6 +563,11 @@ public class DefaultBinBuffer implements BinBuffer {
     }
     return sb.append("]").toString();
   }
+  
+  @Override
+  public void close() {
+    malloc.close();
+  }
 
   @Override
   public String toString() {

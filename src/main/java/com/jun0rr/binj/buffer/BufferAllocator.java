@@ -26,6 +26,7 @@ public interface BufferAllocator extends Closeable {
   @Override public default void close() {}
   
   
+  
   public static class DirectAllocator extends DefaultBufferAllocator {
     
     public DirectAllocator(int bufsize) {
@@ -51,7 +52,6 @@ public interface BufferAllocator extends Closeable {
     }
     
   }
-  
   
   
   
