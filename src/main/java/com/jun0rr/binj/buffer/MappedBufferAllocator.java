@@ -11,6 +11,7 @@ import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -22,7 +23,7 @@ import java.util.function.Supplier;
  */
 public class MappedBufferAllocator extends DefaultBufferAllocator {
   
-  public static final int MAX_FILE_SIZE = 4 * 1024 * 1024 * 1024; //4GB
+  public static final long MAX_FILE_SIZE = 4294967296L; //4GB
   
   private final Path root;
   
