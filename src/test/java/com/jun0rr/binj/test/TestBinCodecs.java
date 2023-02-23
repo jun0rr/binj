@@ -6,7 +6,6 @@ package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.BinContext;
 import com.jun0rr.binj.buffer.BinBuffer;
-import com.jun0rr.binj.impl.IndexedKey;
 import com.jun0rr.binj.codec.BooleanCodec;
 import com.jun0rr.binj.codec.ByteCodec;
 import com.jun0rr.binj.codec.CharCodec;

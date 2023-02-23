@@ -9,24 +9,35 @@ import com.jun0rr.binj.BinContext;
 import com.jun0rr.binj.BinType;
 import com.jun0rr.binj.BinTypeNotFoundException;
 import com.jun0rr.binj.ContextEvent;
+import com.jun0rr.binj.ContextListener;
 import com.jun0rr.binj.UnknownBinTypeException;
 import com.jun0rr.binj.buffer.BinBuffer;
 import com.jun0rr.binj.codec.ArrayCodec;
+import com.jun0rr.binj.codec.BinTypeCodec;
+import com.jun0rr.binj.codec.BooleanArrayCodec;
 import com.jun0rr.binj.codec.BooleanCodec;
+import com.jun0rr.binj.codec.ByteArrayCodec;
 import com.jun0rr.binj.codec.ByteCodec;
+import com.jun0rr.binj.codec.CharArrayCodec;
 import com.jun0rr.binj.codec.CharCodec;
 import com.jun0rr.binj.codec.ClassCodec;
 import com.jun0rr.binj.codec.CollectionCodec;
+import com.jun0rr.binj.codec.DoubleArrayCodec;
 import com.jun0rr.binj.codec.DoubleCodec;
+import com.jun0rr.binj.codec.EnumCodec;
+import com.jun0rr.binj.codec.FloatArrayCodec;
 import com.jun0rr.binj.codec.FloatCodec;
 import com.jun0rr.binj.codec.IndexedKeyCodec;
 import com.jun0rr.binj.codec.InstantCodec;
+import com.jun0rr.binj.codec.IntArrayCodec;
 import com.jun0rr.binj.codec.IntegerCodec;
 import com.jun0rr.binj.codec.LocalDateCodec;
 import com.jun0rr.binj.codec.LocalDateTimeCodec;
+import com.jun0rr.binj.codec.LongArrayCodec;
 import com.jun0rr.binj.codec.LongCodec;
 import com.jun0rr.binj.codec.MapCodec;
 import com.jun0rr.binj.codec.ObjectCodec;
+import com.jun0rr.binj.codec.ShortArrayCodec;
 import com.jun0rr.binj.codec.ShortCodec;
 import com.jun0rr.binj.codec.Utf8Codec;
 import com.jun0rr.binj.codec.ZonedDateTimeCodec;
@@ -37,17 +48,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
-import com.jun0rr.binj.ContextListener;
-import com.jun0rr.binj.codec.BinTypeCodec;
-import com.jun0rr.binj.codec.BooleanArrayCodec;
-import com.jun0rr.binj.codec.ByteArrayCodec;
-import com.jun0rr.binj.codec.CharArrayCodec;
-import com.jun0rr.binj.codec.DoubleArrayCodec;
-import com.jun0rr.binj.codec.EnumCodec;
-import com.jun0rr.binj.codec.FloatArrayCodec;
-import com.jun0rr.binj.codec.IntArrayCodec;
-import com.jun0rr.binj.codec.LongArrayCodec;
-import com.jun0rr.binj.codec.ShortArrayCodec;
 
 /**
  *
@@ -199,6 +199,7 @@ public class DefaultBinContext implements BinContext {
     String sbuf = buf.toString();
     int pos = buf.position();
     BinCodec<T> c = getBinCodec(buf.getLong());
+    //System.out.printf("BinContext.read( %s ): codec=%s%n", buf, c);
     buf.position(pos);
     T o = c.read(buf);
     //System.out.printf("BinContext.read( %s ): obj=%s%n", buf, o);
@@ -215,9 +216,9 @@ public class DefaultBinContext implements BinContext {
 
   @Override
   public <T> ContextEvent write(BinBuffer buf, T o) throws BinTypeNotFoundException {
-    //System.out.printf("BinContext.write( %s, %s )%n", buf, o);
     String sbuf = buf.toString();
     BinCodec c = getBinCodec(o.getClass());
+    //System.out.printf("BinContext.write( %s, %s ): codec=%s%n", buf, o, c);
     int pos = buf.position();
     //System.out.printf("[1]BinContext.write( %s, %s ): codec=%s%n", buf, o.getClass().getCanonicalName(), c.bintype());
     c.write(buf, o);

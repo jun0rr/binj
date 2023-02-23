@@ -4,8 +4,6 @@
  */
 package com.jun0rr.binj.codec;
 
-import com.jun0rr.binj.BinCodec;
-import com.jun0rr.binj.BinType;
 import com.jun0rr.binj.UnknownBinTypeException;
 import com.jun0rr.binj.buffer.BinBuffer;
 import com.jun0rr.binj.impl.DefaultBinType;

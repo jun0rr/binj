@@ -7,7 +7,6 @@ package com.jun0rr.binj.type;
 import com.jun0rr.binj.BinContext;
 import com.jun0rr.binj.UnknownBinTypeException;
 import com.jun0rr.binj.buffer.BinBuffer;
-import com.jun0rr.binj.impl.IndexedKey;
 import com.jun0rr.binj.impl.DefaultBinType;
 import com.jun0rr.binj.impl.IndexedKey;
 import com.jun0rr.binj.impl.Pair;

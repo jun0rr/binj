@@ -5,17 +5,17 @@
 package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.ContextEvent;
+import com.jun0rr.binj.ContextListener;
 import com.jun0rr.binj.mapping.Binary;
 import com.jun0rr.binj.mapping.MapConstructor;
-import java.time.LocalDate;
-import java.util.Objects;
-import org.junit.jupiter.api.Test;
-import com.jun0rr.binj.ContextListener;
 import com.jun0rr.binj.type.MappedInvocationHandler;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *

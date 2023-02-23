@@ -6,7 +6,6 @@ package com.jun0rr.binj.mapping;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Stream;
 
 /**

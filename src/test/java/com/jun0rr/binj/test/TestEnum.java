@@ -4,7 +4,6 @@
  */
 package com.jun0rr.binj.test;
 
-import com.jun0rr.binj.BinCodec;
 import com.jun0rr.binj.BinContext;
 import com.jun0rr.binj.buffer.BinBuffer;
 import com.jun0rr.binj.impl.DefaultBinContext;
@@ -13,7 +12,6 @@ import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodHandles.Lookup;
 import java.util.Arrays;
-import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

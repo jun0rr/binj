@@ -6,8 +6,8 @@ package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.buffer.BinBuffer;
 import java.nio.BufferOverflowException;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *

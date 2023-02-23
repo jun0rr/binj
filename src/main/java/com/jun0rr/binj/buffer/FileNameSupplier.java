@@ -7,7 +7,6 @@ package com.jun0rr.binj.buffer;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
 /**
  *
