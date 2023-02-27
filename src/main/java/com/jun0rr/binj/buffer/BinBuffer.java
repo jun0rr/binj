@@ -173,16 +173,12 @@ public interface BinBuffer extends Closeable {
     return new DefaultBinBuffer(BufferAllocator.directAllocator(bufsize));
   }
   
-  public static BinBuffer ofMappedFileAllocator(Path root, int bufsize) {
-    return new DefaultBinBuffer(BufferAllocator.mappedFileAllocator(root, bufsize));
+  public static BinBuffer ofMappedFileAllocator(PathSupplier sup, int bufsize, boolean overwrite) {
+    return new DefaultBinBuffer(BufferAllocator.mappedFileAllocator(sup, bufsize, overwrite));
   }
   
-  public static BinBuffer ofMappedFileAllocator(Path root, int bufsize, boolean overwrite) {
-    return new DefaultBinBuffer(BufferAllocator.mappedFileAllocator(root, bufsize, overwrite));
-  }
-  
-  public static BinBuffer ofMappedFileAllocator(Path root, Supplier<String> filename, int bufsize, boolean overwrite) {
-    return new DefaultBinBuffer(BufferAllocator.mappedFileAllocator(root, filename, bufsize, overwrite));
+  public static BinBuffer ofMappedFileAllocator(PathSupplier sup, int bufsize) {
+    return new DefaultBinBuffer(BufferAllocator.mappedFileAllocator(sup, bufsize, false));
   }
   
 }

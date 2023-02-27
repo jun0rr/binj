@@ -6,8 +6,6 @@ package com.jun0rr.binj.buffer;
 
 import java.io.Closeable;
 import java.nio.ByteBuffer;
-import java.nio.file.Path;
-import java.util.function.Supplier;
 
 /**
  *
@@ -63,16 +61,12 @@ public interface BufferAllocator extends Closeable {
     return new HeapAllocator(bufferSize);
   }
   
-  public static BufferAllocator mappedFileAllocator(Path root, int bufferSize) {
-    return new MappedBufferAllocator(root, bufferSize);
+  public static BufferAllocator mappedFileAllocator(PathSupplier sup, int bufferSize) {
+    return new MappedBufferAllocator(sup, bufferSize);
   }
   
-  public static BufferAllocator mappedFileAllocator(Path root, int bufferSize, boolean overwrite) {
-    return new MappedBufferAllocator(root, bufferSize, overwrite);
-  }
-  
-  public static BufferAllocator mappedFileAllocator(Path root, Supplier<String> filename, int bufferSize, boolean overwrite) {
-    return new MappedBufferAllocator(root, filename, bufferSize, overwrite);
+  public static BufferAllocator mappedFileAllocator(PathSupplier sup, int bufferSize, boolean overwrite) {
+    return new MappedBufferAllocator(sup, bufferSize, overwrite);
   }
   
   public static BufferAllocator overflowAllocator() {

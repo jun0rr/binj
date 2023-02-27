@@ -6,7 +6,7 @@ package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.buffer.BinBuffer;
 import com.jun0rr.binj.buffer.BufferAllocator;
-import java.nio.file.Path;
+import com.jun0rr.binj.buffer.PathSupplier;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,9 +17,7 @@ import org.junit.jupiter.api.Test;
  */
 public class TestMappedBinBuffer {
   
-  private static final Path root = Paths.get(".").toAbsolutePath();
-  
-  private static final BufferAllocator malloc = BufferAllocator.mappedFileAllocator(root, 15, true);
+  private static final BufferAllocator malloc = BufferAllocator.mappedFileAllocator(PathSupplier.of(Paths.get("./"), TestMappedBinBuffer.class.getSimpleName(), "bin"), 15, true);
   
   @Test
   public void put_byte() {
