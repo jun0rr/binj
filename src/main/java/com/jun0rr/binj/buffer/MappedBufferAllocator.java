@@ -10,6 +10,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.OpenOption;
 import java.nio.file.StandardOpenOption;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -51,6 +53,24 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
     return channels;
   }
   
+  public List<ByteBuffer> readBuffers() {
+    if(channels.isEmpty()) return Collections.EMPTY_LIST;
+    try {
+      List<ByteBuffer> bufs = new LinkedList<>();
+      for(FileChannel c : channels) {
+        long size = c.size();
+        long len = 0;
+        while(len < size) {
+          bufs.add(c.map(FileChannel.MapMode.READ_WRITE, len, bufferSize()));
+          len += bufferSize();
+        }
+      }
+      return bufs;
+    }
+    catch(IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
   
   @Override
   public void close() {
