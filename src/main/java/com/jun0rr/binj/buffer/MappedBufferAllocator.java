@@ -39,7 +39,7 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
         .map(p->Rethrow.run(()->FileChannel.open(p, openOptions())))
         .collect(Collectors.toList())
     );
-    this.offset = new AtomicLong(bufsize);
+    this.offset = new AtomicLong(0);
     this.overwrite = overwrite;
     Runtime.getRuntime().addShutdownHook(new Thread(this::close));
   }
@@ -64,6 +64,8 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
           bufs.add(c.map(FileChannel.MapMode.READ_WRITE, len, bufferSize()));
           len += bufferSize();
         }
+        offset.set(len);
+        //System.out.printf("MappedBufferAllocator.readBuffers(): len=%d, size=%d, bufs=%d, buf=%s%n", len, size, bufs.size(), bufs.get(0));
       }
       return bufs;
     }
@@ -103,11 +105,12 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
   }
   
   @Override
-  public ByteBuffer alloc(int size) {
+  public synchronized ByteBuffer alloc(int size) {
     try {
       if(!channels.isEmpty()) {
         FileChannel c = channels.get(channels.size()-1);
         if(c.size() < Integer.MAX_VALUE) {
+          //System.out.printf("MappedBufferAllocator.alloc(%d): channel.size=%d, offset=%s%n", size, c.size(), offset);
           return c.map(FileChannel.MapMode.READ_WRITE, offset.getAndAdd(size), size);
         }
       }
