@@ -19,7 +19,7 @@ public class NoArgsConstructStrategy extends AbstractInvokeStrategy<ConstructFun
     if(fns == null) {
       fns = List.of(cls.getDeclaredConstructors()).stream()
           .filter(c->c.getParameterCount() == 0)
-          .map(DefaultConstructFunction::ofAnnotated)
+          .map(ConstructFunction::ofAnnotated)
           .collect(Collectors.toList());
       cache.put(cls, fns);
     }

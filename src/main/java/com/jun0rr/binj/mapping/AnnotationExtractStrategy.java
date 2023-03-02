@@ -24,19 +24,19 @@ public class AnnotationExtractStrategy extends AbstractInvokeStrategy<ExtractFun
         Stream.concat(
             List.of(cls.getDeclaredFields()).stream()
                 .filter(f->f.isAnnotationPresent(Binary.class))
-                .map(DefaultExtractFunction::of),
+                .map(ExtractFunction::of),
             List.of(cls.getDeclaredMethods()).stream()
                 .filter(m->m.getParameterCount() == 0)
                 .filter(m->m.getReturnType() != void.class)
                 .filter(m->m.isAnnotationPresent(Binary.class))
-                .map(DefaultExtractFunction::of)
+                .map(ExtractFunction::of)
         ).forEach(fns::add);
         List.of(cls.getInterfaces()).stream()
             .flatMap(c->List.of(c.getDeclaredMethods()).stream())
             .filter(m->m.getParameterCount() == 0)
             .filter(m->m.getReturnType() != void.class)
             .filter(m->m.isAnnotationPresent(Binary.class))
-            .map(DefaultExtractFunction::of)
+            .map(ExtractFunction::of)
             .forEach(fns::add);
         sup = sup.getSuperclass();
       }

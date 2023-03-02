@@ -39,26 +39,36 @@ public class DefaultExtractFunction implements ExtractFunction {
       throw new MappingException(t);
     }
   }
-  
-  public static DefaultExtractFunction of(Method m) {
-    try {
-      return new DefaultExtractFunction(
-          MethodNameAdapter.adapt(m), 
-          MethodHandles.publicLookup().unreflect(m)
-      );
-    }
-    catch(Exception e) {
-      throw new MappingException(e);
-    }
+
+  @Override
+  public int hashCode() {
+    int hash = 7;
+    hash = 97 * hash + Objects.hashCode(this.name);
+    hash = 97 * hash + Objects.hashCode(this.handle);
+    return hash;
   }
-  
-  public static DefaultExtractFunction of(Field f) {
-    try {
-      return new DefaultExtractFunction(f.getName(), MethodHandles.publicLookup().unreflectGetter(f));
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
-    catch(Exception e) {
-      throw new MappingException(e);
+    if (obj == null) {
+      return false;
     }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final DefaultExtractFunction other = (DefaultExtractFunction) obj;
+    if (!Objects.equals(this.name, other.name)) {
+      return false;
+    }
+    return Objects.equals(this.handle, other.handle);
+  }
+
+  @Override
+  public String toString() {
+    return "ExtractFunction{" + "name=" + name + ", handle=" + handle + '}';
   }
   
 }

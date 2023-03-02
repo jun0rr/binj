@@ -21,7 +21,7 @@ public class FieldInjectStrategy extends AbstractInvokeStrategy<InjectFunction> 
       fns = List.of(cls.getDeclaredFields()).stream()
           .filter(f->!Modifier.isFinal(f.getModifiers()))
           .filter(f->!Modifier.isTransient(f.getModifiers()))
-          .map(DefaultInjectFunction::of)
+          .map(InjectFunction::of)
           .collect(Collectors.toList());
       cache.put(cls, fns);
     }

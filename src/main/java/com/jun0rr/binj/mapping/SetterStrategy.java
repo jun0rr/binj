@@ -23,13 +23,13 @@ public class SetterStrategy extends AbstractInvokeStrategy<InjectFunction> {
         List.of(cls.getDeclaredMethods()).stream()
             .filter(m->m.getName().startsWith("set"))
             .filter(m->m.getParameterCount() == 1)
-            .map(DefaultInjectFunction::of)
+            .map(InjectFunction::of)
             .forEach(fns::add);
         List.of(cls.getInterfaces()).stream()
             .flatMap(c->List.of(c.getDeclaredMethods()).stream())
             .filter(m->m.getName().startsWith("set"))
             .filter(m->m.getParameterCount() == 1)
-            .map(DefaultInjectFunction::of)
+            .map(InjectFunction::of)
             .forEach(fns::add);
         sup = sup.getSuperclass();
       }

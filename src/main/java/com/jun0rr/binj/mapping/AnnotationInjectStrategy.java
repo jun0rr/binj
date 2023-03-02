@@ -26,17 +26,17 @@ public class AnnotationInjectStrategy extends AbstractInvokeStrategy<InjectFunct
             List.of(cls.getDeclaredFields()).stream()
                 .filter(f->!Modifier.isFinal(f.getModifiers()))
                 .filter(f->f.isAnnotationPresent(Binary.class))
-                .map(DefaultInjectFunction::of),
+                .map(InjectFunction::of),
             List.of(cls.getDeclaredMethods()).stream()
                 .filter(m->m.getParameterCount() == 1)
                 .filter(m->m.isAnnotationPresent(Binary.class))
-                .map(DefaultInjectFunction::of)
+                .map(InjectFunction::of)
         ).forEach(fns::add);
         List.of(cls.getInterfaces()).stream()
             .flatMap(c->List.of(c.getDeclaredMethods()).stream())
             .filter(m->m.getParameterCount() == 1)
             .filter(m->m.isAnnotationPresent(Binary.class))
-            .map(DefaultInjectFunction::of)
+            .map(InjectFunction::of)
             .forEach(fns::add);
         sup = sup.getSuperclass();
       }

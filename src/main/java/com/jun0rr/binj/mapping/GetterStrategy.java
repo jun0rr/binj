@@ -24,14 +24,14 @@ public class GetterStrategy extends AbstractInvokeStrategy<ExtractFunction> {
             .filter(m->m.getName().startsWith("get"))
             .filter(m->m.getParameterCount() == 0)
             .filter(m->m.getReturnType() != void.class)
-            .map(DefaultExtractFunction::of)
+            .map(ExtractFunction::of)
             .forEach(fns::add);
         List.of(cls.getInterfaces()).stream()
             .flatMap(c->List.of(c.getDeclaredMethods()).stream())
             .filter(m->m.getName().startsWith("get"))
             .filter(m->m.getParameterCount() == 0)
             .filter(m->m.getReturnType() != void.class)
-            .map(DefaultExtractFunction::of)
+            .map(ExtractFunction::of)
             .forEach(fns::add);
         sup = sup.getSuperclass();
       }

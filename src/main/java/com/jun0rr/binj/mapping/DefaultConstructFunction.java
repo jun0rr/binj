@@ -60,31 +60,35 @@ public class DefaultConstructFunction implements ConstructFunction {
     }
   }
   
-  public static DefaultConstructFunction ofAnnotated(Constructor c) {
-    try {
-      MapConstructor mc = c.getDeclaredAnnotation(MapConstructor.class);
-      return new DefaultConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c), (mc != null ? mc.value() : null));
-    }
-    catch(IllegalAccessException e) {
-      throw new MappingException(e);
-    }
-  }
-
-  public static DefaultConstructFunction ofParameters(Constructor c) {
-    try {
-      List<String> args = List.of(c.getParameters()).stream()
-          .map(p->p.getName())
-          .collect(Collectors.toList());
-      return new DefaultConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c), args);
-    }
-    catch(IllegalAccessException e) {
-      throw new MappingException(e);
-    }
-  }
-
   @Override
   public String toString() {
     return "ConstructFunction{" + "handle=" + handle + ", arguments=" + arguments + '}';
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 5;
+    hash = 19 * hash + Objects.hashCode(this.handle);
+    hash = 19 * hash + Objects.hashCode(this.arguments);
+    return hash;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final DefaultConstructFunction other = (DefaultConstructFunction) obj;
+    if (!Objects.equals(this.handle, other.handle)) {
+      return false;
+    }
+    return Objects.equals(this.arguments, other.arguments);
   }
   
 }

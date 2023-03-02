@@ -19,7 +19,7 @@ public class AnnotationConstructStrategy extends AbstractInvokeStrategy<Construc
     if(fns == null) {
       fns = List.of(cls.getDeclaredConstructors()).stream()
           .filter(c->c.isAnnotationPresent(MapConstructor.class) || c.getParameterCount() == 0)
-          .map(DefaultConstructFunction::ofAnnotated)
+          .map(ConstructFunction::ofAnnotated)
           .collect(Collectors.toList());
       cache.put(cls, fns);
     }
