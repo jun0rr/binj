@@ -28,9 +28,9 @@ public class TestAnnotationStrategy {
     Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
     ObjectMapper mp = new ObjectMapper();
     AnnotationExtractStrategy ex = new AnnotationExtractStrategy();
-    mp.extractStrategy().add(ex);
-    mp.injectStrategy().add(new AnnotationInjectStrategy());
-    mp.constructStrategy().add(new AnnotationConstructStrategy());
+    mp.extractStrategies().add(ex);
+    mp.injectStrategies().add(new AnnotationInjectStrategy());
+    mp.constructStrategies().add(new AnnotationConstructStrategy());
     Map<String,Object> map = mp.map(p);
     ex.invokers(p.getClass()).stream()
         .forEach(e->Assertions.assertEquals(e.extract(p), map.get(e.name())));

@@ -30,8 +30,8 @@ public class TestNestedObjects implements ContextListener {
       Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), new Address("Bitwise Street", "Byte City", 1024), new long[]{(long)(Math.random() * Short.MAX_VALUE), (long)(Math.random() * Short.MAX_VALUE)});
       System.out.println(p);
       BinContext ctx = BinContext.newContext();
-      ctx.mapper().constructStrategy().add(new DefaultConstructStrategy());
-      ctx.mapper().extractStrategy().add(new AnnotationExtractStrategy());
+      ctx.mapper().constructStrategies().add(new DefaultConstructStrategy());
+      ctx.mapper().extractStrategies().add(new AnnotationExtractStrategy());
       ctx.listeners().add(this);
       BinBuffer buf = BinBuffer.ofHeapAllocator(128);
       System.out.println(buf);

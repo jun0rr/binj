@@ -4,7 +4,7 @@
  */
 package com.jun0rr.binj.test;
 
-import com.jun0rr.binj.mapping.FieldMethodExtractStrategy;
+import com.jun0rr.binj.mapping.SetterFieldInjectStrategy;
 import java.time.LocalDate;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
@@ -13,42 +13,36 @@ import org.junit.jupiter.api.Test;
  *
  * @author F6036477
  */
-public class TestFieldMethodExtractStrategy {
+public class TestSetterFieldInjectStrategy {
   
   @Test public void test() {
-    FieldMethodExtractStrategy ex = new FieldMethodExtractStrategy();
+    SetterFieldInjectStrategy in = new SetterFieldInjectStrategy();
     System.out.println("--- Person:");
     Person p = new Person("Hello", "World", LocalDate.now(), 1L);
-    ex.invokers(Person.class).stream()
-        .peek(f->System.out.println(f))
-        .map(f->f.extract(p))
+    System.out.println(p);
+    in.invokers(Person.class).stream()
         .forEach(System.out::println);
-    System.out.println();
-    
-    System.out.println("--- PersonR:");
-    PersonR r = new PersonR("Hello", "World", LocalDate.now(), 1L);
-    ex.invokers(PersonR.class).stream()
-        .peek(f->System.out.println(f))
-        .map(f->f.extract(r))
-        .forEach(System.out::println);
-  }
-  
-  
-  public static record PersonR(String name, String last, LocalDate birth, long id) {
-    
+    in.invokers(Person.class).stream()
+        .filter(i->i.name().equals("name"))
+        .findFirst()
+        .get()
+        .inject(p, "John");
+    System.out.println(p);
   }
   
   
   public static class Person {
     
-    private final String name;
+    private String name;
     
-    private final String last;
+    private String last;
     
-    private final LocalDate birth;
+    private LocalDate birth;
     
     private long id;
-
+    
+    public Person() {}
+    
     public Person(String name, String last, LocalDate birth, long id) {
       this.name = name;
       this.last = last;
@@ -60,10 +54,20 @@ public class TestFieldMethodExtractStrategy {
       return name;
     }
     
+    public Person name(String name) {
+      this.name = name;
+      return this;
+    }
+    
     public String last() {
       return last;
     }
 
+    public Person birth(LocalDate birth) {
+      this.birth = birth;
+      return this;
+    }
+    
     public LocalDate birth() {
       return birth;
     }
@@ -72,6 +76,11 @@ public class TestFieldMethodExtractStrategy {
       return id;
     }
 
+    public Person id(long id) {
+      this.id = id;
+      return this;
+    }
+    
     @Override
     public int hashCode() {
       int hash = 7;

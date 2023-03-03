@@ -31,15 +31,15 @@ public class ObjectMapper {
     this.injectors = new CopyOnWriteArrayList<>();
   }
   
-  public List<InvokeStrategy<ConstructFunction>> constructStrategy() {
+  public List<InvokeStrategy<ConstructFunction>> constructStrategies() {
     return constructors;
   }
   
-  public List<InvokeStrategy<ExtractFunction>> extractStrategy() {
+  public List<InvokeStrategy<ExtractFunction>> extractStrategies() {
     return extractors;
   }
   
-  public List<InvokeStrategy<InjectFunction>> injectStrategy() {
+  public List<InvokeStrategy<InjectFunction>> injectStrategies() {
     return injectors;
   }
   
@@ -97,25 +97,25 @@ public class ObjectMapper {
   
   public static ObjectMapper withAnnotationStrategies() {
     ObjectMapper om = new ObjectMapper();
-    om.constructStrategy().add(new AnnotationConstructStrategy());
-    om.extractStrategy().add(new AnnotationExtractStrategy());
-    om.injectStrategy().add(new AnnotationInjectStrategy());
+    om.constructStrategies().add(new AnnotationConstructStrategy());
+    om.extractStrategies().add(new AnnotationExtractStrategy());
+    om.injectStrategies().add(new AnnotationInjectStrategy());
     return om;
   }
   
   public static ObjectMapper withGetterSetterStrategies() {
     ObjectMapper om = new ObjectMapper();
-    om.constructStrategy().add(new NoArgsConstructStrategy());
-    om.extractStrategy().add(new GetterStrategy());
-    om.injectStrategy().add(new SetterStrategy());
+    om.constructStrategies().add(new NoArgsConstructStrategy());
+    om.extractStrategies().add(new GetterStrategy());
+    om.injectStrategies().add(new SetterStrategy());
     return om;
   }
   
   public static ObjectMapper withFieldStrategies() {
     ObjectMapper om = new ObjectMapper();
-    om.constructStrategy().add(new NoArgsConstructStrategy());
-    om.extractStrategy().add(new FieldExtractStrategy());
-    om.injectStrategy().add(new FieldInjectStrategy());
+    om.constructStrategies().add(new NoArgsConstructStrategy());
+    om.extractStrategies().add(new FieldExtractStrategy());
+    om.injectStrategies().add(new FieldInjectStrategy());
     return om;
   }
   

@@ -8,6 +8,7 @@ import com.jun0rr.binj.buffer.BinBuffer;
 import com.jun0rr.binj.buffer.BufferAllocator;
 import com.jun0rr.binj.buffer.PathSupplier;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -65,6 +66,7 @@ public class TestMappedBinBuffer {
     buf.put(array);
     buf.flip();
     int i = 0;
+    System.out.println(Arrays.toString(array));
     while(buf.hasRemaining()) {
       Assertions.assertEquals(array[i++], buf.get());
     }

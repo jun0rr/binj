@@ -24,7 +24,7 @@ public class TestGetterStrategy {
     Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
     ObjectMapper mp = ObjectMapper.withGetterSetterStrategies();
     GetterStrategy gs = new GetterStrategy();
-    mp.extractStrategy().add(gs);
+    mp.extractStrategies().add(gs);
     Map<String,Object> map = mp.map(p);
     gs.invokers(p.getClass()).stream()
         .forEach(e->Assertions.assertEquals(e.extract(p), map.get(e.name())));
