@@ -39,7 +39,28 @@ public class TestGetterFieldExtractStrategy {
   //}
   
   
-  public static class Person {
+  public static abstract class APerson {
+    
+    protected final long id;
+    
+    protected APerson(long id) {
+      this.id = id;
+    }
+    
+    public abstract String name();
+    
+    public abstract String last();
+    
+    public abstract LocalDate birth();
+    
+    public long id() {
+      return id;
+    }
+    
+  }
+  
+  
+  public static class Person extends APerson {
     
     private final String name;
     
@@ -47,30 +68,31 @@ public class TestGetterFieldExtractStrategy {
     
     private final LocalDate birth;
     
-    private long id;
-
     public Person(String name, String last, LocalDate birth, long id) {
+      super(id);
       this.name = name;
       this.last = last;
       this.birth = birth;
-      this.id = id;
     }
 
+    @Override
     public String name() {
       return name;
     }
     
+    @Override
     public String last() {
       return last;
     }
 
+    @Override
     public LocalDate birth() {
       return birth;
     }
 
-    public long id() {
-      return id;
-    }
+    //public long id() {
+      //return id;
+    //}
 
     @Override
     public int hashCode() {
