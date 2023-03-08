@@ -8,9 +8,7 @@ import java.io.Closeable;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.util.List;
-import java.util.function.Supplier;
 
 /**
  *
@@ -28,6 +26,8 @@ public interface BinBuffer extends Closeable {
   
   @Override
   public default void close() {}
+  
+  public List<ByteBuffer> byteBuffers();
   
   public BinBuffer compact();
   

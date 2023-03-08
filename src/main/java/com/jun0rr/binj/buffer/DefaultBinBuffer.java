@@ -56,6 +56,11 @@ public class DefaultBinBuffer implements BinBuffer {
       allocate();
     }
   }
+  
+  @Override
+  public List<ByteBuffer> byteBuffers() {
+    return buffers;
+  }
 
   @Override
   public BinBuffer clear() {
