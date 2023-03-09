@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class SetterFieldInjectStrategy extends AbstractInvokeStrategy<InjectFunction> {
+public class FieldSetterStrategy extends AbstractInvokeStrategy<InjectFunction> {
 
   @Override
   public List<InjectFunction> invokers(Class cls) {

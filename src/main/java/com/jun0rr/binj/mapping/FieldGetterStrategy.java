@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class GetterFieldExtractStrategy extends AbstractInvokeStrategy<ExtractFunction> {
+public class FieldGetterStrategy extends AbstractInvokeStrategy<ExtractFunction> {
 
   @Override
   public List<ExtractFunction> invokers(Class cls) {

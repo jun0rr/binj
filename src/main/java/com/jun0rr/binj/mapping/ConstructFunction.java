@@ -23,6 +23,16 @@ public interface ConstructFunction {
   public <T> T create();
   
   
+  
+  public static ConstructFunction ofNoArgs(Constructor c) {
+    try {
+      return new DefaultConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c));
+    }
+    catch(IllegalAccessException e) {
+      throw new MappingException(e);
+    }
+  }
+  
   public static ConstructFunction ofAnnotated(Constructor c) {
     try {
       MapConstructor mc = c.getDeclaredAnnotation(MapConstructor.class);
