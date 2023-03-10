@@ -27,8 +27,6 @@ public interface BinBuffer extends Closeable {
   @Override
   public default void close() {}
   
-  public List<ByteBuffer> byteBuffers();
-  
   public BinBuffer compact();
   
   public BinBuffer duplicate();
