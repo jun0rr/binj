@@ -70,16 +70,12 @@ public class DefaultBinBuffer implements BinBuffer {
 
   @Override
   public BinBuffer compact() {
-    List<ByteBuffer> ls = buffers.stream().collect(Collectors.toList());
-    buffers.clear();
-    ls.stream()
-        .map(b->malloc.alloc())
-        .forEach(buffers::add);
-    ls.stream()
-        .filter(ByteBuffer::hasRemaining)
-        .forEach(b->put(b));
-    ls.clear();
-    return this;
+    ByteBuffer temp = BufferAllocator.DirectAllocator.class.isAssignableFrom(malloc.getClass()) 
+        ? ByteBuffer.allocateDirect(remaining()) 
+        : ByteBuffer.allocate(remaining());
+    get(temp);
+    clear();
+    return put(temp.flip());
   }
 
   @Override
