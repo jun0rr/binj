@@ -24,13 +24,8 @@ public abstract class DefaultBufferAllocator implements BufferAllocator {
   }
   
   @Override
-  public ByteBuffer alloc() {
-    return alloc(bufferSize);
-  }
+  public abstract ByteBuffer alloc();
 
-  @Override
-  public abstract ByteBuffer alloc(int size);
-  
   
   
   public static class BufferAllocatorException extends RuntimeException {

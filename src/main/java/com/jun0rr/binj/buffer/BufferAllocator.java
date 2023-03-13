@@ -15,11 +15,7 @@ public interface BufferAllocator extends Closeable {
   
   public int bufferSize();
   
-  public default ByteBuffer alloc() {
-    return alloc(bufferSize());
-  }
-  
-  public ByteBuffer alloc(int size);
+  public ByteBuffer alloc();
   
   @Override public default void close() {}
   
@@ -32,8 +28,8 @@ public interface BufferAllocator extends Closeable {
     }
     
     @Override
-    public ByteBuffer alloc(int size) {
-      return ByteBuffer.allocateDirect(size);
+    public ByteBuffer alloc() {
+      return ByteBuffer.allocateDirect(bufferSize());
     }
     
   }
@@ -45,8 +41,8 @@ public interface BufferAllocator extends Closeable {
     }
     
     @Override
-    public ByteBuffer alloc(int size) {
-      return ByteBuffer.allocate(size);
+    public ByteBuffer alloc() {
+      return ByteBuffer.allocate(bufferSize());
     }
     
   }

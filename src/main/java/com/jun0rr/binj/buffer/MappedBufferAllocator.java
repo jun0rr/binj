@@ -106,18 +106,18 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
   }
   
   @Override
-  public synchronized ByteBuffer alloc(int size) {
+  public synchronized ByteBuffer alloc() {
     try {
       if(!channels.isEmpty()) {
         FileChannel c = channels.get(channels.size()-1);
         if(c.size() < Integer.MAX_VALUE) {
           //System.out.printf("MappedBufferAllocator.alloc(%d): channel.size=%d, offset=%s%n", size, c.size(), offset);
-          return c.map(FileChannel.MapMode.READ_WRITE, offset.getAndAdd(size), size);
+          return c.map(FileChannel.MapMode.READ_WRITE, offset.getAndAdd(bufferSize()), bufferSize());
         }
       }
       FileChannel c = FileChannel.open(filesup.get(), openOptions());
       channels.add(c);
-      return c.map(FileChannel.MapMode.READ_WRITE, 0, size);
+      return c.map(FileChannel.MapMode.READ_WRITE, 0, bufferSize());
     }
     catch(IOException e) {
       throw new DefaultBufferAllocator.BufferAllocatorException(e);

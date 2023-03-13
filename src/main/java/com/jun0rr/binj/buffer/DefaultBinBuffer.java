@@ -58,6 +58,11 @@ public class DefaultBinBuffer implements BinBuffer {
   }
   
   @Override
+  public List<ByteBuffer> byteBuffers() {
+    return List.copyOf(buffers);
+  }
+  
+  @Override
   public BinBuffer clear() {
     buffers.forEach(ByteBuffer::clear);
     return this;

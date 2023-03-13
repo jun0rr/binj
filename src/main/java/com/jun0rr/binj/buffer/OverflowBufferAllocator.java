@@ -20,12 +20,7 @@ public class OverflowBufferAllocator implements BufferAllocator {
 
   @Override
   public ByteBuffer alloc() {
-    return alloc(0);
-  }
-
-  @Override
-  public ByteBuffer alloc(int size) {
     throw new BufferOverflowException();
   }
-  
+
 }
