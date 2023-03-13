@@ -12,7 +12,11 @@
     </properties>
 
     <dependencies>
-      
+        <dependency>
+            <groupId>com.jun0rr</groupId>
+            <artifactId>unchecked</artifactId>
+            <version>1.0</version>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>

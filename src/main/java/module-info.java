@@ -5,6 +5,7 @@
 
 module jun0rr.binj {
   requires java.base;
+  requires jun0rr.unchecked;
   exports com.jun0rr.binj;
   exports com.jun0rr.binj.codec;
   exports com.jun0rr.binj.buffer;

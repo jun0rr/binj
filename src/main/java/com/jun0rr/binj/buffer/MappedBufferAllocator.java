@@ -4,12 +4,11 @@
  */
 package com.jun0rr.binj.buffer;
 
-import com.jun0rr.binj.impl.Rethrow;
+import com.jun0rr.unchecked.Unchecked;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.OpenOption;
-import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -37,7 +36,7 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
     super(bufsize);
     this.filesup = Objects.requireNonNull(sup);
     this.channels = new CopyOnWriteArrayList<>(filesup.existing()
-        .map(p->Rethrow.run(()->FileChannel.open(p, openOptions())))
+        .map(p->Unchecked.call(()->FileChannel.open(p, openOptions())))
         .collect(Collectors.toList())
     );
     this.offset = new AtomicLong(0);
@@ -79,7 +78,7 @@ public class MappedBufferAllocator extends DefaultBufferAllocator {
   public void close() {
     channels.stream()
         .filter(FileChannel::isOpen)
-        .forEach(Rethrow.consumer(d->d.close()));
+        .forEach(c->Unchecked.call(()->c.close()));
     channels.clear();
   }
   
