@@ -37,7 +37,7 @@ public class DefaultBinBuffer implements BinBuffer {
       throw new IllegalArgumentException("Bad null/empty buffers List");
     }
     this.malloc = Objects.requireNonNull(ba);
-    this.buffers = buffers;
+    this.buffers = new ArrayList<>(buffers);
   }
   
   @Override

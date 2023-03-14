@@ -4,7 +4,7 @@
  */
 package com.jun0rr.binj.buffer;
 
-import com.jun0rr.unchecked.Unchecked;
+import com.jun0rr.uncheck.Uncheck;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Objects;
@@ -58,7 +58,7 @@ public class DefaultPathSupplier implements PathSupplier {
     String name = String.format("^%s.*\\.%s", base, extension);
     Predicate<String> ftest = Pattern.compile(String.format(name.concat("\\d+$"), base, extension)).asMatchPredicate();
     ToIntFunction<Path> fti = p->Integer.parseInt(p.getFileName().toString().replaceAll(name, ""));
-    return Unchecked.call(()->Files.list(root)
+    return Uncheck.call(()->Files.list(root)
         .filter(p->ftest.test(p.getFileName().toString()))
         .sorted((p,q)->Integer.compare(fti.applyAsInt(p), fti.applyAsInt(q)))
     );
