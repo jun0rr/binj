@@ -5,6 +5,7 @@
 package com.jun0rr.binj.buffer;
 
 import java.io.Closeable;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 /**
@@ -47,6 +48,21 @@ public interface BufferAllocator extends Closeable {
     
   }
   
+  public class OverflowBufferAllocator implements BufferAllocator {
+    
+    @Override
+    public int bufferSize() {
+      return 0;
+    }
+
+    @Override
+    public ByteBuffer alloc() {
+      throw new BufferOverflowException();
+    }
+
+  }
+
+  
   
   
   public static BufferAllocator directAllocator(int bufferSize) {
@@ -55,14 +71,6 @@ public interface BufferAllocator extends Closeable {
   
   public static BufferAllocator heapAllocator(int bufferSize) {
     return new HeapAllocator(bufferSize);
-  }
-  
-  public static BufferAllocator mappedFileAllocator(PathSupplier sup, int bufferSize) {
-    return new MappedBufferAllocator(sup, bufferSize);
-  }
-  
-  public static BufferAllocator mappedFileAllocator(PathSupplier sup, int bufferSize, boolean overwrite) {
-    return new MappedBufferAllocator(sup, bufferSize, overwrite);
   }
   
   public static BufferAllocator overflowAllocator() {

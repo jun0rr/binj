@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author F6036477
  */
-public class TestGetterFieldExtractStrategy {
+public class TestFieldGetterStrategy {
   
   @Test public void test() {
     FieldGetterStrategy ex = new FieldGetterStrategy();

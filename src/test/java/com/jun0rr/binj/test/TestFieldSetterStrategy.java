@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author F6036477
  */
-public class TestSetterFieldInjectStrategy {
+public class TestFieldSetterStrategy {
   
   @Test public void test() {
     FieldSetterStrategy in = new FieldSetterStrategy();

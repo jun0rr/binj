@@ -55,4 +55,13 @@ public interface ConstructFunction {
     }
   }
   
+  public static ConstructFunction ofFields(Constructor c, List<String> fields) {
+    try {
+      return new DefaultConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c), fields);
+    }
+    catch(IllegalAccessException e) {
+      throw new MappingException(e);
+    }
+  }
+  
 }

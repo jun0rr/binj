@@ -1,0 +1,43 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.jun0rr.binj.test;
+
+import com.jun0rr.binj.mapping.ConstructFunction;
+import com.jun0rr.binj.mapping.FieldsOrderConstructStrategy;
+import com.jun0rr.binj.mapping.MappingException;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.Test;
+
+/**
+ *
+ * @author F6036477
+ */
+public class TestFieldsOrderConstructStrategy {
+  
+  @Test public void test() {
+    FieldsOrderConstructStrategy fcs = new FieldsOrderConstructStrategy();
+    List<ConstructFunction> cs = fcs.invokers(Person.class);
+    Map<String,Object> map = new HashMap<>();
+    map.put("name", "John");
+    map.put("last", "Doe");
+    map.put("birth", LocalDate.now());
+    Optional<ConstructFunction> cct = cs.stream()
+        .sorted((a,b)->Integer.compare(a.arguments().size(), b.arguments().size()) * -1)
+        .filter(c->c.arguments().size() <= map.size())
+        .filter(c->c.arguments().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
+        .findFirst();
+    ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found for " + Person.class));
+    Person p = cf.create(map);
+    System.out.println(p);
+  }
+  
+  
+  public static record Person(String name, String last, LocalDate birth) {}
+  
+}
