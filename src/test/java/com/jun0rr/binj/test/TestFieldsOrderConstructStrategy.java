@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
 
 /**
  *
@@ -23,10 +24,13 @@ public class TestFieldsOrderConstructStrategy {
   @Test public void test() {
     FieldsOrderConstructStrategy fcs = new FieldsOrderConstructStrategy();
     List<ConstructFunction> cs = fcs.invokers(Person.class);
+    String name = "John";
+    String last = "Doe";
+    LocalDate birth = LocalDate.now();
     Map<String,Object> map = new HashMap<>();
-    map.put("name", "John");
-    map.put("last", "Doe");
-    map.put("birth", LocalDate.now());
+    map.put("name", name);
+    map.put("last", last);
+    map.put("birth", birth);
     Optional<ConstructFunction> cct = cs.stream()
         .sorted((a,b)->Integer.compare(a.arguments().size(), b.arguments().size()) * -1)
         .filter(c->c.arguments().size() <= map.size())
@@ -35,6 +39,10 @@ public class TestFieldsOrderConstructStrategy {
     ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found for " + Person.class));
     Person p = cf.create(map);
     System.out.println(p);
+    Assertions.assertNotNull(p);
+    Assertions.assertEquals(name, p.name());
+    Assertions.assertEquals(last, p.last());
+    Assertions.assertEquals(birth, p.birth());
   }
   
   
