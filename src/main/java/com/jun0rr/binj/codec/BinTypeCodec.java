@@ -40,13 +40,13 @@ public class BinTypeCodec extends AbstractBinCodec<BinType> {
   public void write(BinBuffer buf, BinType val) {
     buf.putLong(bintype().id());
     buf.putLong(val.id());
-    String cname = val.type().getCanonicalName();
+    String cname = val.type().getName();
     buf.putUTF8(cname);
   }
 
   @Override
   public int calcSize(BinType val) {
-    return Long.BYTES * 2 + Short.BYTES + val.type().getCanonicalName().length();
+    return Long.BYTES * 2 + Short.BYTES + val.type().getName().length();
   }
   
 }

@@ -12,7 +12,7 @@ import java.util.zip.CRC32;
  *
  * @author F6036477
  */
-public interface BinType<T> {
+public interface BinType<T> extends Comparable<BinType> {
   
   public boolean isTypeOf(Class cls);
   
@@ -21,6 +21,15 @@ public interface BinType<T> {
   public Class<T> type();
   
   public long id();
+  
+  @Override
+  public default int compareTo(BinType o) {
+    int r = this.type().getCanonicalName().compareTo(o.type().getCanonicalName());
+    if(r == 0) {
+      r = Long.compare(this.id(), o.id());
+    }
+    return r;
+  }
   
   
   public static <U> BinType<U> of(Class<U> cl, long id) {
