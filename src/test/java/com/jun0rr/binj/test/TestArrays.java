@@ -5,7 +5,9 @@
 package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.BinCodec;
+import com.jun0rr.binj.BinContext;
 import com.jun0rr.binj.buffer.BinBuffer;
+import com.jun0rr.binj.codec.ArrayCodec;
 import com.jun0rr.binj.codec.BooleanArrayCodec;
 import com.jun0rr.binj.codec.ByteArrayCodec;
 import com.jun0rr.binj.codec.CharArrayCodec;
@@ -14,6 +16,10 @@ import com.jun0rr.binj.codec.FloatArrayCodec;
 import com.jun0rr.binj.codec.IntArrayCodec;
 import com.jun0rr.binj.codec.LongArrayCodec;
 import com.jun0rr.binj.codec.ShortArrayCodec;
+import com.jun0rr.binj.impl.DefaultBinType;
+import com.jun0rr.binj.mapping.FieldGetterStrategy;
+import com.jun0rr.binj.mapping.FieldsOrderConstructStrategy;
+import java.time.LocalDate;
 import java.util.Arrays;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -143,5 +149,26 @@ public class TestArrays {
     System.out.println(buf);
     Assertions.assertArrayEquals(array, c.read(buf));
   }
+  
+  @Test public void testPersonArray() {
+    Person[] pss = new Person[100];
+    for(int i = 0; i < pss.length; i++) {
+      pss[i] = new Person("Hello-" + i, "World-" + i, LocalDate.now(), new Address("Street-" + i, "City-" + i, i + 101));
+    }
+    BinContext ctx = BinContext.newContext();
+    ctx.mapper().constructStrategies().add(new FieldsOrderConstructStrategy());
+    ctx.mapper().extractStrategies().add(new FieldGetterStrategy());
+    BinBuffer buf = BinBuffer.ofDirectAllocator(512);
+    BinCodec<Person[]> codec = new ArrayCodec(ctx, new DefaultBinType(Person[].class));
+    System.out.printf("calcSize( Person[] ): %d - %s%n", codec.calcSize(pss), Arrays.toString(pss));
+    codec.write(buf, pss);
+    System.out.printf("buf=%s%n", buf);
+    pss = codec.read(buf.flip());
+    System.out.printf("codec.read( %s ): %s%n", buf, Arrays.toString(pss));
+  }
+  
+  public static record Person(String name, String last, LocalDate birth, Address address){}
+  
+  public static record Address(String street, String city, int number) {}
   
 }
