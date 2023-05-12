@@ -45,12 +45,12 @@ public class ClassCodec extends AbstractBinCodec<Class> {
   public void write(BinBuffer buf, Class val) {
     buf.putLong(bintype().id());
     buf.putShort((short)val.getCanonicalName().length());
-    buf.put(StandardCharsets.UTF_8.encode(val.getCanonicalName()));
+    buf.put(StandardCharsets.UTF_8.encode(val.getName()));
   }
 
   @Override
   public int calcSize(Class val) {
-    return Long.BYTES + Short.BYTES + val.getCanonicalName().length();
+    return Long.BYTES + Short.BYTES + val.getName().length();
   }
 
 }

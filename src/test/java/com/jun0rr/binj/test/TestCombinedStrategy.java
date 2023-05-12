@@ -6,16 +6,16 @@ package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.mapping.CombinedStrategy;
 import com.jun0rr.binj.mapping.ConstructFunction;
+import com.jun0rr.binj.mapping.FieldsOrderConstructStrategy;
 import com.jun0rr.binj.mapping.MappingException;
 import com.jun0rr.binj.mapping.NoArgsConstructStrategy;
-import com.jun0rr.binj.mapping.FieldsOrderConstructStrategy;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 /**
  *

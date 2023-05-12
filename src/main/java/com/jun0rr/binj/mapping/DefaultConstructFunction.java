@@ -5,8 +5,6 @@
 package com.jun0rr.binj.mapping;
 
 import java.lang.invoke.MethodHandle;
-import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
