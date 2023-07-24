@@ -219,4 +219,21 @@ public class TestBinBuffer {
     }
   }
   
+  @Test public void checksum() {
+    //System.out.printf("------ chechsum ------%n");
+    BinBuffer buf = BinBuffer.ofDirectAllocator(128);
+    //System.out.printf("BinBuffer(rem=%d): %s%n", buf.remaining(), buf);
+    for(int i = 0; i < 100; i++) {
+      buf.putInt(i);
+    }
+    Assertions.assertEquals(400, buf.position());
+    buf.flip();
+    Assertions.assertEquals(400, buf.remaining());
+    //System.out.printf("BinBuffer(rem=%d): %s%n", buf.remaining(), buf);
+    //System.out.printf("BinBuffer(rem=%d): %s%n", buf.remaining(), buf);
+    long sum = buf.checksum();
+    Assertions.assertEquals(2738611575L, sum);
+    Assertions.assertEquals(0, buf.remaining());
+  }
+  
 }
