@@ -14,45 +14,53 @@ import java.util.Objects;
  *
  * @author F6036477
  */
-public class DefaultConstructFunction implements ConstructFunction {
+public class ParamTypesConstructFunction implements ConstructFunction {
   
   private final MethodHandle handle;
   
-  private final List arguments;
+  private final List<Class> types;
   
-  public DefaultConstructFunction(MethodHandle mh, String... args) {
+  public ParamTypesConstructFunction(MethodHandle mh, Class... types) {
     this.handle = Objects.requireNonNull(mh);
-    this.arguments = (args == null ? Collections.EMPTY_LIST : List.of(args));
+    this.types = (types == null ? Collections.EMPTY_LIST : List.of(types));
   }
   
-  public DefaultConstructFunction(MethodHandle mh, List<String> args) {
+  public ParamTypesConstructFunction(MethodHandle mh, List<Class> types) {
     this.handle = Objects.requireNonNull(mh);
-    this.arguments = Objects.requireNonNull(args);
+    this.types = Objects.requireNonNull(types);
   }
   
   @Override
   public List arguments() {
-    return arguments;
+    return types;
   }
   
   @Override
   public List parameters() {
-    return arguments;
+    return types;
   }
   
   @Override
   public <T> T create(Map<String,Object> map) {
     try {
-      List args = arguments.stream()
-          .map(a->map.get(a))
-          .toList();
-      return (T) handle.invokeWithArguments(args);
+      if(types.stream().allMatch(t->map.values().stream()
+          .anyMatch(o->t.isAssignableFrom(o.getClass())))) {
+        return (T) handle.invokeWithArguments(types.stream()
+            .map(t->map.values().stream().filter(o->t.isAssignableFrom(o.getClass())).findFirst().get())
+            .toList());
+      }
+      else {
+        throw new IllegalArgumentException("Parameter types does not match value types: " 
+          + types.stream().filter(t->map.values().stream()
+              .noneMatch(o->t.isAssignableFrom(o.getClass()))).toList());
+      }
     }
     catch(Throwable t) {
       throw new MappingException(t);
     }
   }
   
+  @Override
   public <T> T create() {
     try {
       return (T) handle.invoke();
@@ -64,14 +72,14 @@ public class DefaultConstructFunction implements ConstructFunction {
   
   @Override
   public String toString() {
-    return "ConstructFunction{" + "handle=" + handle + ", arguments=" + arguments + '}';
+    return "ConstructFunction{" + "handle=" + handle + ", arguments=" + types + '}';
   }
 
   @Override
   public int hashCode() {
     int hash = 5;
     hash = 19 * hash + Objects.hashCode(this.handle);
-    hash = 19 * hash + Objects.hashCode(this.arguments);
+    hash = 19 * hash + Objects.hashCode(this.types);
     return hash;
   }
 
@@ -86,11 +94,11 @@ public class DefaultConstructFunction implements ConstructFunction {
     if (getClass() != obj.getClass()) {
       return false;
     }
-    final DefaultConstructFunction other = (DefaultConstructFunction) obj;
+    final ParamTypesConstructFunction other = (ParamTypesConstructFunction) obj;
     if (!Objects.equals(this.handle, other.handle)) {
       return false;
     }
-    return Objects.equals(this.arguments, other.arguments);
+    return Objects.equals(this.types, other.types);
   }
   
 }

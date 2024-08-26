@@ -6,9 +6,8 @@ package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.mapping.CombinedStrategy;
 import com.jun0rr.binj.mapping.ConstructFunction;
-import com.jun0rr.binj.mapping.FieldsOrderConstructStrategy;
+import com.jun0rr.binj.mapping.DefaultConstructStrategy;
 import com.jun0rr.binj.mapping.MappingException;
-import com.jun0rr.binj.mapping.NoArgsConstructStrategy;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
@@ -21,12 +20,13 @@ import org.junit.jupiter.api.Test;
  *
  * @author F6036477
  */
-public class TestCombinedStrategy {
+public class TestDefaultConstructStrategy {
   
-  @Test public void test() {
+  @Test 
+  public void test() {
+    
     CombinedStrategy<ConstructFunction> strategy = CombinedStrategy.newStrategy();
-    strategy.put(3, new NoArgsConstructStrategy())
-        .put(2, new FieldsOrderConstructStrategy());
+    strategy.put(2, new DefaultConstructStrategy());
     List<ConstructFunction> cs = strategy.invokers(Person.class);
     String name = "John";
     String last = "Doe";
@@ -37,7 +37,7 @@ public class TestCombinedStrategy {
     map.put("birth", birth);
     Optional<ConstructFunction> cct = cs.stream()
         .filter(c->c.arguments().size() <= map.size())
-        .filter(c->c.arguments().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
+        .filter(c->c.parameters().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
         .findFirst();
     ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found for " + Person.class));
     Person p = cf.create(map);
@@ -46,6 +46,7 @@ public class TestCombinedStrategy {
     Assertions.assertEquals(name, p.name());
     Assertions.assertEquals(last, p.last());
     Assertions.assertEquals(birth, p.birth());
+    
   }
   
   

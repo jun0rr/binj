@@ -65,12 +65,12 @@ public class ObjectMapper {
         .flatMap(c->c.invokers(cls).stream())
         .collect(Collectors.toList());
     Optional<ConstructFunction> cct = cs.stream()
-        .sorted((a,b)->Integer.compare(a.arguments().size(), b.arguments().size()) * -1)
-        .filter(c->c.arguments().size() <= map.size())
-        .filter(c->c.arguments().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
+        .sorted((a,b)->Integer.compare(a.parameters().size(), b.parameters().size()) * -1)
+        .filter(c->c.parameters().size() <= map.size())
+        .filter(c->c.parameters().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
         .findFirst();
     if(cct.isEmpty()) {
-      cct = cs.stream().filter(c->c.arguments().size() == 0).findAny();
+      cct = cs.stream().filter(c->c.parameters().size() == 0).findAny();
     }
     ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found for " + cls.getCanonicalName()));
     return cf.create(map);
@@ -118,5 +118,10 @@ public class ObjectMapper {
     om.injectStrategies().add(new FieldInjectStrategy());
     return om;
   }
+  
+  //public static ObjectMapper withDefaultStrategies() {
+    //ObjectMapper om = new ObjectMapper();
+    //om.constructStrategies().add(new )
+  //}
   
 }

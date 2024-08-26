@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
  */
 public interface ConstructFunction {
   
-  public List<String> arguments();
+  public List arguments();
+  
+  public List parameters();
   
   public <T> T create(Map<String,Object> map);
   
@@ -63,5 +65,5 @@ public interface ConstructFunction {
       throw new MappingException(e);
     }
   }
-  
+
 }

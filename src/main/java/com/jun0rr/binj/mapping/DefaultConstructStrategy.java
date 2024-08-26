@@ -18,7 +18,9 @@ public class DefaultConstructStrategy extends AbstractInvokeStrategy<ConstructFu
     List<ConstructFunction> fns = cache.get(cls);
     if(fns == null) {
       fns = List.of(cls.getDeclaredConstructors()).stream()
+          .sorted((a,b)->Integer.compare(a.getParameterCount(), b.getParameterCount())*-1)
           .map(ConstructFunction::ofParameters)
+          .peek(c->System.out.printf("* constructor: %s%n", c))
           .collect(Collectors.toList());
       cache.put(cls, fns);
     }
