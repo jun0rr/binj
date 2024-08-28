@@ -5,6 +5,7 @@
 package com.jun0rr.binj.mapping;
 
 import java.lang.invoke.MethodHandle;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -30,10 +31,6 @@ public class ParamTypesConstructFunction implements ConstructFunction {
     this.types = Objects.requireNonNull(types);
   }
   
-  @Override
-  public List arguments() {
-    return types;
-  }
   
   @Override
   public List parameters() {
@@ -43,11 +40,20 @@ public class ParamTypesConstructFunction implements ConstructFunction {
   @Override
   public <T> T create(Map<String,Object> map) {
     try {
-      if(types.stream().allMatch(t->map.values().stream()
-          .anyMatch(o->t.isAssignableFrom(o.getClass())))) {
-        return (T) handle.invokeWithArguments(types.stream()
-            .map(t->map.values().stream().filter(o->t.isAssignableFrom(o.getClass())).findFirst().get())
-            .toList());
+      if(map.size() >= types.size()
+          && types.stream().allMatch(t->map.values().stream()
+              .anyMatch(o->t.isAssignableFrom(o.getClass())))) {
+        List<Object> vals = new ArrayList(map.values());
+        List<Object> args = new ArrayList(types.size());
+        for(Class t : types) {
+          Object arg = vals.stream()
+              .filter(o->t.isAssignableFrom(o.getClass()))
+              .findFirst().get();
+          System.out.printf("* ParamTypesConstructFunction.create( %s ): arg=%s%n", map, arg);
+          args.add(arg);
+          vals.remove(arg);
+        }
+        return (T) handle.invokeWithArguments(args);
       }
       else {
         throw new IllegalArgumentException("Parameter types does not match value types: " 

@@ -62,12 +62,16 @@ public class ObjectMapper {
     }
     Class<T> cls = (Class<T>) map.get(KEY_CLASS);
     List<ConstructFunction> cs = constructors.stream()
+        .peek(c->System.out.printf("* ObjectMapper.constructStrategy: %s%n", c))
         .flatMap(c->c.invokers(cls).stream())
         .collect(Collectors.toList());
     Optional<ConstructFunction> cct = cs.stream()
         .sorted((a,b)->Integer.compare(a.parameters().size(), b.parameters().size()) * -1)
+        .peek(c->System.out.printf("* ObjectMapper.function(before params.size): %s%n", c))
         .filter(c->c.parameters().size() <= map.size())
+        .peek(c->System.out.printf("* ObjectMapper.function(before key match): %s%n", c))
         .filter(c->c.parameters().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
+        .peek(c->System.out.printf("* ObjectMapper.function(after key match): %s%n", c))
         .findFirst();
     if(cct.isEmpty()) {
       cct = cs.stream().filter(c->c.parameters().size() == 0).findAny();

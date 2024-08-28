@@ -36,7 +36,7 @@ public class TestDefaultConstructStrategy {
     map.put("last", last);
     map.put("birth", birth);
     Optional<ConstructFunction> cct = cs.stream()
-        .filter(c->c.arguments().size() <= map.size())
+        .filter(c->c.parameters().size() <= map.size())
         .filter(c->c.parameters().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
         .findFirst();
     ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found for " + Person.class));
@@ -50,12 +50,6 @@ public class TestDefaultConstructStrategy {
   }
   
   
-  public static record Person(String name, String last, LocalDate birth) {
-  
-    public Person() {
-      this("Hello", "World", LocalDate.now());
-    }
-    
-  }
+  public static record Person(String name, String last, LocalDate birth) {}
   
 }

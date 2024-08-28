@@ -25,15 +25,11 @@ public class DefaultConstructFunction implements ConstructFunction {
     this.arguments = (args == null ? Collections.EMPTY_LIST : List.of(args));
   }
   
-  public DefaultConstructFunction(MethodHandle mh, List<String> args) {
+  public DefaultConstructFunction(MethodHandle mh, List args) {
     this.handle = Objects.requireNonNull(mh);
     this.arguments = Objects.requireNonNull(args);
   }
   
-  @Override
-  public List arguments() {
-    return arguments;
-  }
   
   @Override
   public List parameters() {

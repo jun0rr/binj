@@ -4,8 +4,8 @@
  */
 package com.jun0rr.binj.mapping;
 
+import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -18,10 +18,11 @@ public class DefaultConstructStrategy extends AbstractInvokeStrategy<ConstructFu
     List<ConstructFunction> fns = cache.get(cls);
     if(fns == null) {
       fns = List.of(cls.getDeclaredConstructors()).stream()
+          .filter(c->Modifier.isPublic(c.getModifiers()))
           .sorted((a,b)->Integer.compare(a.getParameterCount(), b.getParameterCount())*-1)
           .map(ConstructFunction::ofParameters)
           .peek(c->System.out.printf("* constructor: %s%n", c))
-          .collect(Collectors.toList());
+          .toList();
       cache.put(cls, fns);
     }
     return fns;

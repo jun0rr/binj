@@ -16,8 +16,6 @@ import java.util.stream.Collectors;
  */
 public interface ConstructFunction {
   
-  public List arguments();
-  
   public List parameters();
   
   public <T> T create(Map<String,Object> map);
@@ -60,6 +58,15 @@ public interface ConstructFunction {
   public static ConstructFunction ofFields(Constructor c, List<String> fields) {
     try {
       return new DefaultConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c), fields);
+    }
+    catch(IllegalAccessException e) {
+      throw new MappingException(e);
+    }
+  }
+
+  public static ConstructFunction ofParameterTypes(Constructor c, List<Class> types) {
+    try {
+      return new ParamTypesConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c), types);
     }
     catch(IllegalAccessException e) {
       throw new MappingException(e);

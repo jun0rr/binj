@@ -6,7 +6,6 @@ package com.jun0rr.binj.mapping;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 
@@ -23,8 +22,8 @@ public class ParamTypesConstructStrategy extends AbstractInvokeStrategy<Construc
     fns = Stream.of(cls.getDeclaredConstructors())
         .filter(c->Modifier.isPublic(c.getModifiers()))
         .sorted((a,b)->Integer.compare(a.getParameterCount(), b.getParameterCount())*-1)
-        .map(c->ConstructFunction.ofFields(c, Stream.of(c.getParameterTypes()).map(Class::getCanonicalName).toList()))
-        .collect(Collectors.toList());
+        .map(c->ConstructFunction.ofParameterTypes(c, List.of(c.getParameterTypes())))
+        .toList();
       cache.put(cls, fns);
     }
     return fns;

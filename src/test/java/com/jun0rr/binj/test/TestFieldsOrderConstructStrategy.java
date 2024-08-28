@@ -22,7 +22,6 @@ import org.junit.jupiter.api.Test;
 public class TestFieldsOrderConstructStrategy {
   
   @Test public void test() {
-    /*
     FieldsOrderConstructStrategy fcs = new FieldsOrderConstructStrategy();
     List<ConstructFunction> cs = fcs.invokers(Person.class);
     String name = "John";
@@ -44,7 +43,6 @@ public class TestFieldsOrderConstructStrategy {
     Assertions.assertEquals(name, p.name());
     Assertions.assertEquals(last, p.last());
     Assertions.assertEquals(birth, p.birth());
-    */
   }
   
   

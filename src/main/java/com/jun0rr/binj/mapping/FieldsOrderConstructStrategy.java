@@ -23,6 +23,7 @@ public class FieldsOrderConstructStrategy extends AbstractInvokeStrategy<Constru
           .filter(f->!Modifier.isStatic(f.getModifiers()))
           .toList();
       fns = List.of(cls.getDeclaredConstructors()).stream()
+          .filter(c->Modifier.isPublic(c.getModifiers()))
           .filter(c->c.getParameterCount() == fields.size())
           .filter(c->compare(fields, c.getParameterTypes()))
           .map(c->ConstructFunction.ofFields(c, fields.stream().map(Field::getName).toList()))
