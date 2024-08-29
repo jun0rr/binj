@@ -4,7 +4,7 @@
  */
 package com.jun0rr.binj.test;
 
-import com.jun0rr.binj.mapping.FieldGetterStrategy;
+import com.jun0rr.binj.mapping.FieldMethodGetStrategy;
 import java.time.LocalDate;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 public class TestFieldGetterStrategy {
   
   @Test public void test() {
-    FieldGetterStrategy ex = new FieldGetterStrategy();
+    FieldMethodGetStrategy ex = new FieldMethodGetStrategy();
     System.out.println("--- Person:");
     Person p = new Person("Hello", "World", LocalDate.now(), 1L);
     ex.invokers(Person.class).stream()

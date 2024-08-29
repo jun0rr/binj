@@ -12,7 +12,7 @@ import java.util.stream.Stream;
  *
  * @author F6036477
  */
-public class AnnotationExtractStrategy extends AbstractInvokeStrategy<ExtractFunction> {
+public class AnnotationGetStrategy extends AbstractInvokeStrategy<ExtractFunction> {
 
   @Override
   public List<ExtractFunction> invokers(Class cls) {

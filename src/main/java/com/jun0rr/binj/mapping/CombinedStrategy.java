@@ -40,11 +40,12 @@ public class CombinedStrategy<T> extends AbstractInvokeStrategy<T> {
     List<T> fns = cache.get(cls);
     if(fns == null) {
       if(strategies.isEmpty()) {
-        throw new IllegalStateException("strategies is empty");
+        throw new IllegalStateException("No strategies found");
       }
       fns = strategies.entrySet().stream()
           .sorted((a,b)->Integer.compare(a.getKey(), b.getKey()))
           .map(Entry::getValue)
+          //.peek(s->System.out.printf("* Strategy: %s%n", s))
           .flatMap(s->s.invokers(cls).stream())
           .toList();
       cache.put(cls, fns);

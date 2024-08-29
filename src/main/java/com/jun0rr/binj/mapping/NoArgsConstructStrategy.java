@@ -5,7 +5,6 @@
 package com.jun0rr.binj.mapping;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -20,7 +19,8 @@ public class NoArgsConstructStrategy extends AbstractInvokeStrategy<ConstructFun
       fns = List.of(cls.getDeclaredConstructors()).stream()
           .filter(c->c.getParameterCount() == 0)
           .map(ConstructFunction::ofAnnotated)
-          .collect(Collectors.toList());
+          //.peek(c->System.out.printf("* NoArgsConstructStrategy.constructor: %s%n", c))
+          .toList();
       cache.put(cls, fns);
     }
     return fns;

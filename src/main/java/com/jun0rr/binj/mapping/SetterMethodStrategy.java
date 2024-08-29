@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author F6036477
  */
-public class SetterStrategy extends AbstractInvokeStrategy<InjectFunction> {
+public class SetterMethodStrategy extends AbstractInvokeStrategy<InjectFunction> {
 
   @Override
   public List<InjectFunction> invokers(Class cls) {

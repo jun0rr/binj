@@ -8,7 +8,6 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -47,7 +46,7 @@ public interface ConstructFunction {
     try {
       List<String> args = List.of(c.getParameters()).stream()
           .map(p->p.getName())
-          .collect(Collectors.toList());
+          .toList();
       return new DefaultConstructFunction(MethodHandles.publicLookup().unreflectConstructor(c), args);
     }
     catch(IllegalAccessException e) {

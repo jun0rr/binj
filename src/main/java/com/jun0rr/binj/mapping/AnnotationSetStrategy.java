@@ -13,7 +13,7 @@ import java.util.stream.Stream;
  *
  * @author F6036477
  */
-public class AnnotationInjectStrategy extends AbstractInvokeStrategy<InjectFunction> {
+public class AnnotationSetStrategy extends AbstractInvokeStrategy<InjectFunction> {
 
   @Override
   public List<InjectFunction> invokers(Class cls) {

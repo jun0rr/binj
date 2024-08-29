@@ -4,12 +4,10 @@
  */
 package com.jun0rr.binj.mapping;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.TreeMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -19,32 +17,32 @@ public class ObjectMapper {
   
   public static final String KEY_CLASS = "$class";
   
-  private final List<InvokeStrategy<ConstructFunction>> constructors;
+  private final CombinedStrategy<ConstructFunction> constructors;
   
-  private final List<InvokeStrategy<ExtractFunction>> extractors;
+  private final CombinedStrategy<ExtractFunction> extractors;
   
-  private final List<InvokeStrategy<InjectFunction>> injectors;
+  private final CombinedStrategy<InjectFunction> injectors;
   
   public ObjectMapper() {
-    this.constructors = new CopyOnWriteArrayList<>();
-    this.extractors = new CopyOnWriteArrayList<>();
-    this.injectors = new CopyOnWriteArrayList<>();
+    this.constructors = new CombinedStrategy();
+    this.extractors = new CombinedStrategy();
+    this.injectors = new CombinedStrategy();
   }
   
-  public List<InvokeStrategy<ConstructFunction>> constructStrategies() {
+  public CombinedStrategy<ConstructFunction> constructStrategies() {
     return constructors;
   }
   
-  public List<InvokeStrategy<ExtractFunction>> extractStrategies() {
+  public CombinedStrategy<ExtractFunction> extractStrategies() {
     return extractors;
   }
   
-  public List<InvokeStrategy<InjectFunction>> injectStrategies() {
+  public CombinedStrategy<InjectFunction> injectStrategies() {
     return injectors;
   }
   
   public Map<String,Object> map(Object o) {
-    Map<String,Object> map = new TreeMap<>();
+    Map<String,Object> map = new LinkedHashMap<>();
     map.put(KEY_CLASS, o.getClass());
     return extract(o, map);
   }
@@ -54,46 +52,43 @@ public class ObjectMapper {
   }
   
   private <T> T create(Map<String,Object> map) {
-    if(constructors.isEmpty()) {
+    if(constructors.strategies().isEmpty()) {
       throw new MappingException("No ConstructStrategy found");
     }
     if(!map.containsKey(KEY_CLASS)) {
       throw new MappingException("$class key not found");
     }
     Class<T> cls = (Class<T>) map.get(KEY_CLASS);
-    List<ConstructFunction> cs = constructors.stream()
-        .peek(c->System.out.printf("* ObjectMapper.constructStrategy: %s%n", c))
-        .flatMap(c->c.invokers(cls).stream())
-        .collect(Collectors.toList());
+    List<ConstructFunction> cs = constructors.invokers(cls);
     Optional<ConstructFunction> cct = cs.stream()
         .sorted((a,b)->Integer.compare(a.parameters().size(), b.parameters().size()) * -1)
-        .peek(c->System.out.printf("* ObjectMapper.function(before params.size): %s%n", c))
+        //.peek(c->System.out.printf("* ObjectMapper.constructor: %s%n", c))
         .filter(c->c.parameters().size() <= map.size())
-        .peek(c->System.out.printf("* ObjectMapper.function(before key match): %s%n", c))
         .filter(c->c.parameters().stream().allMatch(s->map.keySet().stream().anyMatch(k->s.equals(k))))
-        .peek(c->System.out.printf("* ObjectMapper.function(after key match): %s%n", c))
         .findFirst();
     if(cct.isEmpty()) {
       cct = cs.stream().filter(c->c.parameters().size() == 0).findAny();
     }
+    //System.out.printf("* ObjectMapper.selected: %s%n", cct);
     ConstructFunction cf = cct.orElseThrow(()->new MappingException("No ConstructFunction found for " + cls.getCanonicalName()));
     return cf.create(map);
   }
   
   private <T> T inject(T obj, Map<String,Object> map) {
-    injectors.stream().flatMap(i->i.invokers(obj.getClass()).stream())
-        .filter(i->map.containsKey(i.name()))
-        .forEach(i->i.inject(obj, map.get(i.name())));
+    if(!injectors.strategies().isEmpty()) {
+      injectors.invokers(obj.getClass()).stream()
+          .filter(i->map.containsKey(i.name()))
+          .forEach(i->i.inject(obj, map.get(i.name())));
+    }
     return obj;
   }
   
   private Map<String,Object> extract(Object obj, Map<String,Object> map) {
-    if(extractors.isEmpty()) {
+    if(extractors.strategies().isEmpty()) {
       throw new MappingException("No ExtractStrategy found");
     }
-    extractors.stream().flatMap(e->e.invokers(obj.getClass()).stream())
+    extractors.invokers(obj.getClass()).stream()
         .forEach(e->map.put(e.name(), e.extract(obj)));
-    //System.out.printf("ObjectMapper.extract( %s ): map=%s%n", obj, map);
     return map;
   }
   
@@ -101,31 +96,26 @@ public class ObjectMapper {
   
   public static ObjectMapper withAnnotationStrategies() {
     ObjectMapper om = new ObjectMapper();
-    om.constructStrategies().add(new AnnotationConstructStrategy());
-    om.extractStrategies().add(new AnnotationExtractStrategy());
-    om.injectStrategies().add(new AnnotationInjectStrategy());
+    om.constructStrategies().put(1, new AnnotationConstructStrategy());
+    om.extractStrategies().put(1, new AnnotationGetStrategy());
+    om.injectStrategies().put(1, new AnnotationSetStrategy());
     return om;
   }
   
   public static ObjectMapper withGetterSetterStrategies() {
     ObjectMapper om = new ObjectMapper();
-    om.constructStrategies().add(new NoArgsConstructStrategy());
-    om.extractStrategies().add(new GetterStrategy());
-    om.injectStrategies().add(new SetterStrategy());
+    om.constructStrategies().put(1, new NoArgsConstructStrategy());
+    om.extractStrategies().put(1, new GetterMethodStrategy());
+    om.injectStrategies().put(1, new SetterMethodStrategy());
     return om;
   }
   
   public static ObjectMapper withFieldStrategies() {
     ObjectMapper om = new ObjectMapper();
-    om.constructStrategies().add(new NoArgsConstructStrategy());
-    om.extractStrategies().add(new FieldExtractStrategy());
-    om.injectStrategies().add(new FieldInjectStrategy());
+    om.constructStrategies().put(1, new NoArgsConstructStrategy());
+    om.extractStrategies().put(1, new FieldGetStrategy());
+    om.injectStrategies().put(1, new FieldSetStrategy());
     return om;
   }
-  
-  //public static ObjectMapper withDefaultStrategies() {
-    //ObjectMapper om = new ObjectMapper();
-    //om.constructStrategies().add(new )
-  //}
   
 }

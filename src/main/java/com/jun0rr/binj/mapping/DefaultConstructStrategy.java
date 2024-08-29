@@ -21,7 +21,7 @@ public class DefaultConstructStrategy extends AbstractInvokeStrategy<ConstructFu
           .filter(c->Modifier.isPublic(c.getModifiers()))
           .sorted((a,b)->Integer.compare(a.getParameterCount(), b.getParameterCount())*-1)
           .map(ConstructFunction::ofParameters)
-          .peek(c->System.out.printf("* constructor: %s%n", c))
+          //.peek(c->System.out.printf("* DefaultConstructStrategy.constructor: %s%n", c))
           .toList();
       cache.put(cls, fns);
     }

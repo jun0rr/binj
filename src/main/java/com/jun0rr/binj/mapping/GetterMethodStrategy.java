@@ -4,17 +4,14 @@
  */
 package com.jun0rr.binj.mapping;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
  * @author F6036477
  */
-public class FieldGetterStrategy extends AbstractInvokeStrategy<ExtractFunction> {
+public class GetterMethodStrategy extends AbstractInvokeStrategy<ExtractFunction> {
 
   @Override
   public List<ExtractFunction> invokers(Class cls) {
@@ -23,15 +20,17 @@ public class FieldGetterStrategy extends AbstractInvokeStrategy<ExtractFunction>
       fns = new LinkedList<>();
       Class sup = cls;
       while(sup != null && sup != Object.class) {
-        List<Field> fls = List.of(sup.getDeclaredFields()).stream()
-            .filter(f->!Modifier.isTransient(f.getModifiers()))
-            .filter(f->!Modifier.isStatic(f.getModifiers()))
-            .collect(Collectors.toList());
-        List.of(sup.getDeclaredMethods()).stream()
+        List.of(cls.getDeclaredMethods()).stream()
+            .filter(m->m.getName().startsWith("get"))
             .filter(m->m.getParameterCount() == 0)
-            .filter(m->fls.stream().anyMatch(f->
-                m.getName().equals(f.getName()) 
-                    && m.getReturnType().equals(f.getType())))
+            .filter(m->m.getReturnType() != void.class)
+            .map(ExtractFunction::of)
+            .forEach(fns::add);
+        List.of(cls.getInterfaces()).stream()
+            .flatMap(c->List.of(c.getDeclaredMethods()).stream())
+            .filter(m->m.getName().startsWith("get"))
+            .filter(m->m.getParameterCount() == 0)
+            .filter(m->m.getReturnType() != void.class)
             .map(ExtractFunction::of)
             .forEach(fns::add);
         sup = sup.getSuperclass();

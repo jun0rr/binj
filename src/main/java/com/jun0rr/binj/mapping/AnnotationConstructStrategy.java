@@ -5,7 +5,6 @@
 package com.jun0rr.binj.mapping;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  *
@@ -20,7 +19,8 @@ public class AnnotationConstructStrategy extends AbstractInvokeStrategy<Construc
       fns = List.of(cls.getDeclaredConstructors()).stream()
           .filter(c->c.isAnnotationPresent(MapConstructor.class) || c.getParameterCount() == 0)
           .map(ConstructFunction::ofAnnotated)
-          .collect(Collectors.toList());
+          //.peek(c->System.out.printf("* AnnotationConstructStrategy.constructor: %s%n", c))
+          .toList();
       cache.put(cls, fns);
     }
     return fns;

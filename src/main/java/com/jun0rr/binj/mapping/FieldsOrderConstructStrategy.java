@@ -27,6 +27,7 @@ public class FieldsOrderConstructStrategy extends AbstractInvokeStrategy<Constru
           .filter(c->c.getParameterCount() == fields.size())
           .filter(c->compare(fields, c.getParameterTypes()))
           .map(c->ConstructFunction.ofFields(c, fields.stream().map(Field::getName).toList()))
+          //.peek(c->System.out.printf("* FieldsOrderConstructStrategy.constructor: %s%n", c))
           .toList();
       cache.put(cls, fns);
     }

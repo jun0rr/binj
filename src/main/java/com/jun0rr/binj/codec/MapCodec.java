@@ -12,6 +12,7 @@ import com.jun0rr.binj.impl.IndexedKey;
 import com.jun0rr.binj.impl.Pair;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -49,9 +50,11 @@ public class MapCodec extends AbstractBinCodec<Map> {
       buf.position(pos);
     }
     buf.position(maxpos);
-    return keys.stream()
+    Map map = new LinkedHashMap();
+    keys.stream()
         .map(p->p.withKey(p.key().key()))
-        .collect(Collectors.toMap(Pair::key, Pair::value));
+        .forEach(p->map.put(p.key(), p.value()));
+    return map;
   }
 
   @Override

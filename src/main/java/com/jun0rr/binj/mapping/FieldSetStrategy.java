@@ -12,15 +12,17 @@ import java.util.stream.Collectors;
  *
  * @author F6036477
  */
-public class FieldExtractStrategy extends AbstractInvokeStrategy<ExtractFunction> {
+public class FieldSetStrategy extends AbstractInvokeStrategy<InjectFunction> {
 
   @Override
-  public List<ExtractFunction> invokers(Class cls) {
-    List<ExtractFunction> fns = cache.get(cls);
+  public List<InjectFunction> invokers(Class cls) {
+    List<InjectFunction> fns = cache.get(cls);
     if(fns == null) {
       fns = List.of(cls.getDeclaredFields()).stream()
+          .filter(f->!Modifier.isFinal(f.getModifiers()))
           .filter(f->!Modifier.isTransient(f.getModifiers()))
-          .map(ExtractFunction::of)
+          .filter(f->Modifier.isPublic(f.getModifiers()))
+          .map(InjectFunction::of)
           .collect(Collectors.toList());
       cache.put(cls, fns);
     }

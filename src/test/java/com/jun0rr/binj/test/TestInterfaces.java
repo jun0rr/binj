@@ -9,10 +9,8 @@ import com.jun0rr.binj.ContextEvent;
 import com.jun0rr.binj.ContextListener;
 import com.jun0rr.binj.buffer.BinBuffer;
 import com.jun0rr.binj.mapping.AnnotationConstructStrategy;
-import com.jun0rr.binj.mapping.AnnotationExtractStrategy;
+import com.jun0rr.binj.mapping.AnnotationGetStrategy;
 import com.jun0rr.binj.mapping.Binary;
-import com.jun0rr.binj.mapping.CombinedStrategy;
-import com.jun0rr.binj.mapping.ConstructFunction;
 import com.jun0rr.binj.mapping.DefaultConstructStrategy;
 import com.jun0rr.binj.mapping.MapConstructor;
 import java.time.LocalDate;
@@ -34,11 +32,10 @@ public class TestInterfaces implements ContextListener {
       Person p = new DefaultPerson("Hello", "World", LocalDate.of(1980, 7, 7), new DefaultAddress("Bitwise Street", "Byte City", 1024), new long[]{(long)(Math.random() * Short.MAX_VALUE), (long)(Math.random() * Short.MAX_VALUE)});
       System.out.println(p);
       BinContext ctx = BinContext.newContext();
-      CombinedStrategy<ConstructFunction> cs = CombinedStrategy.newStrategy();
-      cs.put(1, new DefaultConstructStrategy())
+      ctx.mapper().constructStrategies()
+          .put(1, new DefaultConstructStrategy())
           .put(2, new AnnotationConstructStrategy());
-      ctx.mapper().constructStrategies().add(cs);
-      ctx.mapper().extractStrategies().add(new AnnotationExtractStrategy());
+      ctx.mapper().extractStrategies().put(1, new AnnotationGetStrategy());
       ctx.listeners().add(this);
       BinBuffer buf = BinBuffer.ofHeapAllocator(128);
       System.out.println(buf);

@@ -6,10 +6,8 @@ package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.BinContext;
 import com.jun0rr.binj.buffer.BinBuffer;
-import com.jun0rr.binj.impl.DefaultBinContext;
 import com.jun0rr.binj.mapping.Binary;
 import com.jun0rr.binj.mapping.MapConstructor;
-import com.jun0rr.binj.mapping.ObjectMapper;
 import java.time.LocalDate;
 import java.util.Objects;
 import org.junit.jupiter.api.Assertions;
@@ -27,8 +25,7 @@ public class TestObjectMapper {
     try {
       Person p = new Person("Hello", "World", LocalDate.of(1980, 7, 7), 99800000000L);
       System.out.println(p);
-      ObjectMapper mp = ObjectMapper.withAnnotationStrategies();
-      BinContext ctx = new DefaultBinContext(mp);
+      BinContext ctx = BinContext.ofCombinedStrategyMapper();
       BinBuffer buf = BinBuffer.ofHeapAllocator(128);
       System.out.println(ctx.calcSize(p));
       ctx.write(buf, p);

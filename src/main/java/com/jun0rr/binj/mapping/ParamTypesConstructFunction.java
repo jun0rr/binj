@@ -49,7 +49,7 @@ public class ParamTypesConstructFunction implements ConstructFunction {
           Object arg = vals.stream()
               .filter(o->t.isAssignableFrom(o.getClass()))
               .findFirst().get();
-          System.out.printf("* ParamTypesConstructFunction.create( %s ): arg=%s%n", map, arg);
+          //System.out.printf("* ParamTypesConstructFunction.create( %s ): arg=%s%n", map, arg);
           args.add(arg);
           vals.remove(arg);
         }

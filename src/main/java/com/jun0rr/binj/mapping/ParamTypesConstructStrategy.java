@@ -23,6 +23,7 @@ public class ParamTypesConstructStrategy extends AbstractInvokeStrategy<Construc
         .filter(c->Modifier.isPublic(c.getModifiers()))
         .sorted((a,b)->Integer.compare(a.getParameterCount(), b.getParameterCount())*-1)
         .map(c->ConstructFunction.ofParameterTypes(c, List.of(c.getParameterTypes())))
+        //.peek(c->System.out.printf("* ParamTypesConstructStrategy.constructor: %s%n", c))
         .toList();
       cache.put(cls, fns);
     }

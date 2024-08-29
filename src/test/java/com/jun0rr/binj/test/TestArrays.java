@@ -17,7 +17,7 @@ import com.jun0rr.binj.codec.IntArrayCodec;
 import com.jun0rr.binj.codec.LongArrayCodec;
 import com.jun0rr.binj.codec.ShortArrayCodec;
 import com.jun0rr.binj.impl.DefaultBinType;
-import com.jun0rr.binj.mapping.FieldGetterStrategy;
+import com.jun0rr.binj.mapping.FieldMethodGetStrategy;
 import com.jun0rr.binj.mapping.FieldsOrderConstructStrategy;
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -156,8 +156,8 @@ public class TestArrays {
       pss[i] = new Person("Hello-" + i, "World-" + i, LocalDate.now(), new Address("Street-" + i, "City-" + i, i + 101));
     }
     BinContext ctx = BinContext.newContext();
-    ctx.mapper().constructStrategies().add(new FieldsOrderConstructStrategy());
-    ctx.mapper().extractStrategies().add(new FieldGetterStrategy());
+    ctx.mapper().constructStrategies().put(1, new FieldsOrderConstructStrategy());
+    ctx.mapper().extractStrategies().put(1, new FieldMethodGetStrategy());
     BinBuffer buf = BinBuffer.ofDirectAllocator(512);
     BinCodec<Person[]> codec = new ArrayCodec(ctx, new DefaultBinType(Person[].class));
     System.out.printf("calcSize( Person[] ): %d - %s%n", codec.calcSize(pss), Arrays.toString(pss));

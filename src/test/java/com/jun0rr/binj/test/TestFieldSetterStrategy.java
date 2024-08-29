@@ -4,7 +4,7 @@
  */
 package com.jun0rr.binj.test;
 
-import com.jun0rr.binj.mapping.FieldSetterStrategy;
+import com.jun0rr.binj.mapping.FieldMethodSetStrategy;
 import java.time.LocalDate;
 import java.util.Objects;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 public class TestFieldSetterStrategy {
   
   @Test public void test() {
-    FieldSetterStrategy in = new FieldSetterStrategy();
+    FieldMethodSetStrategy in = new FieldMethodSetStrategy();
     System.out.println("--- Person:");
     Person p = new Person("Hello", "World", LocalDate.now(), 1L);
     System.out.println(p);
