@@ -16,6 +16,12 @@
             <version>1.0</version>
         </dependency>
         <dependency>
+            <groupId>com.jun0rr</groupId>
+            <artifactId>pair</artifactId>
+            <version>1.0</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.7.0</version>
