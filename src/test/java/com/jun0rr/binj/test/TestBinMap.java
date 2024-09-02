@@ -6,9 +6,9 @@ package com.jun0rr.binj.test;
 
 import com.jun0rr.binj.BinContext;
 import com.jun0rr.binj.impl.DefaultBinContext;
-import com.jun0rr.binj.impl.Pair;
 import com.jun0rr.binj.mapping.ObjectMapper;
 import com.jun0rr.binj.type.BinMap;
+import com.jun0rr.pair.Pair;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.HashMap;
