@@ -84,14 +84,14 @@ public interface BinContext {
         .put(4, new NoArgsConstructStrategy())
         .put(5, new ParamTypesConstructStrategy());
     mapper.extractStrategies()
-        .put(1, new GetterMethodStrategy())
         .put(2, new FieldMethodGetStrategy())
         .put(3, new AnnotationGetStrategy())
+        .put(1, new GetterMethodStrategy())
         .put(4, new FieldGetStrategy());
     mapper.injectStrategies()
-        .put(1, new SetterMethodStrategy())
         .put(2, new FieldMethodSetStrategy())
         .put(3, new AnnotationSetStrategy())
+        .put(1, new SetterMethodStrategy())
         .put(4, new FieldSetStrategy());
     return new DefaultBinContext(mapper);
   }
