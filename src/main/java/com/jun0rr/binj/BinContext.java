@@ -48,6 +48,8 @@ public interface BinContext {
   
   public ObjectMapper mapper();
   
+  public Map<String,Object> readAsMap(BinBuffer buf) throws UnknownBinTypeException;
+  
   public <T> T read(BinBuffer buf) throws UnknownBinTypeException;
   
   public <T> ContextEvent write(BinBuffer buf, T o) throws BinTypeNotFoundException;

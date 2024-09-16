@@ -42,6 +42,7 @@ import com.jun0rr.binj.codec.ShortCodec;
 import com.jun0rr.binj.codec.Utf8Codec;
 import com.jun0rr.binj.codec.ZonedDateTimeCodec;
 import com.jun0rr.binj.mapping.ObjectMapper;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -192,6 +193,13 @@ public class DefaultBinContext implements BinContext {
   @Override
   public ObjectMapper mapper() {
     return mapper;
+  }
+  
+  @Override
+  public Map<String,Object> readAsMap(BinBuffer buf) throws UnknownBinTypeException {
+    buf.position(buf.position() + Long.BYTES);
+    BinCodec<Map> codec = getBinCodec(Map.class);
+    return codec.read(buf);
   }
 
   @Override
