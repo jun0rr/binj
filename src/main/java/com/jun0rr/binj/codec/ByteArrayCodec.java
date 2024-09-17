@@ -24,7 +24,7 @@ public class ByteArrayCodec extends AbstractBinCodec<byte[]> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
+    int size = buf.getInt();
     byte[] bs = new byte[size];
     buf.get(bs);
     return bs;
@@ -33,13 +33,13 @@ public class ByteArrayCodec extends AbstractBinCodec<byte[]> {
   @Override
   public void write(BinBuffer buf, byte[] array) {
     buf.putLong(bintype().id());
-    buf.putShort((short)array.length);
+    buf.putInt(array.length);
     buf.put(array);
   }
 
   @Override
   public int calcSize(byte[] array) {
-    return Long.BYTES + Short.BYTES + array.length;
+    return Long.BYTES + Integer.BYTES + array.length;
   }
 
 }

@@ -33,8 +33,8 @@ public class ArrayCodec<T> extends AbstractBinCodec<T[]> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
-    buf.position(buf.position() + Short.BYTES * size);
+    int size = buf.getInt();
+    buf.position(buf.position() + Integer.BYTES * size);
     T[] array = (T[]) Array.newInstance(bintype().type().getComponentType(), size);
     for(int i = 0; i < size; i++) {
       array[i] = ctx.read(buf);
@@ -45,9 +45,9 @@ public class ArrayCodec<T> extends AbstractBinCodec<T[]> {
   @Override
   public void write(BinBuffer buf, T[] array) {
     buf.putLong(bintype().id());
-    buf.putShort((short)array.length);
+    buf.putInt(array.length);
     int kpos = buf.position();
-    buf.position(kpos + Short.BYTES * array.length);
+    buf.position(kpos + Integer.BYTES * array.length);
     List<Integer> idx = new ArrayList<>(array.length);
     Iterator it = List.of(array).iterator();
     int lpos = buf.position();
@@ -57,14 +57,14 @@ public class ArrayCodec<T> extends AbstractBinCodec<T[]> {
       lpos = buf.position();
     }
     buf.position(kpos);
-    idx.forEach(i->buf.putShort(i.shortValue()));
+    idx.forEach(i->buf.putInt(i));
     buf.position(lpos);
   }
 
   @Override
   public int calcSize(T[] array) {
     int size = List.of(array).stream().mapToInt(o->ctx.calcSize(o)).sum();
-    return Long.BYTES + Short.BYTES + Short.BYTES * array.length + size;
+    return Long.BYTES + Integer.BYTES + Integer.BYTES * array.length + size;
   }
 
 }

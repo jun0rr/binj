@@ -24,7 +24,7 @@ public class BooleanArrayCodec extends AbstractBinCodec<boolean[]> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
+    int size = buf.getInt();
     boolean[] array = new boolean[size];
     for(int i = 0; i < size; i++) {
       array[i] = buf.get() == 1;
@@ -35,7 +35,7 @@ public class BooleanArrayCodec extends AbstractBinCodec<boolean[]> {
   @Override
   public void write(BinBuffer buf, boolean[] array) {
     buf.putLong(bintype().id());
-    buf.putShort((short)array.length);
+    buf.putInt(array.length);
     for(int i = 0; i < array.length; i++) {
       buf.put((byte)(array[i] ? 1 : 0));
     }
@@ -43,7 +43,7 @@ public class BooleanArrayCodec extends AbstractBinCodec<boolean[]> {
 
   @Override
   public int calcSize(boolean[] array) {
-    return Long.BYTES + Short.BYTES + array.length;
+    return Long.BYTES + Integer.BYTES + array.length;
   }
 
 }

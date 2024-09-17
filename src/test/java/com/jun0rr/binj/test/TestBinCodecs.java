@@ -204,11 +204,13 @@ public class TestBinCodecs {
     for(int i = 0; i < 31; i++) {
       cs[i] = Character.toString(c++);
     }
-    BinContext ctx = new DefaultBinContext(new ObjectMapper());
+    BinContext ctx = BinContext.ofCombinedStrategyMapper();
     BinBuffer buf = BinBuffer.ofHeapAllocator(ctx.calcSize(cs));
     ctx.write(buf, cs);
     buf.flip();
     String[] ds = ctx.read(buf);
+    System.out.printf("* TestBinCodecs.arrayCodec: array1=%s%n", Arrays.toString(cs));
+    System.out.printf("* TestBinCodecs.arrayCodec: array2=%s%n", Arrays.toString(ds));
     Assertions.assertTrue(Arrays.equals(cs, ds));
   }
   

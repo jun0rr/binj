@@ -49,7 +49,7 @@ public class BinMap<K,V> implements Map<K,V> {
     if(id != DefaultBinType.MAP.id()) {
       throw new UnknownBinTypeException(id);
     }
-    this.size = buf.getShort();
+    this.size = buf.getInt();
     this.kpos = buf.position();
   }
 
@@ -128,7 +128,7 @@ public class BinMap<K,V> implements Map<K,V> {
   public static <X,Y> BinMap<X,Y> put(BinMap<X,Y> map, X key, Y val) {
     BinBuffer buf = BinBuffer.of(map.buf.allocator());
     buf.putLong(DefaultBinType.MAP.id());
-    buf.putShort((short)(map.size + 1));
+    buf.putInt(map.size + 1);
     int bpos = buf.position();
     map.buf.position(bpos);
     IndexedKey ik = new IndexedKey(key);

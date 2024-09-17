@@ -24,7 +24,7 @@ public class ShortArrayCodec extends AbstractBinCodec<short[]> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
+    int size = buf.getInt();
     short[] array = new short[size];
     for(int i = 0; i < size; i++) {
       array[i] = buf.getShort();
@@ -35,7 +35,7 @@ public class ShortArrayCodec extends AbstractBinCodec<short[]> {
   @Override
   public void write(BinBuffer buf, short[] array) {
     buf.putLong(bintype().id());
-    buf.putShort((short)array.length);
+    buf.putInt(array.length);
     for(int i = 0; i < array.length; i++) {
       buf.putShort(array[i]);
     }
@@ -43,7 +43,7 @@ public class ShortArrayCodec extends AbstractBinCodec<short[]> {
 
   @Override
   public int calcSize(short[] array) {
-    return Long.BYTES + Short.BYTES + Short.BYTES * array.length;
+    return Long.BYTES + Integer.BYTES + Short.BYTES * array.length;
   }
 
 }

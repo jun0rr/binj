@@ -37,7 +37,7 @@ public class BinList<T> implements List<T> {
     if(id != DefaultBinType.COLLECTION.id()) {
       throw new UnknownBinTypeException(id);
     }
-    this.size = buf.getShort();
+    this.size = buf.getInt();
     this.kpos = buf.position();
   }
 
@@ -53,7 +53,7 @@ public class BinList<T> implements List<T> {
   
   @Override
   public boolean contains(Object o) {
-    buf.position(kpos + Short.BYTES * size);
+    buf.position(kpos + Integer.BYTES * size);
     for(int i = 0; i < size; i++) {
       Object r = ctx.read(buf);
       if(o.equals(r)) {
@@ -66,13 +66,13 @@ public class BinList<T> implements List<T> {
   @Override
   public Iterator<T> iterator() {
     ByteBuffer bb = buf.position(0).slice()
-        .position(kpos + Short.BYTES * size);
+        .position(kpos + Integer.BYTES * size);
     return new SupplierIterator(size, ()->ctx.read(bb));
   }
 
   @Override
   public Object[] toArray() {
-    buf.position(kpos + Short.BYTES * size);
+    buf.position(kpos + Integer.BYTES * size);
     Object[] os = new Object[size];
     for(int i = 0; i < size; i++) {
       os[i] = ctx.read(buf);
@@ -82,7 +82,7 @@ public class BinList<T> implements List<T> {
 
   @Override
   public <T> T[] toArray(T[] os) {
-    buf.position(kpos + Short.BYTES * size);
+    buf.position(kpos + Integer.BYTES * size);
     for(int i = 0; i < size; i++) {
       os[i] = ctx.read(buf);
     }
@@ -101,7 +101,7 @@ public class BinList<T> implements List<T> {
 
   @Override
   public boolean containsAll(Collection<?> c) {
-    buf.position(kpos + Short.BYTES * size);
+    buf.position(kpos + Integer.BYTES * size);
     int contains = 0;
     for(int i = 0; i < size; i++) {
       Object r = ctx.read(buf);
@@ -142,8 +142,8 @@ public class BinList<T> implements List<T> {
     if(index < 0 || index >= size) {
       throw new IndexOutOfBoundsException(index);
     }
-    buf.position(kpos + Short.BYTES * index);
-    buf.position(buf.getShort());
+    buf.position(kpos + Integer.BYTES * index);
+    buf.position(buf.getInt());
     return ctx.read(buf);
   }
 
@@ -164,7 +164,7 @@ public class BinList<T> implements List<T> {
 
   @Override
   public int indexOf(Object o) {
-    buf.position(kpos + Short.BYTES * size);
+    buf.position(kpos + Integer.BYTES * size);
     for(int i = 0; i < size; i++) {
       if(o.equals(ctx.read(buf))) {
         return i;
@@ -178,7 +178,7 @@ public class BinList<T> implements List<T> {
     int[] idx = new int[size];
     buf.position(kpos);
     for(int i = 0; i < size; i++) {
-      idx[0] = buf.getShort();
+      idx[0] = buf.getInt();
     }
     for(int i = idx.length -1; i >= 0; i--) {
       buf.position(idx[i]);
@@ -192,7 +192,7 @@ public class BinList<T> implements List<T> {
   @Override
   public ListIterator<T> listIterator() {
     List<T> ls = new ArrayList<>(size);
-    buf.position(kpos + Short.BYTES * size);
+    buf.position(kpos + Integer.BYTES * size);
     for(int i = 0; i < size; i++) {
       ls.add(ctx.read(buf));
     }
@@ -205,9 +205,9 @@ public class BinList<T> implements List<T> {
       throw new IndexOutOfBoundsException(index);
     }
     List<T> ls = new ArrayList<>(size - index);
-    buf.position(kpos + Short.BYTES * index);
+    buf.position(kpos + Integer.BYTES * index);
     for(int i = index; i < size; i++) {
-      int vpos = buf.getShort();
+      int vpos = buf.getInt();
       int pos = buf.position();
       buf.position(vpos);
       ls.add(ctx.read(buf));
@@ -224,9 +224,9 @@ public class BinList<T> implements List<T> {
       throw new IndexOutOfBoundsException(toIndex);
     }
     List<T> ls = new ArrayList<>(size);
-    buf.position(kpos + Short.BYTES * fromIndex);
+    buf.position(kpos + Integer.BYTES * fromIndex);
     for(int i = fromIndex; i < toIndex; i++) {
-      int vpos = buf.getShort();
+      int vpos = buf.getInt();
       int pos = buf.position();
       buf.position(vpos);
       ls.add(ctx.read(buf));

@@ -24,7 +24,7 @@ public class CharArrayCodec extends AbstractBinCodec<char[]> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
+    int size = buf.getInt();
     char[] array = new char[size];
     for(int i = 0; i < size; i++) {
       array[i] = buf.getChar();
@@ -35,7 +35,7 @@ public class CharArrayCodec extends AbstractBinCodec<char[]> {
   @Override
   public void write(BinBuffer buf, char[] array) {
     buf.putLong(bintype().id());
-    buf.putShort((short)array.length);
+    buf.putInt(array.length);
     for(int i = 0; i < array.length; i++) {
       buf.putChar(array[i]);
     }
@@ -43,7 +43,7 @@ public class CharArrayCodec extends AbstractBinCodec<char[]> {
 
   @Override
   public int calcSize(char[] array) {
-    return Long.BYTES + Short.BYTES + Character.BYTES * array.length;
+    return Long.BYTES + Integer.BYTES + Character.BYTES * array.length;
   }
 
 }

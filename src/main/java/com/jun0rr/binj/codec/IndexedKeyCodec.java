@@ -30,20 +30,20 @@ public class IndexedKeyCodec extends AbstractBinCodec<IndexedKey> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int idx = buf.getShort();
+    int idx = buf.getInt();
     return new IndexedKey(idx, ctx.read(buf));
   }
 
   @Override
   public void write(BinBuffer buf, IndexedKey val) {
     buf.putLong(bintype().id());
-    buf.putShort((short)val.index());
+    buf.putInt(val.index());
     ctx.write(buf, val.key());
   }
 
   @Override
   public int calcSize(IndexedKey val) {
-    return Long.BYTES + Short.BYTES + ctx.calcSize(val.key());
+    return Long.BYTES + Integer.BYTES + ctx.calcSize(val.key());
   }
 
 }

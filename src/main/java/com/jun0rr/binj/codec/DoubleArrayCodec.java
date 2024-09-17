@@ -24,7 +24,7 @@ public class DoubleArrayCodec extends AbstractBinCodec<double[]> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
+    int size = buf.getInt();
     double[] array = new double[size];
     for(int i = 0; i < size; i++) {
       array[i] = buf.getDouble();
@@ -35,7 +35,7 @@ public class DoubleArrayCodec extends AbstractBinCodec<double[]> {
   @Override
   public void write(BinBuffer buf, double[] array) {
     buf.putLong(bintype().id());
-    buf.putShort((short)array.length);
+    buf.putInt(array.length);
     for(int i = 0; i < array.length; i++) {
       buf.putDouble(array[i]);
     }
@@ -43,7 +43,7 @@ public class DoubleArrayCodec extends AbstractBinCodec<double[]> {
 
   @Override
   public int calcSize(double[] array) {
-    return Long.BYTES + Short.BYTES + Double.BYTES * array.length;
+    return Long.BYTES + Integer.BYTES + Double.BYTES * array.length;
   }
 
 }

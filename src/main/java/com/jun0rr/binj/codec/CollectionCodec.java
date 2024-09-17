@@ -33,8 +33,8 @@ public class CollectionCodec extends AbstractBinCodec<Collection> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
-    buf.position(buf.position() + Short.BYTES * size);
+    int size = buf.getInt();
+    buf.position(buf.position() + Integer.BYTES * size);
     List ls = new ArrayList(size);
     for(int i = 0; i < size; i++) {
       ls.add(ctx.read(buf));
@@ -47,10 +47,10 @@ public class CollectionCodec extends AbstractBinCodec<Collection> {
     //System.out.printf("CollectionCodec.write[1]( %s, %s ): %n", buf, val);
     buf.putLong(bintype().id());
     //System.out.printf("CollectionCodec.write[2]( %s, %s ): %n", buf, val);
-    buf.putShort((short)val.size());
+    buf.putInt(val.size());
     //System.out.printf("CollectionCodec.write[3]( %s, %s ): %n", buf, val);
     int kpos = buf.position();
-    buf.position(kpos + Short.BYTES * val.size());
+    buf.position(kpos + Integer.BYTES * val.size());
     //System.out.printf("CollectionCodec.write[4]( %s, %s ): %n", buf, val);
     List<Integer> idx = new ArrayList<>(val.size());
     Iterator it = val.iterator();
@@ -61,14 +61,14 @@ public class CollectionCodec extends AbstractBinCodec<Collection> {
       lpos = buf.position();
     }
     buf.position(kpos);
-    idx.forEach(i->buf.putShort(i.shortValue()));
+    idx.forEach(i->buf.putInt(i.shortValue()));
     buf.position(lpos);
   }
 
   @Override
   public int calcSize(Collection val) {
     int size = val.stream().mapToInt(o->ctx.calcSize(o)).sum();
-    return Long.BYTES + Short.BYTES + Short.BYTES * val.size() + size;
+    return Long.BYTES + Integer.BYTES + Integer.BYTES * val.size() + size;
   }
 
 }

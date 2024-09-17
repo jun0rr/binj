@@ -38,7 +38,7 @@ public class MapCodec extends AbstractBinCodec<Map> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
+    int size = buf.getInt();
     int maxpos = 0;
     List<Pair<IndexedKey,Object>> keys = new ArrayList<>(size);
     for(int i = 0; i < size; i++) {
@@ -60,7 +60,7 @@ public class MapCodec extends AbstractBinCodec<Map> {
   @Override
   public void write(BinBuffer buf, Map val) {
     buf.putLong(bintype().id());
-    buf.putShort((short)val.size());
+    buf.putInt(val.size());
     int kpos = buf.position();
     List<Pair<IndexedKey,Object>> keys = ((Map<Object,Object>)val)
         .entrySet().stream()
@@ -83,7 +83,7 @@ public class MapCodec extends AbstractBinCodec<Map> {
         .map(e->new AbstractMap.SimpleEntry<>(new IndexedKey(e.getKey()), e.getValue()))
         .mapToInt(e->ctx.calcSize(e.getKey()) + ctx.calcSize(e.getValue()))
         .sum();
-    return Long.BYTES + Short.BYTES + len;
+    return Long.BYTES + Integer.BYTES + len;
   }
 
 }

@@ -24,7 +24,7 @@ public class LongArrayCodec extends AbstractBinCodec<long[]> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
+    int size = buf.getInt();
     long[] array = new long[size];
     for(int i = 0; i < size; i++) {
       array[i] = buf.getLong();
@@ -35,7 +35,7 @@ public class LongArrayCodec extends AbstractBinCodec<long[]> {
   @Override
   public void write(BinBuffer buf, long[] array) {
     buf.putLong(bintype().id());
-    buf.putShort((short)array.length);
+    buf.putInt(array.length);
     for(int i = 0; i < array.length; i++) {
       buf.putLong(array[i]);
     }
@@ -43,7 +43,7 @@ public class LongArrayCodec extends AbstractBinCodec<long[]> {
 
   @Override
   public int calcSize(long[] array) {
-    return Long.BYTES + Short.BYTES + Long.BYTES * array.length;
+    return Long.BYTES + Integer.BYTES + Long.BYTES * array.length;
   }
 
 }

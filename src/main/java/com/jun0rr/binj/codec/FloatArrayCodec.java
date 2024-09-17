@@ -24,7 +24,7 @@ public class FloatArrayCodec extends AbstractBinCodec<float[]> {
     if(id != bintype().id()) {
       throw new UnknownBinTypeException(id);
     }
-    int size = buf.getShort();
+    int size = buf.getInt();
     float[] array = new float[size];
     for(int i = 0; i < size; i++) {
       array[i] = buf.getFloat();
@@ -35,7 +35,7 @@ public class FloatArrayCodec extends AbstractBinCodec<float[]> {
   @Override
   public void write(BinBuffer buf, float[] array) {
     buf.putLong(bintype().id());
-    buf.putShort((short)array.length);
+    buf.putInt(array.length);
     for(int i = 0; i < array.length; i++) {
       buf.putFloat(array[i]);
     }
@@ -43,7 +43,7 @@ public class FloatArrayCodec extends AbstractBinCodec<float[]> {
 
   @Override
   public int calcSize(float[] array) {
-    return Long.BYTES + Short.BYTES + Float.BYTES * array.length;
+    return Long.BYTES + Integer.BYTES + Float.BYTES * array.length;
   }
 
 }
